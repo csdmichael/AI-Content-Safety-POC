@@ -25,6 +25,10 @@
     "@azure/cosmos": "^4.6.0",
     "@azure/identity": "^4.13.0",
     "@azure/storage-blob": "^12.27.0",
-    "mime-types": "^2.1.35"
+    "docx": "^9.6.1",
+    "mime-types": "^2.1.35",
+    "pdfkit": "^0.18.0",
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.34.5"
   }
 }

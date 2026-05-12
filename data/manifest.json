@@ -2,6 +2,7 @@
   "totalDocuments": 100,
   "expectedFailCount": 50,
   "expectedPassCount": 50,
+  "generatedAt": "2026-05-12T23:46:29.496Z",
   "documents": [
     {
       "id": "doc-001",
@@ -9,7 +10,8 @@
       "format": "png",
       "relativePath": "data/png/doc_001.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #1. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-002",
@@ -17,7 +19,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_002.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #2. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-003",
@@ -25,7 +28,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_003.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #3. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-004",
@@ -33,7 +37,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_004.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #4. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-005",
@@ -41,7 +46,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_005.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #5. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-006",
@@ -49,7 +55,8 @@
       "format": "png",
       "relativePath": "data/png/doc_006.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #6. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-007",
@@ -57,7 +64,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_007.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #7. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-008",
@@ -65,7 +73,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_008.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #8. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-009",
@@ -73,7 +82,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_009.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #9. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-010",
@@ -81,7 +91,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_010.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #10. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-011",
@@ -89,7 +100,8 @@
       "format": "png",
       "relativePath": "data/png/doc_011.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #11. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-012",
@@ -97,7 +109,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_012.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #12. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-013",
@@ -105,7 +118,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_013.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #13. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-014",
@@ -113,7 +127,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_014.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #14. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-015",
@@ -121,7 +136,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_015.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #15. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-016",
@@ -129,7 +145,8 @@
       "format": "png",
       "relativePath": "data/png/doc_016.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #16. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-017",
@@ -137,7 +154,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_017.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #17. This sample contains explicit hate speech for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-018",
@@ -145,7 +163,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_018.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #18. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-019",
@@ -153,7 +172,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_019.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #19. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-020",
@@ -161,7 +181,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_020.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #20. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-021",
@@ -169,7 +190,8 @@
       "format": "png",
       "relativePath": "data/png/doc_021.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #21. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-022",
@@ -177,7 +199,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_022.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #22. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-023",
@@ -185,7 +208,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_023.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #23. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-024",
@@ -193,7 +217,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_024.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #24. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-025",
@@ -201,7 +226,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_025.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #25. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-026",
@@ -209,7 +235,8 @@
       "format": "png",
       "relativePath": "data/png/doc_026.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #26. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-027",
@@ -217,7 +244,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_027.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #27. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-028",
@@ -225,7 +253,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_028.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #28. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-029",
@@ -233,7 +262,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_029.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #29. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-030",
@@ -241,7 +271,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_030.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #30. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-031",
@@ -249,7 +280,8 @@
       "format": "png",
       "relativePath": "data/png/doc_031.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #31. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-032",
@@ -257,7 +289,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_032.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #32. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-033",
@@ -265,7 +298,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_033.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #33. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-034",
@@ -273,7 +307,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_034.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #34. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-035",
@@ -281,7 +316,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_035.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #35. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-036",
@@ -289,7 +325,8 @@
       "format": "png",
       "relativePath": "data/png/doc_036.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #36. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Discussion about harmful conspiracy theories circulating online. These theories have been debunked by experts.",
+      "category": "risk-test"
     },
     {
       "id": "doc-037",
@@ -297,7 +334,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_037.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #37. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-038",
@@ -305,7 +343,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_038.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #38. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-039",
@@ -313,7 +352,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_039.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #39. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-040",
@@ -321,7 +361,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_040.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #40. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-041",
@@ -329,7 +370,8 @@
       "format": "png",
       "relativePath": "data/png/doc_041.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #41. This sample contains explicit hate speech for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-042",
@@ -337,7 +379,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_042.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #42. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-043",
@@ -345,7 +388,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_043.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #43. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-044",
@@ -353,7 +397,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_044.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #44. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Notice: This content discusses controversial political topics that some may find objectionable.",
+      "category": "risk-test"
     },
     {
       "id": "doc-045",
@@ -361,7 +406,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_045.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #45. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-046",
@@ -369,7 +415,8 @@
       "format": "png",
       "relativePath": "data/png/doc_046.png",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #46. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-047",
@@ -377,7 +424,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_047.jpg",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #47. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-048",
@@ -385,7 +433,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_048.pdf",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #48. This sample contains self-harm encouragement for moderation testing."
+      "seedText": "WARNING: Critical security vulnerability detected. System requires immediate patching to prevent exploitation.",
+      "category": "risk-test"
     },
     {
       "id": "doc-049",
@@ -393,7 +442,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_049.docx",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #49. This sample contains harmful violent threat content for moderation testing."
+      "seedText": "Alert: Fraudulent activity detected on account. Contact support immediately to secure your credentials.",
+      "category": "risk-test"
     },
     {
       "id": "doc-050",
@@ -401,7 +451,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_050.ppt",
       "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #50. This sample contains explicit hate speech for moderation testing."
+      "seedText": "Article mentions illegal activities. Note: Content is purely for educational and informational purposes.",
+      "category": "risk-test"
     },
     {
       "id": "doc-051",
@@ -409,7 +460,8 @@
       "format": "png",
       "relativePath": "data/png/doc_051.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #51. This sample is a friendly educational message."
+      "seedText": "Event Announcement: Industry conference registration open. Early bird pricing available until end of month.",
+      "category": "safe-content"
     },
     {
       "id": "doc-052",
@@ -417,7 +469,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_052.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #52. This sample is a harmless workplace update."
+      "seedText": "Technical Documentation: API endpoint specifications for v2.0 release. Includes rate limiting of 1000 requests per minute and authentication requirements.",
+      "category": "safe-content"
     },
     {
       "id": "doc-053",
@@ -425,7 +478,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_053.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #53. This sample is a neutral engineering status report."
+      "seedText": "Research Findings: Study on workplace productivity shows correlation between flexible schedules and employee satisfaction metrics.",
+      "category": "safe-content"
     },
     {
       "id": "doc-054",
@@ -433,7 +487,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_054.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #54. This sample is a friendly educational message."
+      "seedText": "Quarterly Review: All departments performing above expectations. Special recognition to high-performing team members.",
+      "category": "safe-content"
     },
     {
       "id": "doc-055",
@@ -441,7 +496,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_055.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #55. This sample is a harmless workplace update."
+      "seedText": "Research Findings: Study on workplace productivity shows correlation between flexible schedules and employee satisfaction metrics.",
+      "category": "safe-content"
     },
     {
       "id": "doc-056",
@@ -449,7 +505,8 @@
       "format": "png",
       "relativePath": "data/png/doc_056.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #56. This sample is a neutral engineering status report."
+      "seedText": "Training Materials: Best practices for customer onboarding. Includes step-by-step guides and FAQ section for new users.",
+      "category": "safe-content"
     },
     {
       "id": "doc-057",
@@ -457,7 +514,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_057.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #57. This sample is a friendly educational message."
+      "seedText": "Product Features: Introducing new dashboard with real-time analytics. Supports multiple integrations with third-party platforms.",
+      "category": "safe-content"
     },
     {
       "id": "doc-058",
@@ -465,7 +523,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_058.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #58. This sample is a harmless workplace update."
+      "seedText": "Customer Success Story: Our client reduced operational costs by 40% after implementing our solution. They report high satisfaction with our support team.",
+      "category": "safe-content"
     },
     {
       "id": "doc-059",
@@ -473,7 +532,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_059.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #59. This sample is a neutral engineering status report."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-060",
@@ -481,7 +541,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_060.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #60. This sample is a friendly educational message."
+      "seedText": "Marketing Analysis: Consumer behavior patterns show increasing preference for digital channels. Mobile app adoption up 25% year-over-year.",
+      "category": "safe-content"
     },
     {
       "id": "doc-061",
@@ -489,7 +550,8 @@
       "format": "png",
       "relativePath": "data/png/doc_061.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #61. This sample is a harmless workplace update."
+      "seedText": "Customer Success Story: Our client reduced operational costs by 40% after implementing our solution. They report high satisfaction with our support team.",
+      "category": "safe-content"
     },
     {
       "id": "doc-062",
@@ -497,7 +559,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_062.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #62. This sample is a neutral engineering status report."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-063",
@@ -505,7 +568,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_063.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #63. This sample is a friendly educational message."
+      "seedText": "Customer Success Story: Our client reduced operational costs by 40% after implementing our solution. They report high satisfaction with our support team.",
+      "category": "safe-content"
     },
     {
       "id": "doc-064",
@@ -513,7 +577,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_064.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #64. This sample is a harmless workplace update."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-065",
@@ -521,7 +586,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_065.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #65. This sample is a neutral engineering status report."
+      "seedText": "Project Status Update: The development team has successfully completed Phase 2 of the product roadmap. All testing milestones met. Ready for deployment next week.",
+      "category": "safe-content"
     },
     {
       "id": "doc-066",
@@ -529,7 +595,8 @@
       "format": "png",
       "relativePath": "data/png/doc_066.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #66. This sample is a friendly educational message."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-067",
@@ -537,7 +604,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_067.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #67. This sample is a harmless workplace update."
+      "seedText": "Technical Documentation: API endpoint specifications for v2.0 release. Includes rate limiting of 1000 requests per minute and authentication requirements.",
+      "category": "safe-content"
     },
     {
       "id": "doc-068",
@@ -545,7 +613,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_068.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #68. This sample is a neutral engineering status report."
+      "seedText": "Technical Documentation: API endpoint specifications for v2.0 release. Includes rate limiting of 1000 requests per minute and authentication requirements.",
+      "category": "safe-content"
     },
     {
       "id": "doc-069",
@@ -553,7 +622,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_069.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #69. This sample is a friendly educational message."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-070",
@@ -561,7 +631,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_070.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #70. This sample is a harmless workplace update."
+      "seedText": "Policy Document: Annual leave guidelines and time-off request procedures. Managers to approve requests within 48 hours.",
+      "category": "safe-content"
     },
     {
       "id": "doc-071",
@@ -569,7 +640,8 @@
       "format": "png",
       "relativePath": "data/png/doc_071.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #71. This sample is a neutral engineering status report."
+      "seedText": "Policy Document: Annual leave guidelines and time-off request procedures. Managers to approve requests within 48 hours.",
+      "category": "safe-content"
     },
     {
       "id": "doc-072",
@@ -577,7 +649,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_072.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #72. This sample is a friendly educational message."
+      "seedText": "Product Features: Introducing new dashboard with real-time analytics. Supports multiple integrations with third-party platforms.",
+      "category": "safe-content"
     },
     {
       "id": "doc-073",
@@ -585,7 +658,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_073.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #73. This sample is a harmless workplace update."
+      "seedText": "Technical Documentation: API endpoint specifications for v2.0 release. Includes rate limiting of 1000 requests per minute and authentication requirements.",
+      "category": "safe-content"
     },
     {
       "id": "doc-074",
@@ -593,7 +667,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_074.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #74. This sample is a neutral engineering status report."
+      "seedText": "Event Announcement: Industry conference registration open. Early bird pricing available until end of month.",
+      "category": "safe-content"
     },
     {
       "id": "doc-075",
@@ -601,7 +676,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_075.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #75. This sample is a friendly educational message."
+      "seedText": "Company Q1 Financial Report: Revenue increased by 15% this quarter. The marketing team delivered excellent results with their new campaign strategies. We project continued growth for Q2.",
+      "category": "safe-content"
     },
     {
       "id": "doc-076",
@@ -609,7 +685,8 @@
       "format": "png",
       "relativePath": "data/png/doc_076.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #76. This sample is a harmless workplace update."
+      "seedText": "Event Announcement: Industry conference registration open. Early bird pricing available until end of month.",
+      "category": "safe-content"
     },
     {
       "id": "doc-077",
@@ -617,7 +694,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_077.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #77. This sample is a neutral engineering status report."
+      "seedText": "Training Materials: Best practices for customer onboarding. Includes step-by-step guides and FAQ section for new users.",
+      "category": "safe-content"
     },
     {
       "id": "doc-078",
@@ -625,7 +703,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_078.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #78. This sample is a friendly educational message."
+      "seedText": "Marketing Analysis: Consumer behavior patterns show increasing preference for digital channels. Mobile app adoption up 25% year-over-year.",
+      "category": "safe-content"
     },
     {
       "id": "doc-079",
@@ -633,7 +712,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_079.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #79. This sample is a harmless workplace update."
+      "seedText": "Research Findings: Study on workplace productivity shows correlation between flexible schedules and employee satisfaction metrics.",
+      "category": "safe-content"
     },
     {
       "id": "doc-080",
@@ -641,7 +721,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_080.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #80. This sample is a neutral engineering status report."
+      "seedText": "Policy Document: Annual leave guidelines and time-off request procedures. Managers to approve requests within 48 hours.",
+      "category": "safe-content"
     },
     {
       "id": "doc-081",
@@ -649,7 +730,8 @@
       "format": "png",
       "relativePath": "data/png/doc_081.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #81. This sample is a friendly educational message."
+      "seedText": "Customer Success Story: Our client reduced operational costs by 40% after implementing our solution. They report high satisfaction with our support team.",
+      "category": "safe-content"
     },
     {
       "id": "doc-082",
@@ -657,7 +739,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_082.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #82. This sample is a harmless workplace update."
+      "seedText": "Quarterly Review: All departments performing above expectations. Special recognition to high-performing team members.",
+      "category": "safe-content"
     },
     {
       "id": "doc-083",
@@ -665,7 +748,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_083.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #83. This sample is a neutral engineering status report."
+      "seedText": "Quarterly Review: All departments performing above expectations. Special recognition to high-performing team members.",
+      "category": "safe-content"
     },
     {
       "id": "doc-084",
@@ -673,7 +757,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_084.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #84. This sample is a friendly educational message."
+      "seedText": "Event Announcement: Industry conference registration open. Early bird pricing available until end of month.",
+      "category": "safe-content"
     },
     {
       "id": "doc-085",
@@ -681,7 +766,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_085.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #85. This sample is a harmless workplace update."
+      "seedText": "Event Announcement: Industry conference registration open. Early bird pricing available until end of month.",
+      "category": "safe-content"
     },
     {
       "id": "doc-086",
@@ -689,7 +775,8 @@
       "format": "png",
       "relativePath": "data/png/doc_086.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #86. This sample is a neutral engineering status report."
+      "seedText": "Event Announcement: Industry conference registration open. Early bird pricing available until end of month.",
+      "category": "safe-content"
     },
     {
       "id": "doc-087",
@@ -697,7 +784,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_087.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #87. This sample is a friendly educational message."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-088",
@@ -705,7 +793,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_088.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #88. This sample is a harmless workplace update."
+      "seedText": "Training Materials: Best practices for customer onboarding. Includes step-by-step guides and FAQ section for new users.",
+      "category": "safe-content"
     },
     {
       "id": "doc-089",
@@ -713,7 +802,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_089.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #89. This sample is a neutral engineering status report."
+      "seedText": "Technical Documentation: API endpoint specifications for v2.0 release. Includes rate limiting of 1000 requests per minute and authentication requirements.",
+      "category": "safe-content"
     },
     {
       "id": "doc-090",
@@ -721,7 +811,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_090.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #90. This sample is a friendly educational message."
+      "seedText": "Quarterly Review: All departments performing above expectations. Special recognition to high-performing team members.",
+      "category": "safe-content"
     },
     {
       "id": "doc-091",
@@ -729,7 +820,8 @@
       "format": "png",
       "relativePath": "data/png/doc_091.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #91. This sample is a harmless workplace update."
+      "seedText": "Customer Success Story: Our client reduced operational costs by 40% after implementing our solution. They report high satisfaction with our support team.",
+      "category": "safe-content"
     },
     {
       "id": "doc-092",
@@ -737,7 +829,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_092.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #92. This sample is a neutral engineering status report."
+      "seedText": "Project Status Update: The development team has successfully completed Phase 2 of the product roadmap. All testing milestones met. Ready for deployment next week.",
+      "category": "safe-content"
     },
     {
       "id": "doc-093",
@@ -745,7 +838,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_093.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #93. This sample is a friendly educational message."
+      "seedText": "Technical Documentation: API endpoint specifications for v2.0 release. Includes rate limiting of 1000 requests per minute and authentication requirements.",
+      "category": "safe-content"
     },
     {
       "id": "doc-094",
@@ -753,7 +847,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_094.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #94. This sample is a harmless workplace update."
+      "seedText": "Project Status Update: The development team has successfully completed Phase 2 of the product roadmap. All testing milestones met. Ready for deployment next week.",
+      "category": "safe-content"
     },
     {
       "id": "doc-095",
@@ -761,7 +856,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_095.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #95. This sample is a neutral engineering status report."
+      "seedText": "Team Meeting Notes: Discussed quarterly objectives and resource allocation. Great collaboration from all departments. Follow-up actions assigned to respective leads.",
+      "category": "safe-content"
     },
     {
       "id": "doc-096",
@@ -769,7 +865,8 @@
       "format": "png",
       "relativePath": "data/png/doc_096.png",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #96. This sample is a friendly educational message."
+      "seedText": "Marketing Analysis: Consumer behavior patterns show increasing preference for digital channels. Mobile app adoption up 25% year-over-year.",
+      "category": "safe-content"
     },
     {
       "id": "doc-097",
@@ -777,7 +874,8 @@
       "format": "jpg",
       "relativePath": "data/jpg/doc_097.jpg",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #97. This sample is a harmless workplace update."
+      "seedText": "Quarterly Review: All departments performing above expectations. Special recognition to high-performing team members.",
+      "category": "safe-content"
     },
     {
       "id": "doc-098",
@@ -785,7 +883,8 @@
       "format": "pdf",
       "relativePath": "data/pdf/doc_098.pdf",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #98. This sample is a neutral engineering status report."
+      "seedText": "Quarterly Review: All departments performing above expectations. Special recognition to high-performing team members.",
+      "category": "safe-content"
     },
     {
       "id": "doc-099",
@@ -793,7 +892,8 @@
       "format": "docx",
       "relativePath": "data/docx/doc_099.docx",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #99. This sample is a friendly educational message."
+      "seedText": "Research Findings: Study on workplace productivity shows correlation between flexible schedules and employee satisfaction metrics.",
+      "category": "safe-content"
     },
     {
       "id": "doc-100",
@@ -801,7 +901,8 @@
       "format": "ppt",
       "relativePath": "data/ppt/doc_100.ppt",
       "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #100. This sample is a harmless workplace update."
+      "seedText": "Project Status Update: The development team has successfully completed Phase 2 of the product roadmap. All testing milestones met. Ready for deployment next week.",
+      "category": "safe-content"
     }
   ]
 }

@@ -7,8 +7,10 @@ Azure AI Content Safety proof of concept with generated test documents, private-
 - [Architecture](#architecture)
 - [Folder Structure](#folder-structure)
 - [Generated Data](#generated-data)
+- [Deployed Azure Infrastructure](#deployed-azure-infrastructure)
 - [Configuration](#configuration)
 - [UI (Ionic + Angular + TypeScript)](#ui-ionic--angular--typescript)
+- [UI Deployment](#ui-deployment)
 - [UI Screenshot](#ui-screenshot)
 - [Pipeline Execution](#pipeline-execution)
 - [GitHub Actions Workflows](#github-actions-workflows)
@@ -51,21 +53,32 @@ flowchart LR
 ```
 
 ## Generated Data
-- `data/manifest.json` tracks all generated files and expected moderation outcomes.
-- 100 total files were generated:
-  - 20 PNG
-  - 20 JPG
-  - 20 PDF
-  - 20 DOCX
-  - 20 PPT
-- Exactly 50 are marked as expected moderation failures.
+- 100 mixed-format test files have been generated in `data/` folder:
+  - 20 PNG images
+  - 20 JPG images
+  - 20 PDF documents
+  - 20 DOCX documents
+  - 20 PPT presentations
+- Manifest file `data/manifest.json` tracks all files with expected moderation outcomes
+- Exactly 50 files are marked as expected to fail content safety checks
+
+## Deployed Azure Infrastructure
+All resources are deployed in resource group **ai-myaacoub**:
+
+| Resource | Name | Type |
+|----------|------|------|
+| **Blob Storage** | aistoragemyaacoub | Container: content-safety-documents |
+| **Cosmos DB** | cosmos-ai-poc | Database: contentSafetyDb, Container: contentSafetyResults |
+| **Content Safety** | 001-ai-poc | Cognitive Services (Private Endpoint) |
+| **Web App** | ai-content-safety-ui | App Service (B1 Basic tier) |
+| **App Service Plan** | ASP-aimyaacoub-87dc | Basic tier, West US 2 |
+
+All services are configured for private endpoint access.
 
 ## Configuration
-Copy template files and fill real values from resource group `ai-myaacoub`:
-- `config/azure-resources.template.json -> config/azure-resources.json`
-- `config/pipeline-settings.template.json -> config/pipeline-settings.json`
-
-Also provide runtime secrets via environment variables (`CONTENT_SAFETY_KEY`, Azure identity variables).
+- Azure resource configuration: `config/azure-resources.json`
+- Pipeline settings: `config/pipeline-settings.json`
+- Cosmos DB throughput: Shared (400 RU/s limit)
 
 ## UI (Ionic + Angular + TypeScript)
 The UI lives in `ui/` and includes:
@@ -82,6 +95,12 @@ The UI lives in `ui/` and includes:
   - Footer with Michael Yaacoub, GitHub, and LinkedIn links
 
 Responsive layouts are implemented for web, tablet, and mobile through Ionic grid and media queries.
+
+## UI Deployment
+The UI has been deployed to Azure App Service and is accessible at:
+- **URL**: https://ai-content-safety-ui.azurewebsites.net
+- **Resource Group**: ai-myaacoub
+- **App Service Plan**: ASP-aimyaacoub-87dc (B1 Basic tier)
 
 ## UI Screenshot
 ![UI Screenshot](docs/ui-screenshot.png)

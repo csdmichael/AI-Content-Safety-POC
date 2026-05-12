@@ -4,8 +4,9 @@ import { CosmosClient } from '@azure/cosmos';
 import mime from 'mime-types';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const repoRoot = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const readJson = async (relativePath) =>
   JSON.parse(await fs.readFile(path.resolve(repoRoot, relativePath), 'utf8'));
