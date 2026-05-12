@@ -1,0 +1,42 @@
+.layout-grid {
+  padding-top: 1rem;
+}
+
+.selected {
+  --background: #eef5ff;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.doc-image,
+.doc-frame {
+  width: 100%;
+  height: min(62vh, 560px);
+  border: 1px solid #dde3ee;
+  border-radius: 0.5rem;
+}
+
+.office-placeholder {
+  border: 1px dashed #c2cad9;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+@media (max-width: 1024px) and (min-width: 768px) {
+  .list-col,
+  .viewer-col {
+    size: 12;
+  }
+}
+
+@media (max-width: 767px) {
+  .doc-image,
+  .doc-frame {
+    height: 42vh;
+  }
+}

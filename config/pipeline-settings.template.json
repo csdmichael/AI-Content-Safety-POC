@@ -1,0 +1,6 @@
+{
+  "useManagedIdentity": true,
+  "contentSafetySeverityThreshold": 4,
+  "maxParallelism": 4,
+  "manifestPath": "data/manifest.json"
+}

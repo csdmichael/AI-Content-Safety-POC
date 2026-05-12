@@ -1,0 +1,13 @@
+Create a data folder that has 100 docs and images in different formats including png, jpg, ppt, word, pdf. Generate this content such that 50% of this content will fail during Azure ai content safety.
+Create a config folder for all config for azure resources ids, URLs and configs. Don’t hardcode anything. Upload all docs to a container in azure blob storage configured in config folder using private endpoint in private vnet.
+Process data via azure ai content safety in private vnet and private endpoint and store results in cosmos db in private vnet via private endpoint.
+Choose existing resources from my resource group ai-myaacoub .
+Build ui in ionic, angular, typescript with different layout for web, tablet and mobile to do the following:
+- A page to Display documents list with pagination with ability to drill through a document and display it in a viewer before processing via content safety
+- A page that groups documents after being processed by content safety to different categories based on results and display kpis. Add ability to drill through document to show side by side the document viewer and result of ai content safety
+- Add Microsoft logo in header and my name, GitHub link and LinkedIn link in footer.
+- Generate GitHub actions workflows based on component dependencies and make each workflow trigger based on updated components only. For readme and docs edits, no workflow should trigger.
+- create a docs folder, generate architecture diagrams in it and display it in readme file
+- Add prompts.txt in docs folder and add this prompt in it
+- Add license file for Michael Yaacoub at Microsoft
+- in readme, table of contents that links to readme sections, project description, architecture , folder structure add best practices about content safety, references from Microsoft learn at end and add any relevant sections on middle.
