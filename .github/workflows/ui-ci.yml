@@ -10,6 +10,9 @@ on:
       - 'ui/**'
       - '.github/workflows/ui-ci.yml'
 
+permissions:
+  contents: read
+
 jobs:
   ui-build-test:
     runs-on: ubuntu-latest

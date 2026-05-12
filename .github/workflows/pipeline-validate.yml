@@ -18,6 +18,9 @@ on:
       - 'package-lock.json'
       - '.github/workflows/pipeline-validate.yml'
 
+permissions:
+  contents: read
+
 jobs:
   pipeline-lint:
     runs-on: ubuntu-latest
