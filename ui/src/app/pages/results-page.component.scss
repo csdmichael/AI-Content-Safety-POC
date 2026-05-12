@@ -1,0 +1,48 @@
+.layout-grid {
+  padding-top: 1rem;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.kpi-grid h3 {
+  margin: 0;
+}
+
+.group-title {
+  margin: 1rem 0 0.5rem;
+}
+
+.selected {
+  --background: #f4f7ff;
+}
+
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.doc-image,
+.doc-frame {
+  width: 100%;
+  min-height: 320px;
+  border: 1px solid #dde3ee;
+  border-radius: 0.5rem;
+}
+
+.office-placeholder,
+.result-panel {
+  border: 1px solid #dde3ee;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+@media (max-width: 991px) {
+  .split-view {
+    grid-template-columns: 1fr;
+  }
+}

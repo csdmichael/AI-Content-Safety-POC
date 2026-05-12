@@ -1,0 +1,60 @@
+<ion-content>
+  <ion-grid fixed class="layout-grid">
+    <ion-row>
+      <ion-col size="12" sizeLg="5" class="list-col">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Documents</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-list>
+              @for (doc of currentPageDocs(); track doc.id) {
+                <ion-item button detail="false" (click)="selectDocument(doc)" [class.selected]="selectedDocument()?.id === doc.id">
+                  <ion-label>
+                    <h2>{{ doc.fileName }}</h2>
+                    <p>{{ doc.format | uppercase }} · Expected {{ doc.expectedContentSafetyOutcome }}</p>
+                  </ion-label>
+                  <ion-badge [color]="doc.processed ? 'success' : 'medium'">{{ doc.processed ? 'Processed' : 'Pending' }}</ion-badge>
+                </ion-item>
+              }
+            </ion-list>
+
+            <div class="pagination">
+              <ion-button size="small" fill="outline" (click)="previousPage()" [disabled]="currentPage() === 1">Previous</ion-button>
+              <ion-text>Page {{ currentPage() }} / {{ pageCount() }}</ion-text>
+              <ion-button size="small" fill="outline" (click)="nextPage()" [disabled]="currentPage() === pageCount()">Next</ion-button>
+            </div>
+
+            <ion-button expand="block" (click)="processSelected()">Process selected document</ion-button>
+            <ion-button expand="block" fill="outline" (click)="processCurrentPage()">Process current page</ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" sizeLg="7" class="viewer-col">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Document Viewer (before processing)</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @if (selectedDocument(); as doc) {
+              @if (isImage(doc)) {
+                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" />
+              } @else if (doc.format === 'pdf') {
+                <iframe [src]="previewUrl(doc)" class="doc-frame" title="PDF preview"></iframe>
+              } @else {
+                <div class="office-placeholder">
+                  <p><strong>{{ doc.fileName }}</strong> is an Office document.</p>
+                  <p>Download to view:</p>
+                  <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer">Open document</a>
+                </div>
+              }
+            } @else {
+              <p>Select a document to preview.</p>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

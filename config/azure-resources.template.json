@@ -1,0 +1,24 @@
+{
+  "resourceGroupName": "ai-myaacoub",
+  "subscriptionId": "<subscription-id>",
+  "blobStorage": {
+    "accountResourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.Storage/storageAccounts/<storage-account-name>",
+    "privateEndpointUrl": "https://<storage-account-name>.privatelink.blob.core.windows.net",
+    "containerName": "content-safety-documents"
+  },
+  "contentSafety": {
+    "resourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/<content-safety-name>",
+    "privateEndpointUrl": "https://<content-safety-name>.privatelink.cognitiveservices.azure.com",
+    "apiVersion": "2024-09-01"
+  },
+  "cosmosDb": {
+    "accountResourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account-name>",
+    "privateEndpointUrl": "https://<cosmos-account-name>.privatelink.documents.azure.com:443/",
+    "databaseName": "contentSafetyDb",
+    "containerName": "contentSafetyResults"
+  },
+  "network": {
+    "vnetResourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.Network/virtualNetworks/<vnet-name>",
+    "subnetResourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.Network/virtualNetworks/<vnet-name>/subnets/<subnet-name>"
+  }
+}

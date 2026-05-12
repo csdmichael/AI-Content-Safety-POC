@@ -1,0 +1,807 @@
+{
+  "totalDocuments": 100,
+  "expectedFailCount": 50,
+  "expectedPassCount": 50,
+  "documents": [
+    {
+      "id": "doc-001",
+      "fileName": "doc_001.png",
+      "format": "png",
+      "relativePath": "data/png/doc_001.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #1. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-002",
+      "fileName": "doc_002.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_002.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #2. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-003",
+      "fileName": "doc_003.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_003.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #3. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-004",
+      "fileName": "doc_004.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_004.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #4. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-005",
+      "fileName": "doc_005.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_005.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #5. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-006",
+      "fileName": "doc_006.png",
+      "format": "png",
+      "relativePath": "data/png/doc_006.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #6. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-007",
+      "fileName": "doc_007.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_007.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #7. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-008",
+      "fileName": "doc_008.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_008.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #8. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-009",
+      "fileName": "doc_009.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_009.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #9. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-010",
+      "fileName": "doc_010.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_010.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #10. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-011",
+      "fileName": "doc_011.png",
+      "format": "png",
+      "relativePath": "data/png/doc_011.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #11. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-012",
+      "fileName": "doc_012.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_012.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #12. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-013",
+      "fileName": "doc_013.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_013.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #13. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-014",
+      "fileName": "doc_014.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_014.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #14. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-015",
+      "fileName": "doc_015.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_015.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #15. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-016",
+      "fileName": "doc_016.png",
+      "format": "png",
+      "relativePath": "data/png/doc_016.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #16. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-017",
+      "fileName": "doc_017.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_017.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #17. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-018",
+      "fileName": "doc_018.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_018.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #18. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-019",
+      "fileName": "doc_019.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_019.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #19. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-020",
+      "fileName": "doc_020.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_020.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #20. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-021",
+      "fileName": "doc_021.png",
+      "format": "png",
+      "relativePath": "data/png/doc_021.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #21. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-022",
+      "fileName": "doc_022.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_022.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #22. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-023",
+      "fileName": "doc_023.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_023.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #23. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-024",
+      "fileName": "doc_024.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_024.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #24. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-025",
+      "fileName": "doc_025.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_025.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #25. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-026",
+      "fileName": "doc_026.png",
+      "format": "png",
+      "relativePath": "data/png/doc_026.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #26. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-027",
+      "fileName": "doc_027.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_027.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #27. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-028",
+      "fileName": "doc_028.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_028.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #28. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-029",
+      "fileName": "doc_029.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_029.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #29. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-030",
+      "fileName": "doc_030.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_030.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #30. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-031",
+      "fileName": "doc_031.png",
+      "format": "png",
+      "relativePath": "data/png/doc_031.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #31. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-032",
+      "fileName": "doc_032.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_032.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #32. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-033",
+      "fileName": "doc_033.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_033.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #33. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-034",
+      "fileName": "doc_034.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_034.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #34. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-035",
+      "fileName": "doc_035.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_035.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #35. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-036",
+      "fileName": "doc_036.png",
+      "format": "png",
+      "relativePath": "data/png/doc_036.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #36. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-037",
+      "fileName": "doc_037.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_037.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #37. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-038",
+      "fileName": "doc_038.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_038.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #38. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-039",
+      "fileName": "doc_039.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_039.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #39. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-040",
+      "fileName": "doc_040.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_040.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #40. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-041",
+      "fileName": "doc_041.png",
+      "format": "png",
+      "relativePath": "data/png/doc_041.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #41. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-042",
+      "fileName": "doc_042.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_042.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #42. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-043",
+      "fileName": "doc_043.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_043.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #43. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-044",
+      "fileName": "doc_044.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_044.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #44. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-045",
+      "fileName": "doc_045.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_045.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #45. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-046",
+      "fileName": "doc_046.png",
+      "format": "png",
+      "relativePath": "data/png/doc_046.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #46. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-047",
+      "fileName": "doc_047.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_047.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #47. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-048",
+      "fileName": "doc_048.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_048.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #48. This sample contains self-harm encouragement for moderation testing."
+    },
+    {
+      "id": "doc-049",
+      "fileName": "doc_049.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_049.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #49. This sample contains harmful violent threat content for moderation testing."
+    },
+    {
+      "id": "doc-050",
+      "fileName": "doc_050.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_050.ppt",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Document #50. This sample contains explicit hate speech for moderation testing."
+    },
+    {
+      "id": "doc-051",
+      "fileName": "doc_051.png",
+      "format": "png",
+      "relativePath": "data/png/doc_051.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #51. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-052",
+      "fileName": "doc_052.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_052.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #52. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-053",
+      "fileName": "doc_053.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_053.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #53. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-054",
+      "fileName": "doc_054.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_054.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #54. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-055",
+      "fileName": "doc_055.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_055.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #55. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-056",
+      "fileName": "doc_056.png",
+      "format": "png",
+      "relativePath": "data/png/doc_056.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #56. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-057",
+      "fileName": "doc_057.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_057.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #57. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-058",
+      "fileName": "doc_058.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_058.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #58. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-059",
+      "fileName": "doc_059.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_059.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #59. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-060",
+      "fileName": "doc_060.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_060.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #60. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-061",
+      "fileName": "doc_061.png",
+      "format": "png",
+      "relativePath": "data/png/doc_061.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #61. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-062",
+      "fileName": "doc_062.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_062.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #62. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-063",
+      "fileName": "doc_063.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_063.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #63. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-064",
+      "fileName": "doc_064.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_064.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #64. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-065",
+      "fileName": "doc_065.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_065.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #65. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-066",
+      "fileName": "doc_066.png",
+      "format": "png",
+      "relativePath": "data/png/doc_066.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #66. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-067",
+      "fileName": "doc_067.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_067.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #67. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-068",
+      "fileName": "doc_068.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_068.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #68. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-069",
+      "fileName": "doc_069.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_069.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #69. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-070",
+      "fileName": "doc_070.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_070.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #70. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-071",
+      "fileName": "doc_071.png",
+      "format": "png",
+      "relativePath": "data/png/doc_071.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #71. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-072",
+      "fileName": "doc_072.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_072.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #72. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-073",
+      "fileName": "doc_073.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_073.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #73. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-074",
+      "fileName": "doc_074.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_074.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #74. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-075",
+      "fileName": "doc_075.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_075.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #75. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-076",
+      "fileName": "doc_076.png",
+      "format": "png",
+      "relativePath": "data/png/doc_076.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #76. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-077",
+      "fileName": "doc_077.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_077.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #77. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-078",
+      "fileName": "doc_078.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_078.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #78. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-079",
+      "fileName": "doc_079.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_079.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #79. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-080",
+      "fileName": "doc_080.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_080.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #80. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-081",
+      "fileName": "doc_081.png",
+      "format": "png",
+      "relativePath": "data/png/doc_081.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #81. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-082",
+      "fileName": "doc_082.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_082.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #82. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-083",
+      "fileName": "doc_083.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_083.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #83. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-084",
+      "fileName": "doc_084.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_084.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #84. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-085",
+      "fileName": "doc_085.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_085.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #85. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-086",
+      "fileName": "doc_086.png",
+      "format": "png",
+      "relativePath": "data/png/doc_086.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #86. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-087",
+      "fileName": "doc_087.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_087.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #87. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-088",
+      "fileName": "doc_088.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_088.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #88. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-089",
+      "fileName": "doc_089.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_089.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #89. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-090",
+      "fileName": "doc_090.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_090.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #90. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-091",
+      "fileName": "doc_091.png",
+      "format": "png",
+      "relativePath": "data/png/doc_091.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #91. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-092",
+      "fileName": "doc_092.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_092.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #92. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-093",
+      "fileName": "doc_093.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_093.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #93. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-094",
+      "fileName": "doc_094.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_094.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #94. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-095",
+      "fileName": "doc_095.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_095.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #95. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-096",
+      "fileName": "doc_096.png",
+      "format": "png",
+      "relativePath": "data/png/doc_096.png",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #96. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-097",
+      "fileName": "doc_097.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_097.jpg",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #97. This sample is a harmless workplace update."
+    },
+    {
+      "id": "doc-098",
+      "fileName": "doc_098.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_098.pdf",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #98. This sample is a neutral engineering status report."
+    },
+    {
+      "id": "doc-099",
+      "fileName": "doc_099.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_099.docx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #99. This sample is a friendly educational message."
+    },
+    {
+      "id": "doc-100",
+      "fileName": "doc_100.ppt",
+      "format": "ppt",
+      "relativePath": "data/ppt/doc_100.ppt",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Document #100. This sample is a harmless workplace update."
+    }
+  ]
+}

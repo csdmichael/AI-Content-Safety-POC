@@ -1,0 +1,89 @@
+<ion-content>
+  <ion-grid fixed class="layout-grid">
+    <ion-row>
+      <ion-col size="12" sizeXl="4">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>KPIs</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="kpi-grid">
+            <div>
+              <h3>{{ kpis().total }}</h3>
+              <p>Total Processed</p>
+            </div>
+            <div>
+              <h3>{{ kpis().safe }}</h3>
+              <p>Safe</p>
+            </div>
+            <div>
+              <h3>{{ kpis().review }}</h3>
+              <p>Review</p>
+            </div>
+            <div>
+              <h3>{{ kpis().blocked }}</h3>
+              <p>Blocked</p>
+            </div>
+          </ion-card-content>
+        </ion-card>
+
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Grouped Results</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @for (entry of (grouped() | keyvalue); track entry.key) {
+              <h4 class="group-title">{{ entry.key | titlecase }} ({{ entry.value.length }})</h4>
+              <ion-list>
+                @for (doc of entry.value; track doc.id) {
+                  <ion-item button detail="false" (click)="selectDocument(doc)" [class.selected]="selectedDocument()?.id === doc.id">
+                    <ion-label>
+                      <h2>{{ doc.fileName }}</h2>
+                      <p>{{ doc.processed?.reason }}</p>
+                    </ion-label>
+                    <ion-badge [color]="entry.key === 'safe' ? 'success' : entry.key === 'review' ? 'warning' : 'danger'">
+                      {{ entry.key | titlecase }}
+                    </ion-badge>
+                  </ion-item>
+                }
+              </ion-list>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" sizeXl="8">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Side-by-Side Document + Content Safety Result</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            @if (selectedDocument(); as doc) {
+              <div class="split-view">
+                <div>
+                  @if (isImage(doc)) {
+                    <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" />
+                  } @else if (doc.format === 'pdf') {
+                    <iframe [src]="previewUrl(doc)" class="doc-frame" title="document preview"></iframe>
+                  } @else {
+                    <div class="office-placeholder">
+                      <p><strong>{{ doc.fileName }}</strong> preview available via download.</p>
+                      <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer">Open document</a>
+                    </div>
+                  }
+                </div>
+                <div class="result-panel">
+                  <h3>{{ doc.fileName }}</h3>
+                  <p><strong>Category:</strong> {{ doc.processed?.category | titlecase }}</p>
+                  <p><strong>Confidence:</strong> {{ doc.processed?.confidence | percent:'1.0-0' }}</p>
+                  <p><strong>Reason:</strong> {{ doc.processed?.reason }}</p>
+                </div>
+              </div>
+            } @else {
+              <p>Process documents on the Documents page and select an item to review details.</p>
+            }
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
