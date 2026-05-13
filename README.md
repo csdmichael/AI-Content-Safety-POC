@@ -120,8 +120,42 @@ npm run pipeline:process
 
 ## GitHub Actions Workflows
 - `ui-ci.yml`: triggers only when `ui/**` changes.
+- `ui-deploy.yml`: builds UI, packages `ui/dist/ui/browser` contents, and deploys to `ai-content-safety-ui` App Service on pushes to `main`.
+  - Uses Microsoft Entra app registration with GitHub OIDC (`azure/login`) and Azure CLI deploy (no publish profile).
+  - Required repo secrets:
+    - `AZURE_CLIENT_ID`
+    - `AZURE_TENANT_ID`
+    - `AZURE_SUBSCRIPTION_ID`
+    - `AZURE_WEBAPP_NAME`
+    - `AZURE_WEBAPP_RESOURCE_GROUP`
 - `pipeline-validate.yml`: triggers only when `pipeline/**`, `config/**`, `data/**`, or root pipeline package files change.
 - Docs/README-only edits do not match either workflow path filters.
+
+### App Registration Setup Steps (UI Deploy)
+The repository is configured to deploy with OIDC app registration authentication.
+
+1. Create an Entra app registration (or reuse an existing one).
+2. Create a service principal for that app.
+3. Add a federated credential with:
+   - Issuer: `https://token.actions.githubusercontent.com`
+   - Subject: `repo:csdmichael/AI-Content-Safety-POC:ref:refs/heads/main`
+   - Audience: `api://AzureADTokenExchange`
+4. Assign least-privilege role on the target Web App scope:
+   - Role: `Website Contributor`
+   - Scope: `/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Web/sites/ai-content-safety-ui`
+5. Create GitHub Actions secrets listed above.
+
+### Auto-Provisioned for This Repository
+The following were created automatically:
+- App registration: `ai-content-safety-ui-gha-oidc`
+- Federated credential: `github-main-ui-deploy`
+- Role assignment: `Website Contributor` on `ai-content-safety-ui`
+- GitHub secrets:
+  - `AZURE_CLIENT_ID`
+  - `AZURE_TENANT_ID`
+  - `AZURE_SUBSCRIPTION_ID`
+  - `AZURE_WEBAPP_NAME`
+  - `AZURE_WEBAPP_RESOURCE_GROUP`
 
 ## Best Practices for Content Safety
 - Use private endpoints for storage, moderation APIs, and result databases.

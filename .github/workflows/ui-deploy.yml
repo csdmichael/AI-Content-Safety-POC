@@ -1,0 +1,64 @@
+name: UI Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'ui/**'
+      - '.github/workflows/ui-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  NODE_VERSION: '22'
+  UI_BUILD_OUTPUT: ui/dist/ui/browser
+  UI_ZIP: ui-browser.zip
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: ui/package-lock.json
+
+      - name: Install UI dependencies
+        working-directory: ui
+        run: npm ci
+
+      - name: Build UI
+        working-directory: ui
+        run: npm run build
+
+      - name: Package browser output
+        run: |
+          test -f "${{ env.UI_BUILD_OUTPUT }}/index.html"
+          cd "${{ env.UI_BUILD_OUTPUT }}"
+          zip -r "${GITHUB_WORKSPACE}/${{ env.UI_ZIP }}" .
+
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App
+        run: |
+          az webapp deploy \
+            --resource-group "${{ secrets.AZURE_WEBAPP_RESOURCE_GROUP }}" \
+            --name "${{ secrets.AZURE_WEBAPP_NAME }}" \
+            --src-path "${{ env.UI_ZIP }}" \
+            --type zip \
+            --clean true
