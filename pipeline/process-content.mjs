@@ -27,10 +27,11 @@ const cosmosClient = new CosmosClient({
 const db = cosmosClient.database(azureConfig.cosmosDb.databaseName);
 const container = db.container(azureConfig.cosmosDb.containerName);
 
-const contentSafetyApiKey = process.env.CONTENT_SAFETY_KEY;
-if (!contentSafetyApiKey) {
-  throw new Error('Missing CONTENT_SAFETY_KEY environment variable.');
-}
+// Get access token for Content Safety using managed identity
+const getContentSafetyToken = async () => {
+  const token = await credential.getToken('https://cognitiveservices.azure.com/.default');
+  return token.token;
+};
 
 const runInBatches = async (items, batchSize, worker) => {
   for (let i = 0; i < items.length; i += batchSize) {
@@ -40,12 +41,13 @@ const runInBatches = async (items, batchSize, worker) => {
 };
 
 const analyzeText = async (text) => {
+  const token = await getContentSafetyToken();
   const endpoint = `${azureConfig.contentSafety.privateEndpointUrl}/contentsafety/text:analyze?api-version=${azureConfig.contentSafety.apiVersion}`;
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Ocp-Apim-Subscription-Key': contentSafetyApiKey
+      'Authorization': `Bearer ${token}`
     },
     body: JSON.stringify({ text })
   });

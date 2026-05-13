@@ -7,9 +7,10 @@
     "containerName": "content-safety-documents"
   },
   "contentSafety": {
-    "resourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/<content-safety-name>",
+    "resourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/ai-content-safety-myaacoub",
     "privateEndpointUrl": "https://<content-safety-name>.privatelink.cognitiveservices.azure.com",
-    "apiVersion": "2024-09-01"
+    "apiVersion": "2024-09-01",
+    "authentication": "managed-identity"
   },
   "cosmosDb": {
     "accountResourceId": "/subscriptions/<subscription-id>/resourceGroups/ai-myaacoub/providers/Microsoft.DocumentDB/databaseAccounts/<cosmos-account-name>",

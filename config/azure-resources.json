@@ -7,9 +7,10 @@
     "containerName": "content-safety-documents"
   },
   "contentSafety": {
-    "resourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/001-ai-poc",
-    "privateEndpointUrl": "https://001-ai-poc.privatelink.cognitiveservices.azure.com",
-    "apiVersion": "2024-09-01"
+    "resourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/ai-content-safety-myaacoub",
+    "privateEndpointUrl": "https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com",
+    "apiVersion": "2024-09-01",
+    "authentication": "managed-identity"
   },
   "cosmosDb": {
     "accountResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-ai-poc",

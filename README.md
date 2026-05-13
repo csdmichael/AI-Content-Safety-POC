@@ -8,6 +8,7 @@ Azure AI Content Safety proof of concept with generated test documents, private-
 - [Folder Structure](#folder-structure)
 - [Generated Data](#generated-data)
 - [Deployed Azure Infrastructure](#deployed-azure-infrastructure)
+- [Setup & Configuration](#setup--configuration)
 - [Configuration](#configuration)
 - [UI (Ionic + Angular + TypeScript)](#ui-ionic--angular--typescript)
 - [UI Deployment](#ui-deployment)
@@ -65,20 +66,107 @@ flowchart LR
 ## Deployed Azure Infrastructure
 All resources are deployed in resource group **ai-myaacoub**:
 
-| Resource | Name | Type |
-|----------|------|------|
-| **Blob Storage** | aistoragemyaacoub | Container: content-safety-documents |
-| **Cosmos DB** | cosmos-ai-poc | Database: contentSafetyDb, Container: contentSafetyResults |
-| **Content Safety** | 001-ai-poc | Cognitive Services (Private Endpoint) |
-| **Web App** | ai-content-safety-ui | App Service (B1 Basic tier) |
-| **App Service Plan** | ASP-aimyaacoub-87dc | Basic tier, West US 2 |
+| Resource | Name | Type | Details |
+|----------|------|------|----------|
+| **Blob Storage** | aistoragemyaacoub | Storage Account | Container: content-safety-documents |
+| **Cosmos DB** | cosmos-ai-poc | NoSQL Database | Database: contentSafetyDb, Container: contentSafetyResults |
+| **Content Safety** | ai-content-safety-myaacoub | Cognitive Service | Private Endpoint: https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com |
+| **Web App** | ai-content-safety-ui | App Service | B1 Basic tier, West US 2 |
+| **App Service Plan** | ASP-aimyaacoub-87dc | App Service Plan | Basic tier, West US 2 |
 
 All services are configured for private endpoint access.
 
+## Setup & Configuration
+
+### Quick Start with Managed Identity
+
+The pipeline uses **managed identity and RBAC** - no API keys needed:
+
+```bash
+# 1. Create service principal
+SP=$(az ad sp create-for-rbac \
+  --name "ai-content-safety-pipeline" \
+  --role "Contributor" \
+  --scopes "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub")
+
+CLIENT_ID=$(echo $SP | jq -r '.clientId')
+
+# 2. Assign RBAC roles (Linux/macOS)
+./setup.sh "$CLIENT_ID"
+
+# OR for Windows
+setup.bat %CLIENT_ID%
+```
+
+**For comprehensive setup instructions**, see [SETUP-MANAGED-IDENTITY.md](SETUP-MANAGED-IDENTITY.md).
+
 ## Configuration
+
+### Resource Configuration Files
 - Azure resource configuration: `config/azure-resources.json`
 - Pipeline settings: `config/pipeline-settings.json`
 - Cosmos DB throughput: Shared (400 RU/s limit)
+
+### Azure AI Content Safety Service - Managed Identity Authentication
+
+**Service Configuration**:
+- **Service Name**: `ai-content-safety-myaacoub`
+- **Private Endpoint**: `https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com`
+- **Region**: West US 2
+- **API Version**: 2024-09-01
+- **Authentication**: Managed Identity (Bearer token) - **No API keys needed**
+
+**How It Works**:
+1. Text content from documents is extracted and sent to the Content Safety service
+2. The pipeline acquires a Bearer token using managed identity via `DefaultAzureCredential`
+3. The service analyzes text for four harmful categories:
+   - **Hate**: Content that expresses hostility or violence toward individuals based on protected characteristics
+   - **Self-Harm**: Content that encourages or provides guidance on self-injury, suicide, or eating disorders
+   - **Sexual**: Content that contains sexual references inappropriate for general audiences
+   - **Violence**: Content that glorifies, promotes, or encourages violent acts
+4. Each category receives a severity score (0-7)
+5. Processing pipeline uses configurable threshold to make blocking decisions:
+   - If max severity >= threshold (default: 4) → **blocked**
+   - If max severity < threshold → **safe**
+6. Results stored in Cosmos DB with timestamps and raw analysis data
+
+**Authentication Setup - Managed Identity (No API Keys)**:
+
+The pipeline uses `DefaultAzureCredential` which automatically tries:
+1. Environment variables (AZURE_TENANT_ID, AZURE_CLIENT_ID, AZURE_CLIENT_SECRET)
+2. Managed identity (if running in Azure)
+3. Shared token cache (if logged in via `az login`)
+4. Azure CLI credentials
+
+**RBAC Role Assignments Required**:
+
+For your service principal or managed identity, execute these commands:
+
+```bash
+# Store your client ID in a variable
+CLIENT_ID="<your-client-id>"
+
+# 1. Storage Blob Data Contributor (for Blob Storage)
+az role assignment create \
+  --role "Storage Blob Data Contributor" \
+  --assignee "$CLIENT_ID" \
+  --scope "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Storage/storageAccounts/aistoragemyaacoub"
+
+# 2. Cognitive Services User (for Content Safety)
+az role assignment create \
+  --role "Cognitive Services User" \
+  --assignee "$CLIENT_ID" \
+  --scope "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/ai-content-safety-myaacoub"
+
+# 3. Cosmos DB Built-in Data Contributor (for Cosmos DB)
+OBJECT_ID=$(az ad sp show --id "$CLIENT_ID" --query "id" -o tsv)
+az cosmosdb sql role assignment create \
+  --account-name cosmos-ai-poc \
+  --resource-group ai-myaacoub \
+  --role-definition-id 00000000-0000-0000-0000-000000000002 \
+  --principal-id "$OBJECT_ID" \
+  --scope "/"
+```
 
 ## UI (Ionic + Angular + TypeScript)
 The UI lives in `ui/` and includes:
@@ -105,18 +193,78 @@ The UI has been deployed to Azure App Service and is accessible at:
 ## UI Screenshot
 ![UI Screenshot](docs/ui-screenshot.png)
 
-## Pipeline Execution
+## Pipeline Execution - Setup & Run with Managed Identity
+
+### Quick Setup (One Command)
+
+The project includes setup scripts to automatically configure all RBAC roles:
+
+**For Linux/macOS:**
 ```bash
-# Root dependencies
+# 1. Create a service principal
+SP=$(az ad sp create-for-rbac \
+  --name "ai-content-safety-pipeline" \
+  --role "Contributor" \
+  --scopes "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub")
+
+CLIENT_ID=$(echo $SP | jq -r '.clientId')
+
+# 2. Run setup script to assign RBAC roles
+./setup.sh "$CLIENT_ID"
+```
+
+**For Windows:**
+```bash
+# 1. Create a service principal
+az ad sp create-for-rbac ^
+  --name "ai-content-safety-pipeline" ^
+  --role "Contributor" ^
+  --scopes "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub"
+
+# 2. Run setup batch file (replace with your CLIENT_ID)
+setup.bat <client-id>
+```
+
+### Manual Setup (Step by Step)
+
+See [config/README.md](config/README.md) for detailed manual RBAC commands.
+
+### Run Pipeline
+
+```bash
+# 1. Copy and update configuration files
+cp config/azure-resources.template.json config/azure-resources.json
+cp config/pipeline-settings.template.json config/pipeline-settings.json
+
+# 2. Set authentication environment variables
+export AZURE_TENANT_ID="<your-tenant-id>"
+export AZURE_CLIENT_ID="<your-client-id>"
+export AZURE_CLIENT_SECRET="<your-client-secret>"
+
+# OR use local Azure login (simpler for development)
+az login
+az account set --subscription 86b37969-9445-49cf-b03f-d8866235171c
+
+# 3. Install dependencies
 npm ci
 
-# UI
+# 4. Build and test UI (optional)
 npm run ui:build
 npm run ui:test
 
-# Content safety processing
+# 5. Run content safety pipeline
 npm run pipeline:process
 ```
+
+### Pipeline Setup Details
+
+All Azure services use **managed identity authentication via private endpoints**:
+- ✅ **No API keys** to manage or rotate
+- ✅ **Private network** access only
+- ✅ **RBAC-based** access control
+- ✅ **Auditability** of all access
+
+See [pipeline/README-managed-identity.md](pipeline/README-managed-identity.md) for comprehensive setup documentation.
 
 ## GitHub Actions Workflows
 - `ui-ci.yml`: triggers only when `ui/**` changes.
