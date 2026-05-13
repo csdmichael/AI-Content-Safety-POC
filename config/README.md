@@ -3,7 +3,7 @@
 Copy each `*.template.json` file to a non-template JSON file and set real values from resource group `ai-myaacoub`.
 
 - `azure-resources.template.json` contains Azure resource IDs and private endpoint URLs.
-  - **Content Safety Private Endpoint**: `https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com`
+  - **Content Safety Private Endpoint**: `https://002-ai-poc-private.cognitiveservices.azure.com/`
   - Uses managed identity for authentication (no API keys)
 - `pipeline-settings.template.json` controls batch processing behavior.
 
@@ -11,7 +11,7 @@ Copy each `*.template.json` file to a non-template JSON file and set real values
 
 The Azure AI Content Safety service is configured with managed identity authentication:
 - **Service Name**: ai-content-safety-myaacoub
-- **Private Endpoint**: https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com
+- **Private Endpoint**: https://002-ai-poc-private.cognitiveservices.azure.com/
 - **API Version**: 2024-09-01
 - **Authentication**: Managed Identity (Bearer token via DefaultAzureCredential)
 - **Severity Threshold**: Configurable in pipeline-settings.json (default: 4)

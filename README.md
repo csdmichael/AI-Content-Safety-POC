@@ -70,7 +70,7 @@ All resources are deployed in resource group **ai-myaacoub**:
 |----------|------|------|----------|
 | **Blob Storage** | aistoragemyaacoub | Storage Account | Container: content-safety-documents |
 | **Cosmos DB** | cosmos-ai-poc | NoSQL Database | Database: contentSafetyDb, Container: contentSafetyResults |
-| **Content Safety** | ai-content-safety-myaacoub | Cognitive Service | Private Endpoint: https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com |
+| **Content Safety** | 002-ai-poc-private | Cognitive Service | Private Endpoint: https://002-ai-poc-private.cognitiveservices.azure.com |
 | **Web App** | ai-content-safety-ui | App Service | B1 Basic tier, West US 2 |
 | **App Service Plan** | ASP-aimyaacoub-87dc | App Service Plan | Basic tier, West US 2 |
 
@@ -111,7 +111,7 @@ setup.bat %CLIENT_ID%
 
 **Service Configuration**:
 - **Service Name**: `ai-content-safety-myaacoub`
-- **Private Endpoint**: `https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com`
+- **Private Endpoint**: `https://002-ai-poc-private.cognitiveservices.azure.com`
 - **Region**: West US 2
 - **API Version**: 2024-09-01
 - **Authentication**: Managed Identity (Bearer token) - **No API keys needed**

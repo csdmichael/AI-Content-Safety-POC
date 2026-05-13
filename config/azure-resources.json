@@ -8,7 +8,7 @@
   },
   "contentSafety": {
     "resourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/ai-content-safety-myaacoub",
-    "privateEndpointUrl": "https://ai-content-safety-myaacoub.privatelink.cognitiveservices.azure.com",
+    "privateEndpointUrl": "https://002-ai-poc-private.cognitiveservices.azure.com/",
     "apiVersion": "2024-09-01",
     "authentication": "managed-identity"
   },

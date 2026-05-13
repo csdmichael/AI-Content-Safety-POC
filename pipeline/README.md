@@ -19,8 +19,8 @@ This script uploads every generated file from `data/` to Azure Blob Storage thro
 ## Azure AI Content Safety Service
 
 **Service Details**:
-- Name: `ai-content-safety-myaacoub`
-- Endpoint: `https://ai-content-safety-myaacoub.cognitiveservices.azure.com/`
+- Name: `002-ai-poc-private`
+- Endpoint: `https://002-ai-poc-private.cognitiveservices.azure.com/`
 - Region: West US 2
 - API Version: 2024-09-01
 - Authentication: API Key (Subscription Key) in header `Ocp-Apim-Subscription-Key`
@@ -44,7 +44,7 @@ POST /contentsafety/text:analyze?api-version=2024-09-01
    - `config/pipeline-settings.template.json` -> `config/pipeline-settings.json`
 2. Fill in real resource values from resource group `ai-myaacoub`:
    - Blob Storage endpoint and container name
-   - Content Safety endpoint: `https://ai-content-safety-myaacoub.cognitiveservices.azure.com/`
+   - Content Safety endpoint: `https://002-ai-poc-private.cognitiveservices.azure.com/`
    - Cosmos DB endpoint and database/container names
 3. Set authentication environment variables:
    ```bash
