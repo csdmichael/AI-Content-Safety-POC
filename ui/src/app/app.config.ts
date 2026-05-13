@@ -1,7 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import {
-  APP_INITIALIZER,
   ApplicationConfig,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
   inject
@@ -19,13 +19,11 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideIonicAngular(),
-    {
-      provide: APP_INITIALIZER,
-      multi: true,
-      useFactory: () => {
-        const configService = inject(ConfigService);
-        return () => configService.load();
-      }
-    }
+    provideAppInitializer(() => {
+      const configService = inject(ConfigService);
+      return configService.load().catch((err) => {
+        console.error('Config load failed; continuing with defaults.', err);
+      });
+    })
   ]
 };
