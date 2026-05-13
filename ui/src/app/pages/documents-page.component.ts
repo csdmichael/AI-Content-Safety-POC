@@ -70,6 +70,13 @@ export class DocumentsPageComponent {
     const manifest = await firstValueFrom(this.http.get<DocumentManifest>('/assets/data/manifest.json'));
     this.store.setDocuments(manifest.documents);
     this.selectedDocument.set(manifest.documents[0] ?? null);
+
+    try {
+      const results = await this.contentSafety.fetchAllResults();
+      results.forEach((value, id) => this.store.setResult(id, value));
+    } catch (err) {
+      console.error('Failed to hydrate processed results from API.', err);
+    }
   }
 
   previousPage(): void {
@@ -84,16 +91,26 @@ export class DocumentsPageComponent {
     this.selectedDocument.set(document);
   }
 
-  processSelected(): void {
+  async processSelected(): Promise<void> {
     const document = this.selectedDocument();
     if (!document) {
       return;
     }
-    this.store.setResult(document.id, this.contentSafety.evaluate(document));
+    const result = await this.contentSafety.fetchResult(document.id);
+    if (result) {
+      this.store.setResult(document.id, result);
+    }
   }
 
-  processCurrentPage(): void {
-    this.currentPageDocs().forEach((document) => this.store.setResult(document.id, this.contentSafety.evaluate(document)));
+  async processCurrentPage(): Promise<void> {
+    await Promise.all(
+      this.currentPageDocs().map(async (document) => {
+        const result = await this.contentSafety.fetchResult(document.id);
+        if (result) {
+          this.store.setResult(document.id, result);
+        }
+      })
+    );
   }
 
   previewUrl(document: ContentDocument): string {

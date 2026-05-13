@@ -1,5 +1,6 @@
 {
   "resourceGroupName": "ai-myaacoub",
+  "apiBaseUrl": "https://ai-content-safety-api.azurewebsites.net",
   "blobStorage": {
     "accountName": "<storage-account-name>",
     "endpointUrl": "https://<storage-account-name>.blob.core.windows.net",

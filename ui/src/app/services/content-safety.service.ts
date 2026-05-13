@@ -1,21 +1,60 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
-import { ContentDocument, SafetyCategoryResult } from '../models/document.models';
+import { ApiResultRecord, SafetyCategoryResult } from '../models/document.models';
+import { ApiClientService } from './api-client.service';
 
 @Injectable({ providedIn: 'root' })
 export class ContentSafetyService {
-  evaluate(document: ContentDocument): SafetyCategoryResult {
-    if (document.expectedContentSafetyOutcome === 'pass') {
-      return { category: 'safe', confidence: 0.97, reason: 'No policy violations detected.' };
-    }
+  private readonly api = inject(ApiClientService);
 
-    const reviewLevel = Number(document.id.replace('doc-', '')) % 2 === 0;
+  async fetchAllResults(): Promise<Map<string, SafetyCategoryResult>> {
+    const records = await this.api.listResults();
+    const map = new Map<string, SafetyCategoryResult>();
+    for (const record of records) {
+      map.set(record.id, this.toCategoryResult(record));
+    }
+    return map;
+  }
+
+  async fetchResult(id: string): Promise<SafetyCategoryResult | null> {
+    try {
+      const record = await this.api.getResult(id);
+      return this.toCategoryResult(record);
+    } catch {
+      return null;
+    }
+  }
+
+  private toCategoryResult(record: ApiResultRecord): SafetyCategoryResult {
+    const textSeverity = record.textMaxSeverity ?? 0;
+    const imageSeverity = record.imageMaxSeverity ?? 0;
+    const maxSeverity = Math.max(textSeverity, imageSeverity);
+
+    const blocked =
+      record.textAnalysisDecision === 'blocked' || record.imageAnalysisDecision === 'blocked';
+    const reviewable = !blocked && maxSeverity >= 2;
+
+    const category: SafetyCategoryResult['category'] = blocked
+      ? 'blocked'
+      : reviewable
+        ? 'review'
+        : 'safe';
+
+    const confidence = Math.min(0.5 + maxSeverity / 14, 0.99);
+
+    const flagged = [
+      ...(record.textAnalysis?.categoriesAnalysis ?? []),
+      ...(record.imageAnalysis?.categoriesAnalysis ?? [])
+    ].filter((c) => (c.severity ?? 0) > 0);
+    const detail = flagged.length
+      ? flagged.map((c) => `${c.category}=${c.severity}`).join(', ')
+      : 'No category exceeded severity threshold.';
+
     return {
-      category: reviewLevel ? 'review' : 'blocked',
-      confidence: reviewLevel ? 0.88 : 0.94,
-      reason: reviewLevel
-        ? 'Potentially unsafe content detected and flagged for manual review.'
-        : 'Unsafe content detected and blocked by policy thresholds.'
+      category,
+      confidence,
+      reason: `Max severity ${maxSeverity}. ${detail}`
     };
   }
 }
+

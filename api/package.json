@@ -1,0 +1,20 @@
+{
+  "name": "ai-content-safety-api",
+  "version": "1.0.0",
+  "description": "REST API for AI Content Safety POC - serves moderation results from Cosmos DB and document content from Blob Storage (both via private endpoints).",
+  "main": "server.mjs",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "dependencies": {
+    "@azure/cosmos": "^4.6.0",
+    "@azure/identity": "^4.13.0",
+    "@azure/storage-blob": "^12.27.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}
