@@ -73,10 +73,10 @@ const analyzeImage = async (imageBuffer, fileName) => {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
-      'Content-Type': mime.lookup(fileName) || 'application/octet-stream',
+      'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: imageBuffer
+    body: JSON.stringify({ image: { content: Buffer.from(imageBuffer).toString('base64') } })
   });
   if (!response.ok) {
     throw new Error(`Content Safety image request failed (${response.status}): ${await response.text()}`);
