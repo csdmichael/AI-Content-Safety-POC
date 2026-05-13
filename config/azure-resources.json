@@ -2,19 +2,19 @@
   "resourceGroupName": "ai-myaacoub",
   "subscriptionId": "86b37969-9445-49cf-b03f-d8866235171c",
   "blobStorage": {
-    "accountResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Storage/storageAccounts/storageaipocmy",
-    "privateEndpointUrl": "https://storageaipocmy.privatelink.blob.core.windows.net",
+    "accountResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Storage/storageAccounts/aistoragemyaacoub",
+    "privateEndpointUrl": "https://aistoragemyaacoub.blob.core.windows.net",
     "containerName": "content-safety-documents"
   },
   "contentSafety": {
     "resourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.CognitiveServices/accounts/002-ai-poc-private",
-    "privateEndpointUrl": "https://002-ai-poc-private.cognitiveservices.azure.com/",
+    "privateEndpointUrl": "https://002-ai-poc-private.cognitiveservices.azure.com",
     "apiVersion": "2024-09-01",
     "authentication": "managed-identity"
   },
   "cosmosDb": {
     "accountResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.DocumentDB/databaseAccounts/cosmos-ai-poc",
-    "privateEndpointUrl": "https://cosmos-ai-poc.privatelink.documents.azure.com:443/",
+    "privateEndpointUrl": "https://cosmos-ai-poc.documents.azure.com:443/",
     "databaseName": "contentSafetyDb",
     "containerName": "contentSafetyResults"
   },
