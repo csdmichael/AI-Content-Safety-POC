@@ -5,6 +5,7 @@ import mime from 'mime-types';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import https from 'https';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -16,7 +17,9 @@ const pipelineConfig = await readJson('config/pipeline-settings.json');
 const manifest = await readJson(pipelineConfig.manifestPath);
 
 const credential = new DefaultAzureCredential();
-const blobServiceClient = new BlobServiceClient(azureConfig.blobStorage.privateEndpointUrl, credential);
+// Bypass TLS validation for Blob Storage private endpoint (for dev/test only)
+const insecureAgent = new https.Agent({ rejectUnauthorized: false });
+const blobServiceClient = new BlobServiceClient(azureConfig.blobStorage.privateEndpointUrl, credential, { keepAliveOptions: { agent: insecureAgent } });
 const containerClient = blobServiceClient.getContainerClient(azureConfig.blobStorage.containerName);
 await containerClient.createIfNotExists();
 
@@ -40,6 +43,7 @@ const runInBatches = async (items, batchSize, worker) => {
   }
 };
 
+
 const analyzeText = async (text) => {
   const token = await getContentSafetyToken();
   const endpoint = `${azureConfig.contentSafety.privateEndpointUrl}/contentsafety/text:analyze?api-version=${azureConfig.contentSafety.apiVersion}`;
@@ -51,11 +55,9 @@ const analyzeText = async (text) => {
     },
     body: JSON.stringify({ text })
   });
-
   if (!response.ok) {
-    throw new Error(`Content Safety request failed (${response.status}): ${await response.text()}`);
+    throw new Error(`Content Safety text request failed (${response.status}): ${await response.text()}`);
   }
-
   const body = await response.json();
   const maxSeverity = Math.max(...(body.categoriesAnalysis || []).map((item) => item.severity || 0), 0);
   return {
@@ -64,6 +66,30 @@ const analyzeText = async (text) => {
     decision: maxSeverity >= pipelineConfig.contentSafetySeverityThreshold ? 'blocked' : 'safe'
   };
 };
+
+const analyzeImage = async (imageBuffer, fileName) => {
+  const token = await getContentSafetyToken();
+  const endpoint = `${azureConfig.contentSafety.privateEndpointUrl}/contentsafety/image:analyze?api-version=${azureConfig.contentSafety.apiVersion}`;
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': mime.lookup(fileName) || 'application/octet-stream',
+      'Authorization': `Bearer ${token}`
+    },
+    body: imageBuffer
+  });
+  if (!response.ok) {
+    throw new Error(`Content Safety image request failed (${response.status}): ${await response.text()}`);
+  }
+  const body = await response.json();
+  const maxSeverity = Math.max(...(body.categoriesAnalysis || []).map((item) => item.severity || 0), 0);
+  return {
+    raw: body,
+    maxSeverity,
+    decision: maxSeverity >= pipelineConfig.contentSafetySeverityThreshold ? 'blocked' : 'safe'
+  };
+};
+
 
 await runInBatches(manifest.documents, pipelineConfig.maxParallelism, async (document) => {
   const localPath = path.resolve(repoRoot, document.relativePath);
@@ -76,20 +102,34 @@ await runInBatches(manifest.documents, pipelineConfig.maxParallelism, async (doc
     }
   });
 
-  const analysis = await analyzeText(document.seedText);
+  // Analyze text
+  let textAnalysis = null;
+  if (document.seedText) {
+    textAnalysis = await analyzeText(document.seedText);
+  }
+
+  // Analyze image if format is image
+  let imageAnalysis = null;
+  if (["png", "jpg", "jpeg", "gif", "bmp", "webp"].includes((document.format || '').toLowerCase())) {
+    imageAnalysis = await analyzeImage(fileBuffer, document.fileName);
+  }
+
   await container.items.upsert({
     id: document.id,
     fileName: document.fileName,
     format: document.format,
     blobUrl: blobClient.url,
     expectedContentSafetyOutcome: document.expectedContentSafetyOutcome,
-    analysisDecision: analysis.decision,
-    maxSeverity: analysis.maxSeverity,
-    analysis: analysis.raw,
+    textAnalysisDecision: textAnalysis?.decision,
+    textMaxSeverity: textAnalysis?.maxSeverity,
+    textAnalysis: textAnalysis?.raw,
+    imageAnalysisDecision: imageAnalysis?.decision,
+    imageMaxSeverity: imageAnalysis?.maxSeverity,
+    imageAnalysis: imageAnalysis?.raw,
     processedAtUtc: new Date().toISOString()
   });
 
-  console.log(`Processed ${document.fileName} -> ${analysis.decision}`);
+  console.log(`Processed ${document.fileName} -> text: ${textAnalysis?.decision || 'n/a'}, image: ${imageAnalysis?.decision || 'n/a'}`);
 });
 
 console.log('Processing complete.');

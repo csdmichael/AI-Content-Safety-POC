@@ -1,5 +1,64 @@
 # AI Content Safety POC
 
+## Overview
+This project demonstrates an end-to-end Azure AI Content Safety pipeline with private endpoints, managed identity, and a modern Angular UI.
+
+## Architecture
+- Files are generated in `data/` (png, jpg, pdf, docx, ppt)
+- Pipeline uploads files to Blob Storage (private endpoint)
+- Content is analyzed by Azure AI Content Safety (private endpoint)
+- Results are stored in Cosmos DB (private endpoint)
+- UI (Angular) displays moderation results
+
+## Azure Resources
+- **Resource Group:** ai-myaacoub
+- **Blob Storage:** storageaipocmy
+- **Content Safety:** 002-ai-poc-private
+- **Cosmos DB:** cosmos-ai-poc
+- **VNet:** vnet-salespoc-westus2 (subnet: default)
+
+## Configuration
+- All resource IDs and endpoints are in `config/azure-resources.json`
+- Pipeline settings in `config/pipeline-settings.json`
+
+## Setup
+1. Copy template config files and fill in real values
+2. Assign managed identity RBAC roles for Storage, Content Safety, and Cosmos DB
+3. Set environment variables for local dev (see below)
+4. Run the pipeline
+
+## Managed Identity & RBAC
+- No API keys required
+- Assign these roles to your managed identity/service principal:
+  - Storage Blob Data Contributor (Blob Storage)
+  - Cognitive Services User (Content Safety)
+  - Cosmos DB Built-in Data Contributor (Cosmos DB)
+
+## Environment Variables
+- `AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET` (if not using workload identity federation)
+
+## Pipeline Usage
+```bash
+npm run pipeline:process
+```
+- Processes all files in `data/` and stores results in Cosmos DB
+
+## UI Usage
+```bash
+cd ui
+npm install
+ng serve
+```
+- Open http://localhost:4200 to view moderation results
+
+## References
+- [Azure AI Content Safety](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/)
+- [Angular CLI](https://angular.dev/tools/cli)
+
+## License
+MIT
+# AI Content Safety POC
+
 Azure AI Content Safety proof of concept with generated test documents, private-network Azure processing pipeline, and Ionic + Angular UI.
 
 ## Table of Contents
