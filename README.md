@@ -51,8 +51,35 @@ ng serve
 ```
 - Open http://localhost:4200 to view moderation results
 
+## Use Cases for Azure AI Content Safety
+- **User-Generated Content Moderation** – review posts, comments, reviews, and chat in social/community apps before publishing.
+- **Marketplace & Listing Safety** – screen product titles, descriptions, and uploaded images for prohibited or harmful content.
+- **Generative AI Guardrails** – filter both prompts (input) and model responses (output) for hate, sexual, violent, or self-harm content; detect prompt injections via Prompt Shields and ungrounded outputs via Groundedness Detection.
+- **Customer Support & Chatbots** – flag abusive language and unsafe user requests in real time.
+- **Education & Kids Platforms** – enforce stricter severity thresholds for age-appropriate experiences.
+- **Document & Knowledge Ingestion** – scan PDFs, Office docs, and images before indexing them for search or RAG.
+- **Brand & Compliance Protection** – detect harmful content in marketing assets, ads, and partner-submitted media.
+
+## Best Practices for Azure AI Content Safety
+- **Use Managed Identity, not API keys.** Authenticate with `DefaultAzureCredential` and assign the `Cognitive Services User` role to the identity.
+- **Deploy behind a Private Endpoint.** Disable public network access on the Cognitive Services account and access it only over the VNet.
+- **Tune severity thresholds per category.** The API returns severity 0/2/4/6 per category (Hate, SelfHarm, Sexual, Violence). Set thresholds per use case (e.g., stricter for Sexual on a kids app).
+- **Analyze both text and images.** Run text and image analyzers independently; combine results into a single moderation decision.
+- **Layer the safety stack.** Combine the core categories with **Prompt Shields** (jailbreak/indirect prompt injection), **Groundedness Detection**, **Protected Material Detection**, and optional **Custom Categories** / **Blocklists** for domain-specific terms.
+- **Always log the raw response.** Persist the full `categoriesAnalysis` payload (as this pipeline does in Cosmos DB) so decisions are auditable and thresholds can be re-tuned offline.
+- **Fail safe.** On API errors, default to *blocked* (or human review) rather than *safe*.
+- **Respect input limits.** Chunk long documents (max ~10K characters per text request) and resize/compress images (max 4 MB, 2048×2048) before sending.
+- **Add a human-in-the-loop.** For borderline severities (e.g., 2–4), route to a reviewer instead of auto-approving or auto-blocking.
+- **Handle throttling.** Implement exponential backoff on HTTP 429 and size your TPS to the deployed SKU.
+- **Be transparent with users.** Surface why content was blocked and provide an appeal path.
+- **Monitor drift.** Periodically sample blocked/allowed items and re-evaluate thresholds, blocklists, and custom categories.
+- **Comply with data residency.** Pick a region that matches your compliance requirements; Content Safety does not store request payloads by default, but verify per your governance policy.
+
 ## References
 - [Azure AI Content Safety](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/)
+- [Content Safety – Harm categories](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/harm-categories)
+- [Prompt Shields](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection)
+- [Groundedness Detection](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/groundedness)
 - [Angular CLI](https://angular.dev/tools/cli)
 
 ## License
