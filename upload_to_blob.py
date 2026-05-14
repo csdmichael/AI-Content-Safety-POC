@@ -41,10 +41,10 @@ def main() -> None:
                 overwrite=True,
                 content_settings=ContentSettings(content_type=content_type),
             )
-            print(f"  ✓ Uploaded {doc['fileName']} ({len(data) / 1024:.1f} KB)")
+            print(f"  [OK] Uploaded {doc['fileName']} ({len(data) / 1024:.1f} KB)")
             success += 1
         except Exception as e:
-            print(f"  ✗ Failed {doc['fileName']}: {e}")
+            print(f"  [FAIL] {doc['fileName']}: {e}")
             fail += 1
 
     print(f"\nUpload complete: {success} successful, {fail} failed")

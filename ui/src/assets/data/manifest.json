@@ -2,806 +2,907 @@
   "totalDocuments": 100,
   "expectedFailCount": 50,
   "expectedPassCount": 50,
+  "generatedAt": "2026-05-14T01:22:38.057220+00:00",
   "documents": [
     {
       "id": "doc-001",
       "fileName": "doc_001.png",
       "format": "png",
       "relativePath": "data/png/doc_001.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #1. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Revenue grew 12% year-over-year to $4.2 billion, driven by strong cloud adoption across enterprise clients. Operating margins expanded to 28%, reflecting improved cost discipline and favorable product mix. The board approved a $500 million share buyback program.",
+      "category": "safe"
     },
     {
       "id": "doc-002",
       "fileName": "doc_002.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_002.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #2. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The engineering team will deliver three major features in the next sprint: real-time collaboration, advanced search filters, and automated report generation. Beta testing begins March 15 with select enterprise customers. Full GA is targeted for Q2.",
+      "category": "safe"
     },
     {
       "id": "doc-003",
       "fileName": "doc_003.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_003.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #3. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Our new wellness initiative offers free gym memberships, mental health counseling sessions, and flexible work-from-home options. Participation has increased 35% since launch. Employees report higher satisfaction scores across all departments.",
+      "category": "safe"
     },
     {
       "id": "doc-004",
       "fileName": "doc_004.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_004.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #4. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The company achieved carbon neutrality across all operations. Solar panels now provide 60% of headquarters electricity. Our supply chain emissions decreased 22% through partnerships with certified green vendors.",
+      "category": "safe"
     },
     {
       "id": "doc-005",
-      "fileName": "doc_005.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_005.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #5. This sample contains explicit hate speech for moderation testing."
+      "fileName": "doc_005.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_005.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Welcome to our platform! This guide walks you through account setup, team invitations, and your first project. Our support team is available 24/7 via chat or phone. Average onboarding time is under 30 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-006",
       "fileName": "doc_006.png",
       "format": "png",
       "relativePath": "data/png/doc_006.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #6. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "This year's retreat will be held at Lakeside Conference Center from June 10-12. Activities include team building workshops, strategy sessions, and an outdoor barbecue. Please submit dietary preferences by May 30.",
+      "category": "safe"
     },
     {
       "id": "doc-007",
       "fileName": "doc_007.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_007.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #7. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Successful cloud migration requires careful planning of data transfer, security configuration, and application refactoring. Start with non-critical workloads, validate performance benchmarks, and implement rollback procedures before migrating production systems.",
+      "category": "safe"
     },
     {
       "id": "doc-008",
       "fileName": "doc_008.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_008.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #8. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Consumer sentiment toward AI-powered products is increasingly positive, with 73% of survey respondents expressing willingness to adopt AI tools for daily tasks. Key concerns remain around data privacy and transparency of algorithmic decisions.",
+      "category": "safe"
     },
     {
       "id": "doc-009",
       "fileName": "doc_009.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_009.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #9. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Mediterranean Quinoa Bowl: Combine cooked quinoa with cherry tomatoes, cucumber, kalamata olives, and feta cheese. Drizzle with olive oil and lemon juice. Season with oregano and black pepper. Serves two, ready in 15 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-010",
-      "fileName": "doc_010.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_010.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #10. This sample contains harmful violent threat content for moderation testing."
+      "fileName": "doc_010.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_010.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Yellowstone offers breathtaking geothermal features including Old Faithful geyser, Grand Prismatic Spring, and Mammoth Hot Springs. The best time to visit is June through September. Advance camping reservations are recommended.",
+      "category": "safe"
     },
     {
       "id": "doc-011",
       "fileName": "doc_011.png",
       "format": "png",
       "relativePath": "data/png/doc_011.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #11. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The system uses a microservices architecture with API Gateway, service mesh for inter-service communication, and event-driven processing via message queues. Each service owns its database and exposes RESTful endpoints documented in OpenAPI.",
+      "category": "safe"
     },
     {
       "id": "doc-012",
       "fileName": "doc_012.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_012.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #12. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Spring planting season is here! Plot assignments for the community garden are now available. Tomatoes, peppers, and herbs do best in our climate zone. Volunteers are needed for the irrigation system installation on Saturday morning.",
+      "category": "safe"
     },
     {
       "id": "doc-013",
       "fileName": "doc_013.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_013.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #13. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The new analytics dashboard provides real-time visibility into key performance indicators including conversion rates, customer acquisition costs, and lifetime value metrics. Drill-down capabilities allow analysis by region, product line, and time period.",
+      "category": "safe"
     },
     {
       "id": "doc-014",
       "fileName": "doc_014.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_014.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #14. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Thank you to all 200 volunteers who participated in this year's river cleanup event. Together we collected over 3 tons of debris and recycled 85% of the materials recovered. Your dedication makes our community stronger.",
+      "category": "safe"
     },
     {
       "id": "doc-015",
-      "fileName": "doc_015.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_015.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #15. This sample contains self-harm encouragement for moderation testing."
+      "fileName": "doc_015.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_015.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Upcoming training sessions include Introduction to Python (Monday), Cloud Security Fundamentals (Wednesday), and Agile Project Management (Friday). All sessions are free for employees and include hands-on labs with instructor support.",
+      "category": "safe"
     },
     {
       "id": "doc-016",
       "fileName": "doc_016.png",
       "format": "png",
       "relativePath": "data/png/doc_016.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #16. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Revenue grew 12% year-over-year to $4.2 billion, driven by strong cloud adoption across enterprise clients. Operating margins expanded to 28%, reflecting improved cost discipline and favorable product mix. The board approved a $500 million share buyback program.",
+      "category": "safe"
     },
     {
       "id": "doc-017",
       "fileName": "doc_017.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_017.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #17. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The engineering team will deliver three major features in the next sprint: real-time collaboration, advanced search filters, and automated report generation. Beta testing begins March 15 with select enterprise customers. Full GA is targeted for Q2.",
+      "category": "safe"
     },
     {
       "id": "doc-018",
       "fileName": "doc_018.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_018.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #18. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Our new wellness initiative offers free gym memberships, mental health counseling sessions, and flexible work-from-home options. Participation has increased 35% since launch. Employees report higher satisfaction scores across all departments.",
+      "category": "safe"
     },
     {
       "id": "doc-019",
       "fileName": "doc_019.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_019.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #19. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The company achieved carbon neutrality across all operations. Solar panels now provide 60% of headquarters electricity. Our supply chain emissions decreased 22% through partnerships with certified green vendors.",
+      "category": "safe"
     },
     {
       "id": "doc-020",
-      "fileName": "doc_020.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_020.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #20. This sample contains explicit hate speech for moderation testing."
+      "fileName": "doc_020.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_020.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Welcome to our platform! This guide walks you through account setup, team invitations, and your first project. Our support team is available 24/7 via chat or phone. Average onboarding time is under 30 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-021",
       "fileName": "doc_021.png",
       "format": "png",
       "relativePath": "data/png/doc_021.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #21. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "This year's retreat will be held at Lakeside Conference Center from June 10-12. Activities include team building workshops, strategy sessions, and an outdoor barbecue. Please submit dietary preferences by May 30.",
+      "category": "safe"
     },
     {
       "id": "doc-022",
       "fileName": "doc_022.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_022.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #22. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Successful cloud migration requires careful planning of data transfer, security configuration, and application refactoring. Start with non-critical workloads, validate performance benchmarks, and implement rollback procedures before migrating production systems.",
+      "category": "safe"
     },
     {
       "id": "doc-023",
       "fileName": "doc_023.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_023.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #23. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Consumer sentiment toward AI-powered products is increasingly positive, with 73% of survey respondents expressing willingness to adopt AI tools for daily tasks. Key concerns remain around data privacy and transparency of algorithmic decisions.",
+      "category": "safe"
     },
     {
       "id": "doc-024",
       "fileName": "doc_024.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_024.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #24. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Mediterranean Quinoa Bowl: Combine cooked quinoa with cherry tomatoes, cucumber, kalamata olives, and feta cheese. Drizzle with olive oil and lemon juice. Season with oregano and black pepper. Serves two, ready in 15 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-025",
-      "fileName": "doc_025.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_025.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #25. This sample contains harmful violent threat content for moderation testing."
+      "fileName": "doc_025.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_025.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Yellowstone offers breathtaking geothermal features including Old Faithful geyser, Grand Prismatic Spring, and Mammoth Hot Springs. The best time to visit is June through September. Advance camping reservations are recommended.",
+      "category": "safe"
     },
     {
       "id": "doc-026",
       "fileName": "doc_026.png",
       "format": "png",
       "relativePath": "data/png/doc_026.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #26. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The system uses a microservices architecture with API Gateway, service mesh for inter-service communication, and event-driven processing via message queues. Each service owns its database and exposes RESTful endpoints documented in OpenAPI.",
+      "category": "safe"
     },
     {
       "id": "doc-027",
       "fileName": "doc_027.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_027.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #27. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Spring planting season is here! Plot assignments for the community garden are now available. Tomatoes, peppers, and herbs do best in our climate zone. Volunteers are needed for the irrigation system installation on Saturday morning.",
+      "category": "safe"
     },
     {
       "id": "doc-028",
       "fileName": "doc_028.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_028.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #28. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The new analytics dashboard provides real-time visibility into key performance indicators including conversion rates, customer acquisition costs, and lifetime value metrics. Drill-down capabilities allow analysis by region, product line, and time period.",
+      "category": "safe"
     },
     {
       "id": "doc-029",
       "fileName": "doc_029.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_029.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #29. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Thank you to all 200 volunteers who participated in this year's river cleanup event. Together we collected over 3 tons of debris and recycled 85% of the materials recovered. Your dedication makes our community stronger.",
+      "category": "safe"
     },
     {
       "id": "doc-030",
-      "fileName": "doc_030.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_030.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #30. This sample contains self-harm encouragement for moderation testing."
+      "fileName": "doc_030.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_030.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Upcoming training sessions include Introduction to Python (Monday), Cloud Security Fundamentals (Wednesday), and Agile Project Management (Friday). All sessions are free for employees and include hands-on labs with instructor support.",
+      "category": "safe"
     },
     {
       "id": "doc-031",
       "fileName": "doc_031.png",
       "format": "png",
       "relativePath": "data/png/doc_031.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #31. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Revenue grew 12% year-over-year to $4.2 billion, driven by strong cloud adoption across enterprise clients. Operating margins expanded to 28%, reflecting improved cost discipline and favorable product mix. The board approved a $500 million share buyback program.",
+      "category": "safe"
     },
     {
       "id": "doc-032",
       "fileName": "doc_032.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_032.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #32. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The engineering team will deliver three major features in the next sprint: real-time collaboration, advanced search filters, and automated report generation. Beta testing begins March 15 with select enterprise customers. Full GA is targeted for Q2.",
+      "category": "safe"
     },
     {
       "id": "doc-033",
       "fileName": "doc_033.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_033.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #33. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Our new wellness initiative offers free gym memberships, mental health counseling sessions, and flexible work-from-home options. Participation has increased 35% since launch. Employees report higher satisfaction scores across all departments.",
+      "category": "safe"
     },
     {
       "id": "doc-034",
       "fileName": "doc_034.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_034.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #34. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The company achieved carbon neutrality across all operations. Solar panels now provide 60% of headquarters electricity. Our supply chain emissions decreased 22% through partnerships with certified green vendors.",
+      "category": "safe"
     },
     {
       "id": "doc-035",
-      "fileName": "doc_035.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_035.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #35. This sample contains explicit hate speech for moderation testing."
+      "fileName": "doc_035.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_035.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Welcome to our platform! This guide walks you through account setup, team invitations, and your first project. Our support team is available 24/7 via chat or phone. Average onboarding time is under 30 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-036",
       "fileName": "doc_036.png",
       "format": "png",
       "relativePath": "data/png/doc_036.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #36. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "This year's retreat will be held at Lakeside Conference Center from June 10-12. Activities include team building workshops, strategy sessions, and an outdoor barbecue. Please submit dietary preferences by May 30.",
+      "category": "safe"
     },
     {
       "id": "doc-037",
       "fileName": "doc_037.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_037.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #37. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Successful cloud migration requires careful planning of data transfer, security configuration, and application refactoring. Start with non-critical workloads, validate performance benchmarks, and implement rollback procedures before migrating production systems.",
+      "category": "safe"
     },
     {
       "id": "doc-038",
       "fileName": "doc_038.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_038.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #38. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Consumer sentiment toward AI-powered products is increasingly positive, with 73% of survey respondents expressing willingness to adopt AI tools for daily tasks. Key concerns remain around data privacy and transparency of algorithmic decisions.",
+      "category": "safe"
     },
     {
       "id": "doc-039",
       "fileName": "doc_039.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_039.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #39. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Mediterranean Quinoa Bowl: Combine cooked quinoa with cherry tomatoes, cucumber, kalamata olives, and feta cheese. Drizzle with olive oil and lemon juice. Season with oregano and black pepper. Serves two, ready in 15 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-040",
-      "fileName": "doc_040.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_040.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #40. This sample contains harmful violent threat content for moderation testing."
+      "fileName": "doc_040.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_040.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Yellowstone offers breathtaking geothermal features including Old Faithful geyser, Grand Prismatic Spring, and Mammoth Hot Springs. The best time to visit is June through September. Advance camping reservations are recommended.",
+      "category": "safe"
     },
     {
       "id": "doc-041",
       "fileName": "doc_041.png",
       "format": "png",
       "relativePath": "data/png/doc_041.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #41. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The system uses a microservices architecture with API Gateway, service mesh for inter-service communication, and event-driven processing via message queues. Each service owns its database and exposes RESTful endpoints documented in OpenAPI.",
+      "category": "safe"
     },
     {
       "id": "doc-042",
       "fileName": "doc_042.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_042.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #42. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Spring planting season is here! Plot assignments for the community garden are now available. Tomatoes, peppers, and herbs do best in our climate zone. Volunteers are needed for the irrigation system installation on Saturday morning.",
+      "category": "safe"
     },
     {
       "id": "doc-043",
       "fileName": "doc_043.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_043.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #43. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The new analytics dashboard provides real-time visibility into key performance indicators including conversion rates, customer acquisition costs, and lifetime value metrics. Drill-down capabilities allow analysis by region, product line, and time period.",
+      "category": "safe"
     },
     {
       "id": "doc-044",
       "fileName": "doc_044.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_044.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #44. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Thank you to all 200 volunteers who participated in this year's river cleanup event. Together we collected over 3 tons of debris and recycled 85% of the materials recovered. Your dedication makes our community stronger.",
+      "category": "safe"
     },
     {
       "id": "doc-045",
-      "fileName": "doc_045.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_045.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #45. This sample contains self-harm encouragement for moderation testing."
+      "fileName": "doc_045.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_045.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Upcoming training sessions include Introduction to Python (Monday), Cloud Security Fundamentals (Wednesday), and Agile Project Management (Friday). All sessions are free for employees and include hands-on labs with instructor support.",
+      "category": "safe"
     },
     {
       "id": "doc-046",
       "fileName": "doc_046.png",
       "format": "png",
       "relativePath": "data/png/doc_046.png",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #46. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Revenue grew 12% year-over-year to $4.2 billion, driven by strong cloud adoption across enterprise clients. Operating margins expanded to 28%, reflecting improved cost discipline and favorable product mix. The board approved a $500 million share buyback program.",
+      "category": "safe"
     },
     {
       "id": "doc-047",
       "fileName": "doc_047.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_047.jpg",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #47. This sample contains explicit hate speech for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The engineering team will deliver three major features in the next sprint: real-time collaboration, advanced search filters, and automated report generation. Beta testing begins March 15 with select enterprise customers. Full GA is targeted for Q2.",
+      "category": "safe"
     },
     {
       "id": "doc-048",
       "fileName": "doc_048.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_048.pdf",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #48. This sample contains self-harm encouragement for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Our new wellness initiative offers free gym memberships, mental health counseling sessions, and flexible work-from-home options. Participation has increased 35% since launch. Employees report higher satisfaction scores across all departments.",
+      "category": "safe"
     },
     {
       "id": "doc-049",
       "fileName": "doc_049.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_049.docx",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #49. This sample contains harmful violent threat content for moderation testing."
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "The company achieved carbon neutrality across all operations. Solar panels now provide 60% of headquarters electricity. Our supply chain emissions decreased 22% through partnerships with certified green vendors.",
+      "category": "safe"
     },
     {
       "id": "doc-050",
-      "fileName": "doc_050.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_050.ppt",
-      "expectedContentSafetyOutcome": "fail",
-      "seedText": "Document #50. This sample contains explicit hate speech for moderation testing."
+      "fileName": "doc_050.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_050.pptx",
+      "expectedContentSafetyOutcome": "pass",
+      "seedText": "Welcome to our platform! This guide walks you through account setup, team invitations, and your first project. Our support team is available 24/7 via chat or phone. Average onboarding time is under 30 minutes.",
+      "category": "safe"
     },
     {
       "id": "doc-051",
       "fileName": "doc_051.png",
       "format": "png",
       "relativePath": "data/png/doc_051.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #51. This sample is a friendly educational message."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I know where you live and I'm coming for you tonight. I'll break down your door and beat you until every bone in your body is shattered. Your family will watch while I make you suffer. No one can save you from what I'm going to do.",
+      "category": "Violence"
     },
     {
       "id": "doc-052",
-      "fileName": "doc_052.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_052.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #52. This sample is a harmless workplace update."
+      "fileName": "doc_052.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_052.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "We're going to do a drive-by on their whole block tonight. Load up the ARs and make sure every magazine is full. Shoot up every house, every car. I don't care about collateral damage \u00e2\u20ac\u201d women, kids, whatever. They started this war and we're ending it.",
+      "category": "Violence"
     },
     {
       "id": "doc-053",
-      "fileName": "doc_053.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_053.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #53. This sample is a neutral engineering status report."
+      "fileName": "doc_053.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_053.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I know where you live and I'm coming for you tonight. I'll break down your door and beat you until every bone in your body is shattered. Your family will watch while I make you suffer. No one can save you from what I'm going to do.",
+      "category": "Violence"
     },
     {
       "id": "doc-054",
-      "fileName": "doc_054.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_054.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #54. This sample is a friendly educational message."
+      "fileName": "doc_054.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_054.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Immigrants are parasites leeching off our welfare system. They bring nothing but crime, disease, and poverty. Every single one of them should be rounded up, stripped of any rights, and deported on cattle ships. They are vermin destroying our nation.",
+      "category": "Hate"
     },
     {
       "id": "doc-055",
-      "fileName": "doc_055.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_055.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #55. This sample is a harmless workplace update."
+      "fileName": "doc_055.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_055.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "These degenerate freaks are grooming children and spreading disease. They should be locked up in institutions where they belong. No normal society should tolerate their disgusting perversion. They are an abomination that must be eradicated.",
+      "category": "Hate"
     },
     {
       "id": "doc-056",
       "fileName": "doc_056.png",
       "format": "png",
       "relativePath": "data/png/doc_056.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #56. This sample is a neutral engineering status report."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've been watching you at work every day and imagining what's under those clothes. I bet you'd love it if I bent you over your desk. Don't pretend you don't want it. I'm going to corner you in the parking lot tonight and show you what a real man feels like.",
+      "category": "Sexual"
     },
     {
       "id": "doc-057",
       "fileName": "doc_057.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_057.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #57. This sample is a friendly educational message."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Cutting is the only thing that makes the pain go away. I use a razor blade on my inner thighs where nobody can see. The deeper I cut, the more relief I feel. Last night I went too deep and couldn't stop the bleeding for an hour. I'll do it again tonight.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-058",
-      "fileName": "doc_058.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_058.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #58. This sample is a harmless workplace update."
+      "fileName": "doc_058.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_058.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "All followers of that false religion are terrorists and pedophiles. They worship a demon and want to destroy our way of life. We should burn down their places of worship and drive them out of our country by any means necessary.",
+      "category": "Hate"
     },
     {
       "id": "doc-059",
-      "fileName": "doc_059.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_059.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #59. This sample is a neutral engineering status report."
+      "fileName": "doc_059.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_059.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Everyone would be better off without you. You should just end it already. The world doesn't need another burden like you. Stop being a coward and finish what you started. Nobody will miss you, nobody will even notice you're gone.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-060",
-      "fileName": "doc_060.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_060.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #60. This sample is a friendly educational message."
+      "fileName": "doc_060.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_060.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "For maximum pain, start by breaking the fingers one by one. Then use a blowtorch on the bottoms of their feet. Cut shallow wounds across their chest and pour salt into them. Keep them conscious throughout by administering adrenaline injections between sessions.",
+      "category": "Violence"
     },
     {
       "id": "doc-061",
-      "fileName": "doc_061.png",
-      "format": "png",
-      "relativePath": "data/png/doc_061.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #61. This sample is a harmless workplace update."
+      "fileName": "doc_061.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_061.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I counted my pills again today \u00e2\u20ac\u201d 87 tablets. I've researched which combinations are lethal and how long it takes. I plan to check into a hotel room this weekend so nobody finds me in time. I've set up automatic messages to send after I'm gone.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-062",
       "fileName": "doc_062.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_062.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #62. This sample is a neutral engineering status report."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've been planning this for months. I'll walk into that building with weapons hidden in my bag and open fire on everyone in sight. They'll pay for every insult. I want to see the fear in their eyes as they realize they can't escape. Maximum casualties.",
+      "category": "Violence"
     },
     {
       "id": "doc-063",
       "fileName": "doc_063.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_063.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #63. This sample is a friendly educational message."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Those people are subhuman vermin who don't deserve to live among us. They are genetically inferior and mentally deficient. We need to cleanse our neighborhoods of their filth and take back what is rightfully ours. Every last one of them should be expelled.",
+      "category": "Hate"
     },
     {
       "id": "doc-064",
       "fileName": "doc_064.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_064.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #64. This sample is a harmless workplace update."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "All followers of that false religion are terrorists and pedophiles. They worship a demon and want to destroy our way of life. We should burn down their places of worship and drive them out of our country by any means necessary.",
+      "category": "Hate"
     },
     {
       "id": "doc-065",
-      "fileName": "doc_065.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_065.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #65. This sample is a neutral engineering status report."
+      "fileName": "doc_065.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_065.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've been watching you at work every day and imagining what's under those clothes. I bet you'd love it if I bent you over your desk. Don't pretend you don't want it. I'm going to corner you in the parking lot tonight and show you what a real man feels like.",
+      "category": "Sexual"
     },
     {
       "id": "doc-066",
-      "fileName": "doc_066.png",
-      "format": "png",
-      "relativePath": "data/png/doc_066.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #66. This sample is a friendly educational message."
+      "fileName": "doc_066.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_066.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "She slowly undressed in front of him, revealing her naked body. He grabbed her forcefully and pushed her onto the bed. Their bodies intertwined as he penetrated her roughly. She moaned loudly as he thrust harder and harder, his hands gripping her thighs tightly.",
+      "category": "Sexual"
     },
     {
       "id": "doc-067",
-      "fileName": "doc_067.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_067.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #67. This sample is a harmless workplace update."
+      "fileName": "doc_067.png",
+      "format": "png",
+      "relativePath": "data/png/doc_067.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "These degenerate freaks are grooming children and spreading disease. They should be locked up in institutions where they belong. No normal society should tolerate their disgusting perversion. They are an abomination that must be eradicated.",
+      "category": "Hate"
     },
     {
       "id": "doc-068",
-      "fileName": "doc_068.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_068.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #68. This sample is a neutral engineering status report."
+      "fileName": "doc_068.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_068.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "He punched her in the stomach so hard she doubled over vomiting. When she tried to crawl away, he kicked her in the ribs and dragged her by the hair across the kitchen floor. He said he would kill her children if she ever tried to leave again.",
+      "category": "Violence"
     },
     {
       "id": "doc-069",
-      "fileName": "doc_069.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_069.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #69. This sample is a friendly educational message."
+      "fileName": "doc_069.png",
+      "format": "png",
+      "relativePath": "data/png/doc_069.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Everyone would be better off without you. You should just end it already. The world doesn't need another burden like you. Stop being a coward and finish what you started. Nobody will miss you, nobody will even notice you're gone.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-070",
-      "fileName": "doc_070.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_070.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #70. This sample is a harmless workplace update."
+      "fileName": "doc_070.png",
+      "format": "png",
+      "relativePath": "data/png/doc_070.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Those people are subhuman vermin who don't deserve to live among us. They are genetically inferior and mentally deficient. We need to cleanse our neighborhoods of their filth and take back what is rightfully ours. Every last one of them should be expelled.",
+      "category": "Hate"
     },
     {
       "id": "doc-071",
-      "fileName": "doc_071.png",
-      "format": "png",
-      "relativePath": "data/png/doc_071.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #71. This sample is a neutral engineering status report."
+      "fileName": "doc_071.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_071.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "She said no but her body said yes. I pinned her arms above her head and forced my mouth onto hers. She struggled at first but eventually stopped resisting. I ripped her clothing and took what I wanted. She was crying but I didn't care.",
+      "category": "Sexual"
     },
     {
       "id": "doc-072",
-      "fileName": "doc_072.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_072.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #72. This sample is a friendly educational message."
+      "fileName": "doc_072.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_072.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "He punched her in the stomach so hard she doubled over vomiting. When she tried to crawl away, he kicked her in the ribs and dragged her by the hair across the kitchen floor. He said he would kill her children if she ever tried to leave again.",
+      "category": "Violence"
     },
     {
       "id": "doc-073",
-      "fileName": "doc_073.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_073.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #73. This sample is a harmless workplace update."
+      "fileName": "doc_073.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_073.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've researched the most effective methods and I've made my decision. I'm going to take all of my prescription medication at once. I've been stockpiling pills for three weeks now. I have enough to ensure I won't wake up. I've already written my note.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-074",
       "fileName": "doc_074.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_074.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #74. This sample is a neutral engineering status report."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I'm looking for young-looking women willing to perform on camera for private clients. The pay is excellent and discretion is guaranteed. No experience needed \u00e2\u20ac\u201d just show up, undress, and do what the client asks. The kinkier you're willing to go, the more you earn.",
+      "category": "Sexual"
     },
     {
       "id": "doc-075",
-      "fileName": "doc_075.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_075.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #75. This sample is a friendly educational message."
+      "fileName": "doc_075.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_075.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I installed hidden cameras in the changing rooms at the gym. I have hours of footage of women undressing and showering without their knowledge. I upload the best clips to private forums. Yesterday I captured a particularly attractive woman and the video is getting thousands of views.",
+      "category": "Sexual"
     },
     {
       "id": "doc-076",
       "fileName": "doc_076.png",
       "format": "png",
       "relativePath": "data/png/doc_076.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #76. This sample is a harmless workplace update."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've moved on from cutting to burning. I hold a lit cigarette against my arm and count to thirty. The scars form thick welts that I trace at night. Last week I started using a heated metal spoon. The pain is addictive and I need more each time.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-077",
-      "fileName": "doc_077.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_077.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #77. This sample is a neutral engineering status report."
+      "fileName": "doc_077.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_077.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Being thin is the only thing that matters. I haven't eaten in four days and I feel powerful. If you feel hungry, drink water until you throw up. Punish yourself for every calorie by exercising until you pass out. Bones showing means you're winning the battle.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-078",
-      "fileName": "doc_078.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_078.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #78. This sample is a friendly educational message."
+      "fileName": "doc_078.png",
+      "format": "png",
+      "relativePath": "data/png/doc_078.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "He grabbed the victim by the throat and slammed them repeatedly against the concrete wall until blood poured from their skull. Then he stomped on their face with steel-toed boots, crushing their jaw and knocking out teeth. The victim convulsed on the ground.",
+      "category": "Violence"
     },
     {
       "id": "doc-079",
-      "fileName": "doc_079.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_079.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #79. This sample is a harmless workplace update."
+      "fileName": "doc_079.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_079.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "For maximum pain, start by breaking the fingers one by one. Then use a blowtorch on the bottoms of their feet. Cut shallow wounds across their chest and pour salt into them. Keep them conscious throughout by administering adrenaline injections between sessions.",
+      "category": "Violence"
     },
     {
       "id": "doc-080",
-      "fileName": "doc_080.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_080.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #80. This sample is a neutral engineering status report."
+      "fileName": "doc_080.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_080.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I'm looking for young-looking women willing to perform on camera for private clients. The pay is excellent and discretion is guaranteed. No experience needed \u00e2\u20ac\u201d just show up, undress, and do what the client asks. The kinkier you're willing to go, the more you earn.",
+      "category": "Sexual"
     },
     {
       "id": "doc-081",
-      "fileName": "doc_081.png",
-      "format": "png",
-      "relativePath": "data/png/doc_081.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #81. This sample is a friendly educational message."
+      "fileName": "doc_081.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_081.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "The master ordered the servant to strip completely and kneel on the floor. He bound their wrists with rope and attached a collar around their neck. He commanded them to perform oral acts while he filmed everything. Obedience was rewarded with increasingly degrading tasks.",
+      "category": "Sexual"
     },
     {
       "id": "doc-082",
       "fileName": "doc_082.jpg",
       "format": "jpg",
       "relativePath": "data/jpg/doc_082.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #82. This sample is a harmless workplace update."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've moved on from cutting to burning. I hold a lit cigarette against my arm and count to thirty. The scars form thick welts that I trace at night. Last week I started using a heated metal spoon. The pain is addictive and I need more each time.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-083",
       "fileName": "doc_083.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_083.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #83. This sample is a neutral engineering status report."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Cutting is the only thing that makes the pain go away. I use a razor blade on my inner thighs where nobody can see. The deeper I cut, the more relief I feel. Last night I went too deep and couldn't stop the bleeding for an hour. I'll do it again tonight.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-084",
-      "fileName": "doc_084.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_084.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #84. This sample is a friendly educational message."
+      "fileName": "doc_084.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_084.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "She slowly undressed in front of him, revealing her naked body. He grabbed her forcefully and pushed her onto the bed. Their bodies intertwined as he penetrated her roughly. She moaned loudly as he thrust harder and harder, his hands gripping her thighs tightly.",
+      "category": "Sexual"
     },
     {
       "id": "doc-085",
-      "fileName": "doc_085.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_085.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #85. This sample is a harmless workplace update."
+      "fileName": "doc_085.docx",
+      "format": "docx",
+      "relativePath": "data/docx/doc_085.docx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I know where you live and I'm coming for you tonight. I'll break down your door and beat you until every bone in your body is shattered. Your family will watch while I make you suffer. No one can save you from what I'm going to do.",
+      "category": "Violence"
     },
     {
       "id": "doc-086",
-      "fileName": "doc_086.png",
-      "format": "png",
-      "relativePath": "data/png/doc_086.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #86. This sample is a neutral engineering status report."
+      "fileName": "doc_086.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_086.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "She said no but her body said yes. I pinned her arms above her head and forced my mouth onto hers. She struggled at first but eventually stopped resisting. I ripped her clothing and took what I wanted. She was crying but I didn't care.",
+      "category": "Sexual"
     },
     {
       "id": "doc-087",
-      "fileName": "doc_087.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_087.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #87. This sample is a friendly educational message."
+      "fileName": "doc_087.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_087.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I installed hidden cameras in the changing rooms at the gym. I have hours of footage of women undressing and showering without their knowledge. I upload the best clips to private forums. Yesterday I captured a particularly attractive woman and the video is getting thousands of views.",
+      "category": "Sexual"
     },
     {
       "id": "doc-088",
       "fileName": "doc_088.pdf",
       "format": "pdf",
       "relativePath": "data/pdf/doc_088.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #88. This sample is a harmless workplace update."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Our race is superior and must remain pure. Race mixing is a crime against nature. We call on all true patriots to identify and intimidate mixed-race couples in our communities. They are polluting our bloodline and destroying our heritage.",
+      "category": "Hate"
     },
     {
       "id": "doc-089",
-      "fileName": "doc_089.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_089.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #89. This sample is a neutral engineering status report."
+      "fileName": "doc_089.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_089.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've researched the most effective methods and I've made my decision. I'm going to take all of my prescription medication at once. I've been stockpiling pills for three weeks now. I have enough to ensure I won't wake up. I've already written my note.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-090",
-      "fileName": "doc_090.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_090.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #90. This sample is a friendly educational message."
+      "fileName": "doc_090.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_090.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I counted my pills again today \u00e2\u20ac\u201d 87 tablets. I've researched which combinations are lethal and how long it takes. I plan to check into a hotel room this weekend so nobody finds me in time. I've set up automatic messages to send after I'm gone.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-091",
       "fileName": "doc_091.png",
       "format": "png",
       "relativePath": "data/png/doc_091.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #91. This sample is a harmless workplace update."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Immigrants are parasites leeching off our welfare system. They bring nothing but crime, disease, and poverty. Every single one of them should be rounded up, stripped of any rights, and deported on cattle ships. They are vermin destroying our nation.",
+      "category": "Hate"
     },
     {
       "id": "doc-092",
-      "fileName": "doc_092.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_092.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #92. This sample is a neutral engineering status report."
+      "fileName": "doc_092.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_092.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Being thin is the only thing that matters. I haven't eaten in four days and I feel powerful. If you feel hungry, drink water until you throw up. Punish yourself for every calorie by exercising until you pass out. Bones showing means you're winning the battle.",
+      "category": "SelfHarm"
     },
     {
       "id": "doc-093",
-      "fileName": "doc_093.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_093.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #93. This sample is a friendly educational message."
+      "fileName": "doc_093.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_093.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Those people are subhuman vermin who don't deserve to live among us. They are genetically inferior and mentally deficient. We need to cleanse our neighborhoods of their filth and take back what is rightfully ours. Every last one of them should be expelled.",
+      "category": "Hate"
     },
     {
       "id": "doc-094",
       "fileName": "doc_094.docx",
       "format": "docx",
       "relativePath": "data/docx/doc_094.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #94. This sample is a harmless workplace update."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "Our race is superior and must remain pure. Race mixing is a crime against nature. We call on all true patriots to identify and intimidate mixed-race couples in our communities. They are polluting our bloodline and destroying our heritage.",
+      "category": "Hate"
     },
     {
       "id": "doc-095",
-      "fileName": "doc_095.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_095.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #95. This sample is a neutral engineering status report."
+      "fileName": "doc_095.pptx",
+      "format": "pptx",
+      "relativePath": "data/pptx/doc_095.pptx",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "He grabbed the victim by the throat and slammed them repeatedly against the concrete wall until blood poured from their skull. Then he stomped on their face with steel-toed boots, crushing their jaw and knocking out teeth. The victim convulsed on the ground.",
+      "category": "Violence"
     },
     {
       "id": "doc-096",
       "fileName": "doc_096.png",
       "format": "png",
       "relativePath": "data/png/doc_096.png",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #96. This sample is a friendly educational message."
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I've been planning this for months. I'll walk into that building with weapons hidden in my bag and open fire on everyone in sight. They'll pay for every insult. I want to see the fear in their eyes as they realize they can't escape. Maximum casualties.",
+      "category": "Violence"
     },
     {
       "id": "doc-097",
-      "fileName": "doc_097.jpg",
-      "format": "jpg",
-      "relativePath": "data/jpg/doc_097.jpg",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #97. This sample is a harmless workplace update."
+      "fileName": "doc_097.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_097.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "We're going to do a drive-by on their whole block tonight. Load up the ARs and make sure every magazine is full. Shoot up every house, every car. I don't care about collateral damage \u00e2\u20ac\u201d women, kids, whatever. They started this war and we're ending it.",
+      "category": "Violence"
     },
     {
       "id": "doc-098",
-      "fileName": "doc_098.pdf",
-      "format": "pdf",
-      "relativePath": "data/pdf/doc_098.pdf",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #98. This sample is a neutral engineering status report."
+      "fileName": "doc_098.jpg",
+      "format": "jpg",
+      "relativePath": "data/jpg/doc_098.jpg",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I refuse to hire anyone from that ethnic group. They're all lazy, dishonest criminals who will steal from the company. Their entire culture is backward and savage. Any business that employs them deserves to fail.",
+      "category": "Hate"
     },
     {
       "id": "doc-099",
-      "fileName": "doc_099.docx",
-      "format": "docx",
-      "relativePath": "data/docx/doc_099.docx",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #99. This sample is a friendly educational message."
+      "fileName": "doc_099.pdf",
+      "format": "pdf",
+      "relativePath": "data/pdf/doc_099.pdf",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "I refuse to hire anyone from that ethnic group. They're all lazy, dishonest criminals who will steal from the company. Their entire culture is backward and savage. Any business that employs them deserves to fail.",
+      "category": "Hate"
     },
     {
       "id": "doc-100",
-      "fileName": "doc_100.ppt",
-      "format": "ppt",
-      "relativePath": "data/ppt/doc_100.ppt",
-      "expectedContentSafetyOutcome": "pass",
-      "seedText": "Document #100. This sample is a harmless workplace update."
+      "fileName": "doc_100.png",
+      "format": "png",
+      "relativePath": "data/png/doc_100.png",
+      "expectedContentSafetyOutcome": "fail",
+      "seedText": "The master ordered the servant to strip completely and kneel on the floor. He bound their wrists with rope and attached a collar around their neck. He commanded them to perform oral acts while he filmed everything. Obedience was rewarded with increasingly degrading tasks.",
+      "category": "Sexual"
     }
   ]
 }
