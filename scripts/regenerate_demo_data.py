@@ -17,7 +17,7 @@ from azure.identity import DefaultAzureCredential
 REPO_ROOT = Path(__file__).resolve().parent.parent
 CUSTOM_CATEGORY_PATTERNS = {
     "Profanity": [
-        re.compile(r"\b(?:damn|hell|shit|f\*+k|fuck|bastard|idiot|moron)\b", re.IGNORECASE),
+        re.compile(r"\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b", re.IGNORECASE),
     ],
     "PII": [
         re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),

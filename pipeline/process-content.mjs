@@ -18,7 +18,7 @@ const manifest = await readJson(pipelineConfig.manifestPath);
 
 const credential = new DefaultAzureCredential();
 const customCategoryMatchers = {
-  Profanity: [/\b(?:damn|hell|shit|f\*+k|fuck|bastard|idiot|moron)\b/i],
+  Profanity: [/\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b/i],
   PII: [
     /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
     /\b\d{3}-\d{2}-\d{4}\b/,
