@@ -26,9 +26,11 @@ export class ContentSafetyService {
   }
 
   private toCategoryResult(record: ApiResultRecord): SafetyCategoryResult {
+    const customCategories = record.customCategoryAnalysis ?? [];
+    const customSeverity = Math.max(...customCategories.map((c) => c.severity ?? 0), 0);
     const textSeverity = record.textMaxSeverity ?? 0;
     const imageSeverity = record.imageMaxSeverity ?? 0;
-    const maxSeverity = Math.max(textSeverity, imageSeverity);
+    const maxSeverity = Math.max(textSeverity, imageSeverity, customSeverity);
 
     const blocked =
       record.textAnalysisDecision === 'blocked' || record.imageAnalysisDecision === 'blocked';
@@ -44,7 +46,8 @@ export class ContentSafetyService {
 
     const flagged = [
       ...(record.textAnalysis?.categoriesAnalysis ?? []),
-      ...(record.imageAnalysis?.categoriesAnalysis ?? [])
+      ...(record.imageAnalysis?.categoriesAnalysis ?? []),
+      ...customCategories
     ].filter((c) => (c.severity ?? 0) > 0);
     const detail = flagged.length
       ? flagged.map((c) => `${c.category}=${c.severity}`).join(', ')
@@ -52,7 +55,8 @@ export class ContentSafetyService {
 
     const allCategories = [
       ...(record.textAnalysis?.categoriesAnalysis ?? []),
-      ...(record.imageAnalysis?.categoriesAnalysis ?? [])
+      ...(record.imageAnalysis?.categoriesAnalysis ?? []),
+      ...customCategories
     ];
 
     return {
@@ -63,4 +67,3 @@ export class ContentSafetyService {
     };
   }
 }
-

@@ -7,6 +7,7 @@ so the UI demonstrates all content safety features."""
 
 import json
 import random
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -14,6 +15,25 @@ from azure.cosmos import CosmosClient
 from azure.identity import DefaultAzureCredential
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+CUSTOM_CATEGORY_PATTERNS = {
+    "Profanity": [
+        re.compile(r"\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b", re.IGNORECASE),
+    ],
+    "PII": [
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+        re.compile(r"\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b"),
+        re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
+    ],
+}
+
+
+def custom_category_analysis(text: str) -> list[dict]:
+    normalized = text or ""
+    return [
+        {"category": category, "severity": 6 if any(p.search(normalized) for p in patterns) else 0}
+        for category, patterns in CUSTOM_CATEGORY_PATTERNS.items()
+    ]
 
 
 def main() -> None:
@@ -100,7 +120,9 @@ def main() -> None:
                 decision_cat = "review"
 
         cats_analysis = [{"category": c, "severity": profile[c]} for c in categories]
-        max_sev = max(profile.values())
+        custom_analysis = custom_category_analysis(doc.get("seedText", ""))
+        custom_max = max((c["severity"] for c in custom_analysis), default=0)
+        max_sev = max(max(profile.values()), custom_max)
         text_decision = "blocked" if max_sev >= threshold else "safe"
 
         # For images, add a secondary analysis with slight variation
@@ -127,6 +149,7 @@ def main() -> None:
             "textAnalysisDecision": text_decision,
             "textMaxSeverity": max_sev,
             "textAnalysis": {"categoriesAnalysis": cats_analysis},
+            "customCategoryAnalysis": custom_analysis,
             "imageAnalysisDecision": image_decision,
             "imageMaxSeverity": image_max,
             "imageAnalysis": image_analysis,

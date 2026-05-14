@@ -6,6 +6,7 @@ import asyncio
 import base64
 import json
 import os
+import re
 from pathlib import Path
 
 from azure.identity.aio import DefaultAzureCredential
@@ -14,10 +15,35 @@ from azure.cosmos.aio import CosmosClient
 import httpx
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+CUSTOM_CATEGORY_SEVERITY = 6
+CUSTOM_CATEGORY_PATTERNS = {
+    "Profanity": [
+        re.compile(r"\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b", re.IGNORECASE),
+    ],
+    "PII": [
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+        re.compile(r"\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b"),
+        re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
+    ],
+}
 
 
 def read_json(relative_path: str) -> dict:
     return json.loads((REPO_ROOT / relative_path).read_text(encoding="utf-8"))
+
+
+def analyze_custom_categories(text: str) -> list[dict]:
+    normalized = text or ""
+    return [
+        {
+            "category": category,
+            "severity": CUSTOM_CATEGORY_SEVERITY
+            if any(pattern.search(normalized) for pattern in patterns)
+            else 0,
+        }
+        for category, patterns in CUSTOM_CATEGORY_PATTERNS.items()
+    ]
 
 
 async def main() -> None:
@@ -69,9 +95,13 @@ async def main() -> None:
             )
             resp.raise_for_status()
         body = resp.json()
-        max_sev = max((c.get("severity", 0) for c in body.get("categoriesAnalysis", [])), default=0)
+        cs_max_sev = max((c.get("severity", 0) for c in body.get("categoriesAnalysis", [])), default=0)
+        custom_categories = analyze_custom_categories(text)
+        custom_max_sev = max((c.get("severity", 0) for c in custom_categories), default=0)
+        max_sev = max(cs_max_sev, custom_max_sev)
         return {
             "raw": body,
+            "customCategoryAnalysis": custom_categories,
             "maxSeverity": max_sev,
             "decision": "blocked" if max_sev >= severity_threshold else "safe",
         }
@@ -127,6 +157,7 @@ async def main() -> None:
                 "textAnalysisDecision": text_analysis["decision"] if text_analysis else None,
                 "textMaxSeverity": text_analysis["maxSeverity"] if text_analysis else None,
                 "textAnalysis": text_analysis["raw"] if text_analysis else None,
+                "customCategoryAnalysis": text_analysis["customCategoryAnalysis"] if text_analysis else None,
                 "imageAnalysisDecision": image_analysis["decision"] if image_analysis else None,
                 "imageMaxSeverity": image_analysis["maxSeverity"] if image_analysis else None,
                 "imageAnalysis": image_analysis["raw"] if image_analysis else None,

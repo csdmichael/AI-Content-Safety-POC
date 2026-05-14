@@ -27,7 +27,7 @@ def main() -> None:
     container_client = blob_service.get_container_client(container_name)
 
     docs = manifest["documents"]
-    print(f"Uploading {len(docs)} files to Azure Blob Storage...")
+    print(f"Uploading {len(docs)} files + manifest.json to Azure Blob Storage...")
     success = fail = 0
 
     for doc in docs:
@@ -46,6 +46,19 @@ def main() -> None:
         except Exception as e:
             print(f"  [FAIL] {doc['fileName']}: {e}")
             fail += 1
+
+    try:
+        manifest_blob = container_client.get_blob_client("manifest.json")
+        manifest_blob.upload_blob(
+            (DATA_DIR / "manifest.json").read_bytes(),
+            overwrite=True,
+            content_settings=ContentSettings(content_type="application/json"),
+        )
+        print("  [OK] Uploaded manifest.json")
+        success += 1
+    except Exception as e:
+        print(f"  [FAIL] manifest.json: {e}")
+        fail += 1
 
     print(f"\nUpload complete: {success} successful, {fail} failed")
 

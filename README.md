@@ -75,7 +75,7 @@ All resources in resource group **ai-myaacoub** (West US 2):
 
 ## Content Safety Categories
 
-Azure AI Content Safety analyses content across four harm categories. Each category returns a **severity score** of 0, 2, 4, or 6.
+Azure AI Content Safety analyses content across four harm categories. This POC also adds two custom categories evaluated with deterministic rules.
 
 | Category | Description | Example Triggers |
 |----------|-------------|-----------------|
@@ -83,6 +83,8 @@ Azure AI Content Safety analyses content across four harm categories. Each categ
 | **SelfHarm** | Content encouraging, glorifying, or providing instructions for self-injury, suicide, or eating disorders | Suicide methods, pro-anorexia content, self-injury encouragement |
 | **Sexual** | Sexually explicit or suggestive content inappropriate for general audiences | Graphic sexual descriptions, sexually suggestive content involving minors |
 | **Violence** | Content glorifying, promoting, or providing instructions for violent acts | Graphic injury descriptions, weapon-making instructions, threats of violence |
+| **Profanity (Custom)** | Deterministic keyword-based detection for explicit abusive language | "this service is shit", "damn useless idiots" |
+| **PII (Custom)** | Deterministic pattern detection for sensitive personal data | Emails, phone numbers, SSNs, card-like number patterns |
 
 ### Severity Levels
 
@@ -95,6 +97,8 @@ Azure AI Content Safety analyses content across four harm categories. Each categ
 
 The pipeline uses a configurable threshold (default: **4**). Any category at or above the threshold triggers a **blocked** decision.
 
+Custom categories emit severity **0** or **6** (no match vs. matched pattern) and are included in max-severity decisioning.
+
 ### Creating Custom Filters and Thresholds
 
 For production moderation, define a custom threshold for each category so policy owners can tune sensitivity by risk type:
@@ -105,6 +109,8 @@ For production moderation, define a custom threshold for each category so policy
 | **SelfHarm** | Crisis-related content can have immediate safety impact and often needs rapid escalation. | Use the strictest threshold and route borderline cases to human review. |
 | **Sexual** | Sexual-content tolerance varies by age group, regional policy, and business domain. | Lower thresholds for youth-focused experiences; adjust higher only for adult-only contexts with clear policy controls. |
 | **Hate** | Hateful and discriminatory speech can create legal, compliance, and trust risks. | Keep thresholds strict to quickly block targeted abuse and protected-class hate. |
+| **Profanity (Custom)** | Enterprise and classroom experiences may require stricter language standards than baseline harm detection. | Keep strict to route abusive tone to review/block workflows. |
+| **PII (Custom)** | Data leakage can create legal/compliance incidents even when text is not hateful or violent. | Block by default when direct personal identifiers are detected. |
 
 A practical rollout pattern is to start strict, audit false positives/false negatives, and then adjust each category threshold independently based on reviewer feedback and policy outcomes.
 
@@ -192,6 +198,8 @@ pip install azure-identity azure-storage-blob
 python upload_to_blob.py
 ```
 
+The uploader publishes all files in the manifest and also uploads `manifest.json` itself so API-triggered pipeline runs consume the latest custom category metadata from Blob Storage.
+
 ### Run content safety analysis
 
 ```bash
@@ -206,7 +214,7 @@ pip install azure-identity azure-cosmos
 python scripts/regenerate_demo_data.py
 ```
 
-This seeds Cosmos DB with ~50 safe, ~25 review, ~25 blocked documents with varied Hate/SelfHarm/Sexual/Violence severity combinations.
+This seeds Cosmos DB with ~50 safe, ~25 review, ~25 blocked documents with varied Hate/SelfHarm/Sexual/Violence severities plus custom Profanity/PII flags.
 
 ## REST API (Python / FastAPI)
 
@@ -267,7 +275,7 @@ Deployed at **https://ai-content-safety-ui.azurewebsites.net**
 ### Documents Page
 - Compact two-panel layout: scrollable document list + inline viewer
 - Per-file-type viewers: `<img>` for PNG/JPG, `<iframe>` for PDF, Office Online viewer for DOCX/PPTX
-- Severity bar visualisation per category (Hate, SelfHarm, Sexual, Violence)
+- Severity bar visualisation per category (Hate, SelfHarm, Sexual, Violence, Profanity, PII)
 - Process selected / current page / all documents
 - Paginated list with format badges and status indicators
 
@@ -321,6 +329,7 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 - `data/manifest.json` tracks all files with expected moderation outcomes
 - 50 files expected to fail content safety (seeded with harmful text)
 - 50 files expected to pass
+- Additional positive/negative text cases are included for custom **Profanity** and **PII** categories
 
 ## Best Practices
 
