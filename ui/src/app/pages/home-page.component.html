@@ -16,7 +16,7 @@
       <h2>Custom Filters and Category Thresholds</h2>
       <p>
         You can configure per-category thresholds to decide whether content is safe, should be reviewed, or must be blocked.
-        Each category uses severity levels 0, 2, 4, and 6, and thresholds can be tuned independently.
+        Native Azure categories use severity levels 0, 2, 4, and 6, and custom categories are layered in with deterministic rules.
       </p>
       <div class="category-grid">
         <article>
@@ -34,6 +34,14 @@
         <article>
           <h3>Hate</h3>
           <p>Captures hateful or discriminatory expressions targeting protected groups. Lower thresholds help enforce stricter anti-abuse community standards.</p>
+        </article>
+        <article>
+          <h3>Profanity (Custom)</h3>
+          <p>Flags explicit abusive language with deterministic keyword matching to support stricter enterprise tone and conduct policies.</p>
+        </article>
+        <article>
+          <h3>PII (Custom)</h3>
+          <p>Detects personal data patterns such as email addresses, phone numbers, SSNs, and card-like numbers to reduce leakage risk.</p>
         </article>
       </div>
     </section>

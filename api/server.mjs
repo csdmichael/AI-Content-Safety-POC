@@ -204,7 +204,7 @@ const swaggerDocument = {
       CategoryAnalysis: {
         type: 'object',
         properties: {
-          category: { type: 'string', enum: ['Hate', 'SelfHarm', 'Sexual', 'Violence'] },
+          category: { type: 'string', enum: ['Hate', 'SelfHarm', 'Sexual', 'Violence', 'Profanity', 'PII'] },
           severity: { type: 'integer', enum: [0, 2, 4, 6] }
         }
       },
@@ -219,6 +219,7 @@ const swaggerDocument = {
           textAnalysisDecision: { type: 'string', enum: ['safe', 'blocked'] },
           textMaxSeverity: { type: 'integer' },
           textAnalysis: { type: 'object', properties: { categoriesAnalysis: { type: 'array', items: { $ref: '#/components/schemas/CategoryAnalysis' } } } },
+          customCategoryAnalysis: { type: 'array', items: { $ref: '#/components/schemas/CategoryAnalysis' } },
           imageAnalysisDecision: { type: 'string', enum: ['safe', 'blocked'] },
           imageMaxSeverity: { type: 'integer' },
           imageAnalysis: { type: 'object', properties: { categoriesAnalysis: { type: 'array', items: { $ref: '#/components/schemas/CategoryAnalysis' } } } },

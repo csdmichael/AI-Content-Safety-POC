@@ -14,6 +14,7 @@ export interface ContentDocument {
   relativePath: string;
   expectedContentSafetyOutcome: 'pass' | 'fail';
   seedText: string;
+  customCategoryExpectations?: Record<string, 'pass' | 'fail'>;
   processed?: SafetyCategoryResult;
   blobPreviewUrl?: string;
 }
@@ -43,6 +44,7 @@ export interface ApiResultRecord {
   textAnalysisDecision?: 'safe' | 'blocked';
   textMaxSeverity?: number;
   textAnalysis?: ApiAnalysisPayload;
+  customCategoryAnalysis?: ApiCategoryAnalysis[];
   imageAnalysisDecision?: 'safe' | 'blocked';
   imageMaxSeverity?: number;
   imageAnalysis?: ApiAnalysisPayload;

@@ -4,12 +4,14 @@
 Creates 100 documents across PNG, JPG, PDF, DOCX, PPTX formats with a mix of:
 - 50 safe documents (business, educational, technical content)
 - 50 unsafe documents across Hate, Violence, SelfHarm, Sexual categories
+- extra positive/negative text snippets for custom Profanity and PII categories
 
 Each document embeds its seed text so Content Safety analysis produces
 realistic results for the demo.
 """
 
 import json
+import re
 import shutil
 import textwrap
 from datetime import datetime, timezone
@@ -30,6 +32,29 @@ UI_PUBLIC_DATA = REPO_ROOT / "ui" / "public" / "data"
 UI_ASSETS_DATA = REPO_ROOT / "ui" / "src" / "assets" / "data"
 
 FORMATS = ["png", "jpg", "pdf", "docx", "pptx"]
+CUSTOM_CATEGORY_PATTERNS = {
+    "Profanity": [
+        re.compile(r"\b(?:damn|hell|shit|f\*+k|fuck|bastard|idiot|moron)\b", re.IGNORECASE),
+    ],
+    "PII": [
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+        re.compile(r"\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b"),
+        re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
+    ],
+}
+CUSTOM_POSITIVE_CASES = [
+    "Policy reminder: redact emails, phone numbers, and government identifiers before sharing examples.",
+    "Training note: use respectful professional wording and avoid abusive or profane language.",
+]
+CUSTOM_PROFANITY_NEGATIVE_CASES = [
+    "This damn rollout is shit, and your useless team keeps breaking everything.",
+    "Fix this now you idiots, this whole release is a complete hellscape.",
+]
+CUSTOM_PII_NEGATIVE_CASES = [
+    "Customer details: John Doe, john.doe@example.com, phone 415-555-0199, SSN 123-45-6789.",
+    "Escalation record includes jane.smith@contoso.com and card number 4111 1111 1111 1111 for refund tracing.",
+]
 
 # ---------------------------------------------------------------------------
 # Safe content â€” benign business / educational / technical texts
@@ -227,6 +252,16 @@ COLOR_THEMES = {
 # ---------------------------------------------------------------------------
 def _wrap_text(text: str, width: int = 60) -> list[str]:
     return textwrap.wrap(text, width=width)
+
+
+def custom_category_expectations(text: str) -> dict:
+    normalized = text or ""
+    return {
+        category: "fail"
+        if any(pattern.search(normalized) for pattern in patterns)
+        else "pass"
+        for category, patterns in CUSTOM_CATEGORY_PATTERNS.items()
+    }
 
 
 def generate_png(path: Path, title: str, text: str, category: str) -> None:
@@ -517,6 +552,16 @@ def main() -> None:
         doc["fileName"] = f"doc_{num:03d}.{fmt}"
         doc["relativePath"] = f"data/{fmt}/doc_{num:03d}.{fmt}"
 
+    # Inject dedicated positive/negative test content for custom categories
+    safe_docs = [d for d in documents if d["expectedContentSafetyOutcome"] == "pass"][:10]
+    fail_docs = [d for d in documents if d["expectedContentSafetyOutcome"] == "fail"][:10]
+    for i, doc in enumerate(safe_docs):
+        doc["seedText"] = f"{doc['seedText']} {CUSTOM_POSITIVE_CASES[i % len(CUSTOM_POSITIVE_CASES)]}"
+    for i, doc in enumerate(fail_docs[:5]):
+        doc["seedText"] = f"{doc['seedText']} {CUSTOM_PROFANITY_NEGATIVE_CASES[i % len(CUSTOM_PROFANITY_NEGATIVE_CASES)]}"
+    for i, doc in enumerate(fail_docs[5:10]):
+        doc["seedText"] = f"{doc['seedText']} {CUSTOM_PII_NEGATIVE_CASES[i % len(CUSTOM_PII_NEGATIVE_CASES)]}"
+
     # Clean existing data folders
     for fmt in FORMATS:
         fmt_dir = DATA_DIR / fmt
@@ -550,6 +595,7 @@ def main() -> None:
             "expectedContentSafetyOutcome": doc["expectedContentSafetyOutcome"],
             "seedText": doc["seedText"],
             "category": doc["category"],
+            "customCategoryExpectations": custom_category_expectations(doc["seedText"]),
         })
 
     fail_count = sum(1 for d in documents if d["expectedContentSafetyOutcome"] == "fail")
@@ -594,4 +640,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
