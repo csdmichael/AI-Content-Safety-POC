@@ -323,6 +323,8 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 ## References
 
 - [Azure AI Content Safety](https://learn.microsoft.com/azure/ai-services/content-safety/)
+- [Content Safety Studio](https://ai.azure.com/explore/contentsafety?tid=b158173c-91f6-4f99-b5e9-aa9bcb463863) — interactive playground for the instance used in this project
+- [Pricing](https://azure.microsoft.com/en-us/pricing/details/content-safety/)
 - [Harm Categories](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/harm-categories)
 - [Prompt Shields](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/jailbreak-detection)
 - [Groundedness Detection](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/groundedness)

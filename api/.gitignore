@@ -1,2 +1,11 @@
 node_modules/
 *.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+*.egg-info/
+.python_packages/

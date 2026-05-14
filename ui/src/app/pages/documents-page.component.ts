@@ -44,6 +44,7 @@ export class DocumentsPageComponent {
   readonly selectedDocument = signal<ContentDocument | null>(null);
   readonly loading = signal(false);
   readonly processingProgress = signal<{ current: number; total: number } | null>(null);
+  readonly pipelineStatus = signal<'idle' | 'running' | 'completed' | 'failed'>('idle');
   readonly errorMessage = signal<string | null>(null);
 
   readonly documents = this.store.documents;
@@ -161,6 +162,43 @@ export class DocumentsPageComponent {
     } finally {
       this.loading.set(false);
       this.processingProgress.set(null);
+    }
+  }
+
+  async runPipeline(): Promise<void> {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+    this.pipelineStatus.set('running');
+    try {
+      await this.api.runPipeline();
+      // Poll for status until done
+      const poll = setInterval(async () => {
+        try {
+          const status = await this.api.getPipelineStatus();
+          this.processingProgress.set({ current: status.processed, total: status.total || 1 });
+          if (status.status === 'completed' || status.status === 'failed') {
+            clearInterval(poll);
+            this.pipelineStatus.set(status.status);
+            this.processingProgress.set(null);
+            this.loading.set(false);
+            if (status.errors?.length) {
+              this.errorMessage.set(`Pipeline finished with ${status.errors.length} error(s).`);
+            }
+            // Refresh results
+            const results = await this.contentSafety.fetchAllResults();
+            results.forEach((value, id) => this.store.setResult(id, value));
+          }
+        } catch {
+          clearInterval(poll);
+          this.loading.set(false);
+          this.pipelineStatus.set('failed');
+          this.processingProgress.set(null);
+        }
+      }, 3000);
+    } catch (err: any) {
+      this.errorMessage.set(`Pipeline error: ${err.message || 'API error'}`);
+      this.loading.set(false);
+      this.pipelineStatus.set('failed');
     }
   }
 

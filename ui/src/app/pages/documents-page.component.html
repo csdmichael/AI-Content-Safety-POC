@@ -50,6 +50,9 @@
         </div>
 
         <div class="action-buttons">
+          <ion-button expand="block" size="small" color="warning" (click)="runPipeline()" [disabled]="loading() || pipelineStatus() === 'running'">
+            @if (pipelineStatus() === 'running') { <ion-spinner name="dots"></ion-spinner>&nbsp; } Run Pipeline
+          </ion-button>
           <ion-button expand="block" size="small" (click)="processSelected()" [disabled]="loading() || !selectedDocument()">Process Selected</ion-button>
           <ion-button expand="block" size="small" fill="outline" (click)="processCurrentPage()" [disabled]="loading()">Process Page</ion-button>
           <ion-button expand="block" size="small" fill="outline" color="tertiary" (click)="processAll()" [disabled]="loading()">Process All</ion-button>

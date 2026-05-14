@@ -54,6 +54,13 @@ export interface ApiResultsResponse {
   results: ApiResultRecord[];
 }
 
+export interface PipelineStatusResponse {
+  status: 'idle' | 'running' | 'completed' | 'failed';
+  processed: number;
+  total: number;
+  errors: { doc: string; error: string }[];
+}
+
 export interface AppConfig {
   resourceGroupName: string;
   apiBaseUrl: string;

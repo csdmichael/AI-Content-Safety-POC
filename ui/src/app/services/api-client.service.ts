@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 
 import { ConfigService } from './config.service';
-import { ApiResultRecord, ApiResultsResponse } from '../models/document.models';
+import { ApiResultRecord, ApiResultsResponse, PipelineStatusResponse } from '../models/document.models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiClientService {
@@ -36,5 +36,13 @@ export class ApiClientService {
 
   async health(): Promise<unknown> {
     return firstValueFrom(this.http.get(`${this.base}/api/health`));
+  }
+
+  async runPipeline(): Promise<{ status: string; message?: string }> {
+    return firstValueFrom(this.http.post<{ status: string; message?: string }>(`${this.base}/api/pipeline/run`, {}));
+  }
+
+  async getPipelineStatus(): Promise<PipelineStatusResponse> {
+    return firstValueFrom(this.http.get<PipelineStatusResponse>(`${this.base}/api/pipeline/status`));
   }
 }

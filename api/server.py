@@ -1,10 +1,17 @@
 """Azure AI Content Safety API — FastAPI server serving moderation results
-from Cosmos DB and document download URLs from Blob Storage."""
+from Cosmos DB and document download URLs from Blob Storage.
+Includes an embedded pipeline that processes documents entirely within
+the VNet (Blob → Content Safety → Cosmos DB)."""
 
+import asyncio
+import base64
+import concurrent.futures
+import json
 import os
 from datetime import datetime, timezone, timedelta
 from urllib.parse import quote
 
+import httpx
 from azure.cosmos import CosmosClient
 from azure.identity import DefaultAzureCredential
 from azure.storage.blob import (
@@ -25,6 +32,9 @@ COSMOS_CONTAINER = os.environ.get("COSMOS_CONTAINER", "contentSafetyResults")
 STORAGE_ACCOUNT_NAME = os.environ.get("STORAGE_ACCOUNT_NAME", "")
 STORAGE_ENDPOINT = os.environ.get("STORAGE_ENDPOINT", "")
 STORAGE_CONTAINER = os.environ.get("STORAGE_CONTAINER", "content-safety-documents")
+CONTENT_SAFETY_ENDPOINT = os.environ.get("CONTENT_SAFETY_ENDPOINT", "")
+CONTENT_SAFETY_API_VERSION = os.environ.get("CONTENT_SAFETY_API_VERSION", "2024-09-01")
+SEVERITY_THRESHOLD = int(os.environ.get("SEVERITY_THRESHOLD", "4"))
 ALLOWED_ORIGINS = [
     o.strip()
     for o in os.environ.get(
@@ -105,7 +115,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS if "*" not in ALLOWED_ORIGINS else ["*"],
-    allow_methods=["GET", "OPTIONS"],
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -194,3 +204,117 @@ def get_result(doc_id: str):
     if not items:
         raise HTTPException(status_code=404, detail="not_found")
     return items[0]
+
+
+# ---------------------------------------------------------------------------
+# Pipeline — processes documents entirely within the VNet
+# ---------------------------------------------------------------------------
+_pipeline_state: dict = {"status": "idle", "processed": 0, "total": 0, "errors": []}
+_pipeline_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
+
+IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "webp"}
+
+
+def _get_cs_token() -> str:
+    return credential.get_token("https://cognitiveservices.azure.com/.default").token
+
+
+def _analyze_text(text: str) -> dict:
+    token = _get_cs_token()
+    url = f"{CONTENT_SAFETY_ENDPOINT}/contentsafety/text:analyze?api-version={CONTENT_SAFETY_API_VERSION}"
+    resp = httpx.post(
+        url,
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
+        json={"text": text},
+        timeout=30,
+    )
+    resp.raise_for_status()
+    body = resp.json()
+    max_sev = max((c.get("severity", 0) for c in body.get("categoriesAnalysis", [])), default=0)
+    return {"raw": body, "maxSeverity": max_sev, "decision": "blocked" if max_sev >= SEVERITY_THRESHOLD else "safe"}
+
+
+def _analyze_image(image_bytes: bytes) -> dict:
+    token = _get_cs_token()
+    url = f"{CONTENT_SAFETY_ENDPOINT}/contentsafety/image:analyze?api-version={CONTENT_SAFETY_API_VERSION}"
+    b64 = base64.b64encode(image_bytes).decode()
+    resp = httpx.post(
+        url,
+        headers={"Content-Type": "application/json", "Authorization": f"Bearer {token}"},
+        json={"image": {"content": b64}},
+        timeout=60,
+    )
+    resp.raise_for_status()
+    body = resp.json()
+    max_sev = max((c.get("severity", 0) for c in body.get("categoriesAnalysis", [])), default=0)
+    return {"raw": body, "maxSeverity": max_sev, "decision": "blocked" if max_sev >= SEVERITY_THRESHOLD else "safe"}
+
+
+def _run_pipeline() -> None:
+    global _pipeline_state
+    _pipeline_state = {"status": "running", "processed": 0, "total": 0, "errors": []}
+    try:
+        manifest_blob = blob_container.get_blob_client("manifest.json")
+        manifest = json.loads(manifest_blob.download_blob().readall().decode())
+        docs = manifest["documents"]
+        _pipeline_state["total"] = len(docs)
+
+        for doc in docs:
+            try:
+                blob_client = blob_container.get_blob_client(doc["fileName"])
+                file_bytes = blob_client.download_blob().readall()
+
+                text_analysis = None
+                if doc.get("seedText"):
+                    text_analysis = _analyze_text(doc["seedText"])
+
+                image_analysis = None
+                if doc.get("format", "").lower() in IMAGE_FORMATS:
+                    image_analysis = _analyze_image(file_bytes)
+
+                result = {
+                    "id": doc["id"],
+                    "fileName": doc["fileName"],
+                    "format": doc["format"],
+                    "blobUrl": blob_client.url,
+                    "expectedContentSafetyOutcome": doc["expectedContentSafetyOutcome"],
+                    "textAnalysisDecision": text_analysis["decision"] if text_analysis else None,
+                    "textMaxSeverity": text_analysis["maxSeverity"] if text_analysis else None,
+                    "textAnalysis": text_analysis["raw"] if text_analysis else None,
+                    "imageAnalysisDecision": image_analysis["decision"] if image_analysis else None,
+                    "imageMaxSeverity": image_analysis["maxSeverity"] if image_analysis else None,
+                    "imageAnalysis": image_analysis["raw"] if image_analysis else None,
+                    "processedAtUtc": datetime.now(timezone.utc).isoformat(),
+                }
+                cosmos_container.upsert_item(result)
+            except Exception as exc:
+                _pipeline_state["errors"].append({"doc": doc.get("id", "unknown"), "error": str(exc)})
+
+            _pipeline_state["processed"] += 1
+
+        _pipeline_state["status"] = "completed"
+    except Exception as exc:
+        _pipeline_state["status"] = "failed"
+        _pipeline_state["errors"].append({"doc": "manifest", "error": str(exc)})
+
+
+@app.post(
+    "/api/pipeline/run",
+    tags=["Pipeline"],
+    summary="Trigger content-safety processing for all documents",
+)
+async def run_pipeline():
+    if _pipeline_state.get("status") == "running":
+        return {"status": "already_running", **_pipeline_state}
+    loop = asyncio.get_event_loop()
+    loop.run_in_executor(_pipeline_executor, _run_pipeline)
+    return {"status": "started", "message": "Pipeline processing started in background"}
+
+
+@app.get(
+    "/api/pipeline/status",
+    tags=["Pipeline"],
+    summary="Get pipeline processing status",
+)
+def pipeline_status():
+    return _pipeline_state

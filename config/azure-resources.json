@@ -20,6 +20,7 @@
   },
   "network": {
     "vnetResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Network/virtualNetworks/vnet-salespoc-westus2",
-    "subnetResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Network/virtualNetworks/vnet-salespoc-westus2/subnets/default"
+    "subnetResourceId": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Network/virtualNetworks/vnet-salespoc-westus2/subnets/snet-appservice",
+    "privateEndpointSubnet": "/subscriptions/86b37969-9445-49cf-b03f-d8866235171c/resourceGroups/ai-myaacoub/providers/Microsoft.Network/virtualNetworks/vnet-salespoc-westus2/subnets/snet-private-endpoints"
   }
 }
