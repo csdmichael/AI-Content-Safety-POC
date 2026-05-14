@@ -95,6 +95,19 @@ Azure AI Content Safety analyses content across four harm categories. Each categ
 
 The pipeline uses a configurable threshold (default: **4**). Any category at or above the threshold triggers a **blocked** decision.
 
+### Creating Custom Filters and Thresholds
+
+For production moderation, define a custom threshold for each category so policy owners can tune sensitivity by risk type:
+
+| Category | Why tune the threshold | Suggested policy intent |
+|----------|------------------------|--------------------------|
+| **Violence** | Violent threats and graphic harm may require strict controls in enterprise, education, and public communities. | Set a lower threshold when preventing violent content exposure is the priority. |
+| **SelfHarm** | Crisis-related content can have immediate safety impact and often needs rapid escalation. | Use the strictest threshold and route borderline cases to human review. |
+| **Sexual** | Sexual-content tolerance varies by age group, regional policy, and business domain. | Lower thresholds for youth-focused experiences; adjust higher only for adult-only contexts with clear policy controls. |
+| **Hate** | Hateful and discriminatory speech can create legal, compliance, and trust risks. | Keep thresholds strict to quickly block targeted abuse and protected-class hate. |
+
+A practical rollout pattern is to start strict, audit false positives/false negatives, and then adjust each category threshold independently based on reviewer feedback and policy outcomes.
+
 ## Confidence Score
 
 The UI computes a **confidence score** for each document's moderation result:
@@ -334,7 +347,8 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 
 ## References
 
-- [Azure AI Content Safety](https://learn.microsoft.com/azure/ai-services/content-safety/)
+- [Primary walkthrough video](https://youtu.be/BcAAAleKcdE?si=O8eDzY6oeP2tq9OM)
+- [Microsoft Learn: Azure AI Content Safety](https://learn.microsoft.com/azure/ai-services/content-safety/)
 - [Content Safety Studio](https://ai.azure.com/explore/contentsafety?tid=b158173c-91f6-4f99-b5e9-aa9bcb463863) — interactive playground for the instance used in this project
 - [Pricing](https://azure.microsoft.com/en-us/pricing/details/content-safety/)
 - [Harm Categories](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/harm-categories)
