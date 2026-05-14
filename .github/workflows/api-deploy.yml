@@ -28,7 +28,7 @@ jobs:
 
       - name: Package
         working-directory: api
-        run: zip -r ../api.zip server.py requirements.txt .python_packages
+        run: zip -r ../api.zip server.py requirements.txt startup.sh .python_packages
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
