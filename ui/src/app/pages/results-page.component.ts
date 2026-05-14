@@ -2,40 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
 import {
   IonBadge,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol,
-  IonContent,
-  IonGrid,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonRow
+  IonContent
 } from '@ionic/angular/standalone';
 
 import { ContentDocument } from '../models/document.models';
 import { DocumentStoreService } from '../services/document-store.service';
 import { ApiClientService } from '../services/api-client.service';
+import { SafeResourceUrlPipe } from '../pipes/safe-resource-url.pipe';
 
 @Component({
   selector: 'app-results-page',
   standalone: true,
   imports: [
     CommonModule,
+    SafeResourceUrlPipe,
     IonBadge,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonCol,
-    IonContent,
-    IonGrid,
-    IonItem,
-    IonLabel,
-    IonList,
-    IonRow
+    IonContent
   ],
   templateUrl: './results-page.component.html',
   styleUrl: './results-page.component.scss'
@@ -156,6 +138,11 @@ export class ResultsPageComponent implements AfterViewInit {
 
   previewUrl(document: ContentDocument): string {
     return document.blobPreviewUrl || `/${document.relativePath}`;
+  }
+
+  officeViewerUrl(doc: ContentDocument): string {
+    const fileUrl = `${window.location.origin}/${doc.relativePath}`;
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
   }
 
   isImage(document: ContentDocument): boolean {

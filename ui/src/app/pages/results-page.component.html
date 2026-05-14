@@ -1,144 +1,119 @@
 <ion-content>
-  <ion-grid fixed class="layout-grid">
-    <ion-row>
-      <ion-col size="12" sizeXl="4">
+  <div class="page-wrapper">
+    <div class="two-panel">
+      <!-- LEFT: KPIs + grouped list -->
+      <div class="panel-sidebar">
         <!-- KPIs -->
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>KPIs</ion-card-title>
-          </ion-card-header>
-          <ion-card-content class="kpi-grid">
-            <div class="kpi-cell">
-              <h3>{{ kpis().total }}</h3>
-              <p>Total Processed</p>
-            </div>
-            <div class="kpi-cell kpi-safe">
-              <h3>{{ kpis().safe }}</h3>
-              <p>Safe</p>
-            </div>
-            <div class="kpi-cell kpi-review">
-              <h3>{{ kpis().review }}</h3>
-              <p>Review</p>
-            </div>
-            <div class="kpi-cell kpi-blocked">
-              <h3>{{ kpis().blocked }}</h3>
-              <p>Blocked</p>
-            </div>
-          </ion-card-content>
-        </ion-card>
+        <div class="kpi-grid">
+          <div class="kpi-cell">
+            <span class="kpi-num">{{ kpis().total }}</span>
+            <span class="kpi-label">Total</span>
+          </div>
+          <div class="kpi-cell kpi-safe">
+            <span class="kpi-num">{{ kpis().safe }}</span>
+            <span class="kpi-label">Safe</span>
+          </div>
+          <div class="kpi-cell kpi-review">
+            <span class="kpi-num">{{ kpis().review }}</span>
+            <span class="kpi-label">Review</span>
+          </div>
+          <div class="kpi-cell kpi-blocked">
+            <span class="kpi-num">{{ kpis().blocked }}</span>
+            <span class="kpi-label">Blocked</span>
+          </div>
+        </div>
 
-        <!-- Chart -->
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Distribution</ion-card-title>
-          </ion-card-header>
-          <ion-card-content class="chart-container">
-            <canvas #chartCanvas width="280" height="280"></canvas>
-          </ion-card-content>
-        </ion-card>
-
-        <!-- Statistics -->
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Statistics</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
+        <!-- Chart + Stats -->
+        <div class="stats-row">
+          <canvas #chartCanvas width="160" height="160"></canvas>
+          <div class="stats-text">
             <p><strong>Accuracy:</strong> {{ accuracy() | percent:'1.0-0' }}</p>
-            <p><strong>Format Breakdown:</strong></p>
-            <ul class="format-list">
-              @for (item of formatBreakdown(); track item.format) {
-                <li>{{ item.format | uppercase }}: {{ item.count }}</li>
-              }
-            </ul>
-          </ion-card-content>
-        </ion-card>
-
-        <!-- Grouped Results -->
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Grouped Results</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            @for (entry of (grouped() | keyvalue); track entry.key) {
-              <h4 class="group-title">{{ entry.key | titlecase }} ({{ entry.value.length }})</h4>
-              <ion-list>
-                @for (doc of entry.value; track doc.id) {
-                  <ion-item button detail="false" (click)="selectDocument(doc)" [class.selected]="selectedDocument()?.id === doc.id">
-                    <ion-label>
-                      <h2>{{ doc.fileName }}</h2>
-                      <p>{{ doc.processed?.reason }}</p>
-                    </ion-label>
-                    <ion-badge [color]="categoryColor(entry.key)">
-                      {{ entry.key | titlecase }}
-                    </ion-badge>
-                  </ion-item>
-                }
-              </ion-list>
+            @for (item of formatBreakdown(); track item.format) {
+              <p class="fmt-line">{{ item.format | uppercase }}: {{ item.count }}</p>
             }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
+          </div>
+        </div>
 
-      <ion-col size="12" sizeXl="8">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Side-by-Side Document + Content Safety Result</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            @if (selectedDocument(); as doc) {
-              <div class="split-view">
-                <div>
-                  @if (isImage(doc)) {
-                    <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" />
-                  } @else if (doc.format === 'pdf') {
-                    <iframe [src]="previewUrl(doc)" class="doc-frame" title="document preview"></iframe>
-                  } @else {
-                    <div class="office-placeholder">
-                      <p><strong>{{ doc.fileName }}</strong> preview available via download.</p>
-                      <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer">Open document</a>
+        <!-- Grouped list -->
+        <div class="group-scroll">
+          @for (entry of (grouped() | keyvalue); track entry.key) {
+            <div class="group-section">
+              <div class="group-title">
+                <ion-badge [color]="categoryColor(entry.key)">{{ entry.key | titlecase }}</ion-badge>
+                <span class="group-count">({{ entry.value.length }})</span>
+              </div>
+              @for (doc of entry.value; track doc.id) {
+                <div class="group-item" [class.selected]="selectedDocument()?.id === doc.id" (click)="selectDocument(doc)">
+                  <span class="gi-name">{{ doc.fileName }}</span>
+                  <span class="gi-reason">{{ doc.processed?.reason }}</span>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- RIGHT: Detail viewer -->
+      <div class="panel-detail">
+        @if (selectedDocument(); as doc) {
+          <div class="detail-top">
+            <!-- Document preview -->
+            <div class="detail-viewer">
+              @if (isImage(doc)) {
+                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" loading="lazy" />
+              } @else if (doc.format === 'pdf') {
+                <iframe [src]="previewUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+              } @else {
+                <iframe [src]="officeViewerUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+              }
+            </div>
+
+            <!-- Result detail -->
+            <div class="detail-result">
+              <h3>{{ doc.fileName }}</h3>
+              <div class="detail-chips">
+                <ion-badge [color]="categoryColor(doc.processed?.category || '')">{{ doc.processed?.category | titlecase }}</ion-badge>
+                <span class="conf">Confidence: {{ doc.processed?.confidence | percent:'1.0-0' }}</span>
+              </div>
+
+              <p class="detail-reason">{{ doc.processed?.reason }}</p>
+
+              <div class="expected-actual">
+                Expected: <strong>{{ doc.expectedContentSafetyOutcome | titlecase }}</strong>
+                · Actual: <strong>{{ doc.processed?.category | titlecase }}</strong>
+                @if ((doc.expectedContentSafetyOutcome === 'fail' && doc.processed?.category !== 'safe') || (doc.expectedContentSafetyOutcome === 'pass' && doc.processed?.category === 'safe')) {
+                  <ion-badge color="success" class="match-sm">✓</ion-badge>
+                } @else {
+                  <ion-badge color="warning" class="match-sm">✗</ion-badge>
+                }
+              </div>
+
+              @if (doc.processed?.categories?.length) {
+                <div class="severity-bars">
+                  @for (cat of doc.processed!.categories!; track cat.category) {
+                    <div class="severity-row">
+                      <span class="sev-label">{{ cat.category }}</span>
+                      <div class="sev-track">
+                        <div class="sev-fill"
+                             [style.width.%]="(cat.severity / 6) * 100"
+                             [class.sev-0]="cat.severity === 0"
+                             [class.sev-low]="cat.severity > 0 && cat.severity <= 2"
+                             [class.sev-med]="cat.severity > 2 && cat.severity <= 4"
+                             [class.sev-high]="cat.severity > 4"></div>
+                      </div>
+                      <span class="sev-num">{{ cat.severity }}</span>
                     </div>
                   }
                 </div>
-                <div class="result-panel">
-                  <h3>{{ doc.fileName }}</h3>
-                  <p><strong>Decision:</strong> <ion-badge [color]="categoryColor(doc.processed?.category || '')">{{ doc.processed?.category | titlecase }}</ion-badge></p>
-                  <p><strong>Confidence:</strong> {{ doc.processed?.confidence | percent:'1.0-0' }}</p>
-                  <p><strong>Reason:</strong> {{ doc.processed?.reason }}</p>
-
-                  <p class="expected-actual">
-                    <strong>Expected:</strong> {{ doc.expectedContentSafetyOutcome | titlecase }}
-                    · <strong>Actual:</strong> {{ doc.processed?.category | titlecase }}
-                    @if ((doc.expectedContentSafetyOutcome === 'fail' && doc.processed?.category !== 'safe') || (doc.expectedContentSafetyOutcome === 'pass' && doc.processed?.category === 'safe')) {
-                      <ion-badge color="success">Match</ion-badge>
-                    } @else {
-                      <ion-badge color="warning">Mismatch</ion-badge>
-                    }
-                  </p>
-
-                  @if (doc.processed?.categories?.length) {
-                    <h4>Per-Category Severity</h4>
-                    <table class="severity-table">
-                      <thead><tr><th>Category</th><th>Severity</th></tr></thead>
-                      <tbody>
-                        @for (cat of doc.processed!.categories!; track cat.category) {
-                          <tr [class.flagged]="cat.severity > 0">
-                            <td>{{ cat.category }}</td>
-                            <td>
-                              <ion-badge [color]="cat.severity === 0 ? 'success' : cat.severity <= 2 ? 'warning' : 'danger'">{{ cat.severity }}</ion-badge>
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
-                  }
-                </div>
-              </div>
-            } @else {
-              <p>Process documents on the Documents page and select an item to review details.</p>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+              }
+            </div>
+          </div>
+        } @else {
+          <div class="empty-state">
+            <p>Process documents on the Documents page, then select a result to review.</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 </ion-content>

@@ -1,5 +1,5 @@
 <ion-content>
-  <ion-grid fixed class="layout-grid">
+  <div class="page-wrapper">
     <!-- Error banner -->
     @if (errorMessage(); as err) {
       <div class="error-banner">
@@ -16,103 +16,126 @@
       </div>
     }
 
-    <ion-row>
-      <ion-col size="12" sizeLg="5" class="list-col">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Documents</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            @if (loading() && !processingProgress()) {
-              <div class="loading-center"><ion-spinner name="crescent"></ion-spinner></div>
-            }
+    <div class="two-panel">
+      <!-- LEFT: Document list -->
+      <div class="panel-list">
+        <div class="panel-header">
+          <h2>Documents</h2>
+          <span class="doc-count">{{ documents().length }} total</span>
+        </div>
 
-            <ion-list>
-              @for (doc of currentPageDocs(); track doc.id) {
-                <ion-item button detail="false" (click)="selectDocument(doc)" [class.selected]="selectedDocument()?.id === doc.id">
-                  <ion-label>
-                    <h2>{{ doc.fileName }}</h2>
-                    <p>{{ doc.format | uppercase }} · Expected {{ doc.expectedContentSafetyOutcome }}</p>
-                  </ion-label>
-                  <ion-badge [color]="categoryColor(doc)">{{ doc.processed ? (doc.processed.category | titlecase) : 'Pending' }}</ion-badge>
-                </ion-item>
-              }
-            </ion-list>
+        @if (loading() && !processingProgress()) {
+          <div class="loading-center"><ion-spinner name="crescent"></ion-spinner></div>
+        }
 
-            <div class="pagination">
-              <ion-button size="small" fill="outline" (click)="previousPage()" [disabled]="currentPage() === 1">Previous</ion-button>
-              <ion-text>Page {{ currentPage() }} / {{ pageCount() }}</ion-text>
-              <ion-button size="small" fill="outline" (click)="nextPage()" [disabled]="currentPage() === pageCount()">Next</ion-button>
+        <div class="doc-list">
+          @for (doc of currentPageDocs(); track doc.id) {
+            <div class="doc-item" [class.selected]="selectedDocument()?.id === doc.id" (click)="selectDocument(doc)">
+              <div class="doc-item-main">
+                <ion-badge class="format-badge" [color]="formatColor(doc.format)">{{ doc.format | uppercase }}</ion-badge>
+                <span class="doc-name">{{ doc.fileName }}</span>
+              </div>
+              <div class="doc-item-meta">
+                <span class="expected">Expected: {{ doc.expectedContentSafetyOutcome }}</span>
+                <ion-badge [color]="categoryColor(doc)" class="status-badge">{{ doc.processed ? (doc.processed.category | titlecase) : 'Pending' }}</ion-badge>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="pagination">
+          <ion-button size="small" fill="outline" (click)="previousPage()" [disabled]="currentPage() === 1">&lt;</ion-button>
+          <span class="page-info">{{ currentPage() }} / {{ pageCount() }}</span>
+          <ion-button size="small" fill="outline" (click)="nextPage()" [disabled]="currentPage() === pageCount()">&gt;</ion-button>
+        </div>
+
+        <div class="action-buttons">
+          <ion-button expand="block" size="small" (click)="processSelected()" [disabled]="loading() || !selectedDocument()">Process Selected</ion-button>
+          <ion-button expand="block" size="small" fill="outline" (click)="processCurrentPage()" [disabled]="loading()">Process Page</ion-button>
+          <ion-button expand="block" size="small" fill="outline" color="tertiary" (click)="processAll()" [disabled]="loading()">Process All</ion-button>
+        </div>
+      </div>
+
+      <!-- RIGHT: Viewer + Result -->
+      <div class="panel-viewer">
+        @if (selectedDocument(); as doc) {
+          <!-- Document Preview -->
+          <div class="viewer-section">
+            <div class="viewer-header">
+              <h3>{{ doc.fileName }}</h3>
+              <ion-badge [color]="formatColor(doc.format)">{{ doc.format | uppercase }}</ion-badge>
             </div>
 
-            <ion-button expand="block" (click)="processSelected()" [disabled]="loading()">Process selected document</ion-button>
-            <ion-button expand="block" fill="outline" (click)="processCurrentPage()" [disabled]="loading()">Process current page</ion-button>
-            <ion-button expand="block" fill="outline" color="tertiary" (click)="processAll()" [disabled]="loading()">Process all documents</ion-button>
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-      <ion-col size="12" sizeLg="7" class="viewer-col">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>Document Viewer</ion-card-title>
-          </ion-card-header>
-          <ion-card-content>
-            @if (selectedDocument(); as doc) {
+            <div class="viewer-container">
               @if (isImage(doc)) {
-                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" />
+                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" loading="lazy" />
               } @else if (doc.format === 'pdf') {
-                <iframe [src]="previewUrl(doc)" class="doc-frame" title="PDF preview"></iframe>
+                <iframe [src]="previewUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+                <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer" class="fallback-link">Open PDF in new tab</a>
               } @else {
-                <div class="office-placeholder">
-                  <p><strong>{{ doc.fileName }}</strong> is an Office document.</p>
-                  <p>Download to view:</p>
-                  <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer">Open document</a>
-                </div>
+                <iframe [src]="officeViewerUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+                <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer" class="fallback-link">Download {{ doc.fileName }}</a>
               }
+            </div>
+          </div>
 
-              <!-- Content Safety Result Panel -->
-              @if (doc.processed; as result) {
-                <div class="result-detail">
-                  <h3>
-                    Content Safety Result
-                    <ion-badge [color]="categoryColor(doc)">{{ result.category | titlecase }}</ion-badge>
-                  </h3>
-                  <p><strong>Confidence:</strong> {{ result.confidence | percent:'1.0-0' }}</p>
-                  <p><strong>Reason:</strong> {{ result.reason }}</p>
-                  <p>
-                    <strong>Expected:</strong> {{ doc.expectedContentSafetyOutcome | titlecase }}
-                    <strong> · Actual:</strong> {{ result.category | titlecase }}
+          <!-- Content Safety Result -->
+          @if (doc.processed; as result) {
+            <div class="result-section">
+              <div class="result-header">
+                <span>Content Safety Result</span>
+                <ion-badge [color]="categoryColor(doc)">{{ result.category | titlecase }}</ion-badge>
+              </div>
+
+              <div class="result-metrics">
+                <div class="metric">
+                  <span class="metric-label">Confidence</span>
+                  <span class="metric-value">{{ result.confidence | percent:'1.0-0' }}</span>
+                </div>
+                <div class="metric">
+                  <span class="metric-label">Expected</span>
+                  <span class="metric-value">{{ doc.expectedContentSafetyOutcome | titlecase }}</span>
+                </div>
+                <div class="metric">
+                  <span class="metric-label">Actual</span>
+                  <span class="metric-value">
+                    {{ result.category | titlecase }}
                     @if ((doc.expectedContentSafetyOutcome === 'fail' && result.category === 'blocked') || (doc.expectedContentSafetyOutcome === 'pass' && result.category === 'safe')) {
-                      <ion-badge color="success" class="match-badge">Match</ion-badge>
+                      <ion-badge color="success" class="match-badge">✓</ion-badge>
                     } @else {
-                      <ion-badge color="warning" class="match-badge">Mismatch</ion-badge>
+                      <ion-badge color="warning" class="match-badge">✗</ion-badge>
                     }
-                  </p>
+                  </span>
+                </div>
+              </div>
 
-                  @if (result.categories && result.categories.length > 0) {
-                    <table class="severity-table">
-                      <thead><tr><th>Category</th><th>Severity</th></tr></thead>
-                      <tbody>
-                        @for (cat of result.categories; track cat.category) {
-                          <tr [class.flagged]="cat.severity > 0">
-                            <td>{{ cat.category }}</td>
-                            <td>
-                              <ion-badge [color]="cat.severity === 0 ? 'success' : cat.severity <= 2 ? 'warning' : 'danger'">{{ cat.severity }}</ion-badge>
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
-                    </table>
+              <p class="reason-text">{{ result.reason }}</p>
+
+              @if (result.categories && result.categories.length > 0) {
+                <div class="severity-bars">
+                  @for (cat of result.categories; track cat.category) {
+                    <div class="severity-row">
+                      <span class="severity-label">{{ cat.category }}</span>
+                      <div class="severity-bar-track">
+                        <div class="severity-bar-fill" [style.width.%]="(cat.severity / 6) * 100"
+                             [class.sev-0]="cat.severity === 0"
+                             [class.sev-low]="cat.severity > 0 && cat.severity <= 2"
+                             [class.sev-med]="cat.severity > 2 && cat.severity <= 4"
+                             [class.sev-high]="cat.severity > 4"></div>
+                      </div>
+                      <span class="severity-num">{{ cat.severity }}</span>
+                    </div>
                   }
                 </div>
               }
-            } @else {
-              <p>Select a document to preview.</p>
-            }
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+            </div>
+          }
+        } @else {
+          <div class="empty-state">
+            <p>Select a document to preview</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
 </ion-content>

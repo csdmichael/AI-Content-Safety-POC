@@ -4,8 +4,9 @@
   "description": "Azure AI Content Safety POC",
   "main": "index.js",
   "scripts": {
-    "pipeline:process": "node pipeline/process-content.mjs",
-    "pipeline:check": "node --check pipeline/process-content.mjs",
+    "pipeline:process": "python pipeline/process_content.py",
+    "pipeline:upload": "python upload_to_blob.py",
+    "api:start": "cd api && uvicorn server:app --host 0.0.0.0 --port 8000",
     "ui:build": "npm --prefix ui run build",
     "ui:test": "npm --prefix ui run test -- --watch=false --browsers=ChromeHeadless"
   },

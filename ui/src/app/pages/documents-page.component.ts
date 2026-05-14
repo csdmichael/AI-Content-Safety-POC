@@ -5,18 +5,8 @@ import { firstValueFrom } from 'rxjs';
 import {
   IonBadge,
   IonButton,
-  IonCard,
-  IonCardContent,
-  IonCardHeader,
-  IonCardTitle,
-  IonCol,
   IonContent,
-  IonGrid,
-  IonItem,
-  IonLabel,
-  IonList,
   IonProgressBar,
-  IonRow,
   IonSpinner,
   IonText
 } from '@ionic/angular/standalone';
@@ -25,26 +15,18 @@ import { ContentDocument, DocumentManifest } from '../models/document.models';
 import { ContentSafetyService } from '../services/content-safety.service';
 import { DocumentStoreService } from '../services/document-store.service';
 import { ApiClientService } from '../services/api-client.service';
+import { SafeResourceUrlPipe } from '../pipes/safe-resource-url.pipe';
 
 @Component({
   selector: 'app-documents-page',
   standalone: true,
   imports: [
     CommonModule,
+    SafeResourceUrlPipe,
     IonBadge,
     IonButton,
-    IonCard,
-    IonCardContent,
-    IonCardHeader,
-    IonCardTitle,
-    IonCol,
     IonContent,
-    IonGrid,
-    IonItem,
-    IonLabel,
-    IonList,
     IonProgressBar,
-    IonRow,
     IonSpinner,
     IonText
   ],
@@ -183,8 +165,23 @@ export class DocumentsPageComponent {
     return document.blobPreviewUrl || `/${document.relativePath}`;
   }
 
+  officeViewerUrl(doc: ContentDocument): string {
+    const fileUrl = `${window.location.origin}/${doc.relativePath}`;
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+  }
+
   isImage(document: ContentDocument): boolean {
     return document.format === 'png' || document.format === 'jpg';
+  }
+
+  formatColor(format: string): string {
+    switch (format) {
+      case 'png': case 'jpg': return 'primary';
+      case 'pdf': return 'tertiary';
+      case 'docx': return 'secondary';
+      case 'ppt': return 'dark';
+      default: return 'medium';
+    }
   }
 
   categoryColor(doc: ContentDocument): string {
