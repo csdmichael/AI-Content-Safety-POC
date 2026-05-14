@@ -68,12 +68,16 @@
 
             <div class="viewer-container">
               @if (isImage(doc)) {
-                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" loading="lazy" />
+                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" loading="lazy" (error)="onImageError($event, doc)" />
               } @else if (doc.format === 'pdf') {
                 <iframe [src]="previewUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
                 <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer" class="fallback-link">Open PDF in new tab</a>
               } @else {
-                <iframe [src]="officeViewerUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+                @if (doc.blobPreviewUrl) {
+                  <iframe [src]="docViewerUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+                } @else {
+                  <div class="doc-loading-preview"><ion-spinner name="crescent"></ion-spinner><p>Loading preview…</p></div>
+                }
                 <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer" class="fallback-link">Download {{ doc.fileName }}</a>
               }
             </div>

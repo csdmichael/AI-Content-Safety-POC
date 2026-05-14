@@ -1,4 +1,4 @@
-export type DocumentFormat = 'png' | 'jpg' | 'pdf' | 'docx' | 'ppt';
+export type DocumentFormat = 'png' | 'jpg' | 'pdf' | 'docx' | 'pptx';
 
 export interface SafetyCategoryResult {
   category: 'safe' | 'review' | 'blocked';

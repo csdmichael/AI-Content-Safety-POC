@@ -60,11 +60,15 @@
             <!-- Document preview -->
             <div class="detail-viewer">
               @if (isImage(doc)) {
-                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" loading="lazy" />
+                <img [src]="previewUrl(doc)" [alt]="doc.fileName" class="doc-image" loading="lazy" (error)="onImageError($event, doc)" />
               } @else if (doc.format === 'pdf') {
                 <iframe [src]="previewUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
               } @else {
-                <iframe [src]="officeViewerUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+                @if (doc.blobPreviewUrl) {
+                  <iframe [src]="docViewerUrl(doc) | safeResourceUrl" class="doc-frame" [title]="doc.fileName"></iframe>
+                } @else {
+                  <div class="doc-loading-preview"><p>Loading preview…</p></div>
+                }
               }
             </div>
 

@@ -140,13 +140,20 @@ export class ResultsPageComponent implements AfterViewInit {
     return document.blobPreviewUrl || `/${document.relativePath}`;
   }
 
-  officeViewerUrl(doc: ContentDocument): string {
-    const fileUrl = `${window.location.origin}/${doc.relativePath}`;
-    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+  docViewerUrl(doc: ContentDocument): string {
+    return `https://docs.google.com/gview?url=${encodeURIComponent(doc.blobPreviewUrl!)}&embedded=true`;
   }
 
   isImage(document: ContentDocument): boolean {
     return document.format === 'png' || document.format === 'jpg';
+  }
+
+  onImageError(event: Event, doc: ContentDocument): void {
+    const img = event.target as HTMLImageElement;
+    const localPath = `/${doc.relativePath}`;
+    if (!img.src.endsWith(doc.relativePath)) {
+      img.src = localPath;
+    }
   }
 
   categoryColor(key: string): string {

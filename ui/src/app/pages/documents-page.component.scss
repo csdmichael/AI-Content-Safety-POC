@@ -136,6 +136,21 @@
   margin-top: 0.3rem;
 }
 
+/* ---- loading/text preview for DOCX/PPTX ---- */
+.doc-loading-preview {
+  width: 100%;
+  height: 55vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #f8f9fc;
+  border: 1px solid #e2e6ee;
+  border-radius: 0.25rem;
+  color: #888;
+}
+
 /* ---- result panel ---- */
 .result-section {
   border: 1px solid #e2e6ee;

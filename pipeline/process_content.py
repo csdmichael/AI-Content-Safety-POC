@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-"""Azure AI Content Safety Pipeline — uploads documents to Blob Storage,
+"""Azure AI Content Safety Pipeline — downloads documents from Blob Storage,
 analyses them via Content Safety, and stores results in Cosmos DB."""
 
 import asyncio
 import base64
 import json
-import mimetypes
 import os
-import ssl
 from pathlib import Path
 
 from azure.identity.aio import DefaultAzureCredential
@@ -33,11 +31,7 @@ async def main() -> None:
 
     credential = DefaultAzureCredential()
 
-    # Blob Storage — allow self-signed certs for private endpoints (dev/test)
-    ssl_ctx = ssl.create_default_context()
-    ssl_ctx.check_hostname = False
-    ssl_ctx.verify_mode = ssl.CERT_NONE
-
+    # Blob Storage
     blob_service = BlobServiceClient(
         azure_config["blobStorage"]["privateEndpointUrl"],
         credential=credential,
@@ -46,8 +40,6 @@ async def main() -> None:
     container_client = blob_service.get_container_client(
         azure_config["blobStorage"]["containerName"]
     )
-    if not await container_client.exists():
-        await container_client.create_container()
 
     # Cosmos DB
     cosmos = CosmosClient(
@@ -108,17 +100,10 @@ async def main() -> None:
 
     async def process_document(doc: dict) -> None:
         async with semaphore:
-            local_path = REPO_ROOT / doc["relativePath"]
-            file_bytes = local_path.read_bytes()
-
-            # Upload to Blob Storage
+            # Download from Blob Storage
             blob_client = container_client.get_blob_client(doc["fileName"])
-            content_type = mimetypes.guess_type(doc["fileName"])[0] or "application/octet-stream"
-            await blob_client.upload_blob(
-                file_bytes,
-                overwrite=True,
-                content_settings={"content_type": content_type},
-            )
+            download = await blob_client.download_blob()
+            file_bytes = await download.readall()
 
             # Analyze text
             text_analysis = None

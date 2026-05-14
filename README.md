@@ -24,18 +24,9 @@ Azure AI Content Safety proof-of-concept with generated test documents, private-
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  A[data/*] --> B[pipeline/process_content.py]
-  B --> C[Blob Storage<br>Private Endpoint]
-  B --> D[Content Safety<br>Private Endpoint]
-  B --> E[Cosmos DB<br>Private Endpoint]
-  F[FastAPI API] --> E
-  F --> C
-  U[Ionic Angular UI] --> F
-```
+![Architecture Diagram](docs/Architecture.png)
 
-1. **Pipeline** uploads files to Blob Storage, analyses text + images via Content Safety, stores results in Cosmos DB.
+1. **Pipeline** downloads files from Blob Storage, analyses text + images via Content Safety, stores results in Cosmos DB.
 2. **API** (FastAPI on App Service) serves results from Cosmos DB and SAS download URLs from Blob Storage.
 3. **UI** (Angular + Ionic) displays documents, inline previews, severity bars, KPIs, and grouped moderation results.
 
@@ -47,9 +38,7 @@ All Azure services communicate over **private endpoints** with **managed identit
 .
 ├── .github/workflows/       # CI/CD — one workflow per component
 │   ├── api-deploy.yml        #   API deploy (api/**)
-│   ├── blob-upload.yml       #   Upload data to Blob Storage (data/**)
 │   ├── pipeline-process.yml  #   Run content safety pipeline (pipeline/**)
-│   ├── pipeline-validate.yml #   Lint pipeline on PR (pipeline/**)
 │   ├── ui-ci.yml             #   UI build + test on PR (ui/**)
 │   └── ui-deploy.yml         #   UI deploy to App Service (ui/**)
 ├── api/
@@ -242,7 +231,7 @@ uvicorn server:app --host 0.0.0.0 --port 8000 --reload
   "safe": 50,
   "blocked": 25,
   "review": 25,
-  "byFormat": { "png": 20, "jpg": 20, "pdf": 20, "docx": 20, "ppt": 20 }
+  "byFormat": { "png": 20, "jpg": 20, "pdf": 20, "docx": 20, "pptx": 20 }
 }
 ```
 
@@ -252,7 +241,7 @@ Deployed at **https://ai-content-safety-ui.azurewebsites.net**
 
 ### Documents Page
 - Compact two-panel layout: scrollable document list + inline viewer
-- Per-file-type viewers: `<img>` for PNG/JPG, `<iframe>` for PDF, Office Online viewer for DOCX/PPT
+- Per-file-type viewers: `<img>` for PNG/JPG, `<iframe>` for PDF, Office Online viewer for DOCX/PPTX
 - Severity bar visualisation per category (Hate, SelfHarm, Sexual, Violence)
 - Process selected / current page / all documents
 - Paginated list with format badges and status indicators
@@ -287,9 +276,7 @@ Each component has its own workflow, triggered only by changes to that component
 | **UI CI** | `ui-ci.yml` | `ui/**` | Build + test (PR) |
 | **UI Deploy** | `ui-deploy.yml` | `ui/**` | Build + deploy to App Service (push to main) |
 | **API Deploy** | `api-deploy.yml` | `api/**` | Package + deploy Python API (push to main) |
-| **Blob Upload** | `blob-upload.yml` | `data/**`, `upload_to_blob.py` | Upload files to Blob Storage |
 | **Pipeline Process** | `pipeline-process.yml` | `pipeline/**`, `config/**` | Run content safety analysis |
-| **Pipeline Validate** | `pipeline-validate.yml` | `pipeline/**`, `config/**` | Syntax check on PR |
 
 All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 
@@ -305,7 +292,7 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 
 ## Generated Data
 
-- 100 mixed-format test files in `data/` (20 each of PNG, JPG, PDF, DOCX, PPT)
+- 100 mixed-format test files in `data/` (20 each of PNG, JPG, PDF, DOCX, PPTX)
 - `data/manifest.json` tracks all files with expected moderation outcomes
 - 50 files expected to fail content safety (seeded with harmful text)
 - 50 files expected to pass

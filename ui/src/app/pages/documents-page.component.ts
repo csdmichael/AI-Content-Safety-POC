@@ -64,6 +64,9 @@ export class DocumentsPageComponent {
       const manifest = await firstValueFrom(this.http.get<DocumentManifest>('/assets/data/manifest.json'));
       this.store.setDocuments(manifest.documents);
       this.selectedDocument.set(manifest.documents[0] ?? null);
+      if (manifest.documents[0]) {
+        void this.loadBlobPreview(manifest.documents[0]);
+      }
 
       try {
         const results = await this.contentSafety.fetchAllResults();
@@ -165,13 +168,20 @@ export class DocumentsPageComponent {
     return document.blobPreviewUrl || `/${document.relativePath}`;
   }
 
-  officeViewerUrl(doc: ContentDocument): string {
-    const fileUrl = `${window.location.origin}/${doc.relativePath}`;
-    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(fileUrl)}`;
+  docViewerUrl(doc: ContentDocument): string {
+    return `https://docs.google.com/gview?url=${encodeURIComponent(doc.blobPreviewUrl!)}&embedded=true`;
   }
 
   isImage(document: ContentDocument): boolean {
     return document.format === 'png' || document.format === 'jpg';
+  }
+
+  onImageError(event: Event, doc: ContentDocument): void {
+    const img = event.target as HTMLImageElement;
+    const localPath = `/${doc.relativePath}`;
+    if (!img.src.endsWith(doc.relativePath)) {
+      img.src = localPath;
+    }
   }
 
   formatColor(format: string): string {
@@ -179,7 +189,7 @@ export class DocumentsPageComponent {
       case 'png': case 'jpg': return 'primary';
       case 'pdf': return 'tertiary';
       case 'docx': return 'secondary';
-      case 'ppt': return 'dark';
+      case 'pptx': return 'dark';
       default: return 'medium';
     }
   }
