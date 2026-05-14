@@ -18,9 +18,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies (cross-platform for App Service Bullseye)
+        working-directory: api
+        run: |
+          pip install \
+            --platform manylinux_2_28_x86_64 \
+            --platform linux_x86_64 \
+            --platform any \
+            --implementation cp \
+            --python-version 3.12 \
+            --only-binary :all: \
+            -r requirements.txt \
+            -t .python_packages/lib/site-packages
+
       - name: Package
         working-directory: api
-        run: zip -r ../api.zip server.py requirements.txt startup.sh
+        run: zip -r ../api.zip server.py requirements.txt startup.sh .python_packages
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -31,10 +48,6 @@ jobs:
 
       - name: Deploy to Azure Web App
         run: |
-          az webapp config appsettings set \
-            --resource-group "${{ secrets.AZURE_WEBAPP_RESOURCE_GROUP }}" \
-            --name ai-content-safety-api \
-            --settings SCM_DO_BUILD_DURING_DEPLOYMENT=true
           az webapp deploy \
             --resource-group "${{ secrets.AZURE_WEBAPP_RESOURCE_GROUP }}" \
             --name ai-content-safety-api \

@@ -166,6 +166,13 @@ az role assignment create --role "Website Contributor" \
   --assignee "$CLIENT_ID" \
   --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP"
 
+# Contributor — required for pipeline workflow to temporarily add/remove
+# the GitHub Actions runner IP from Cosmos DB, Storage, and Cognitive
+# Services firewall rules (all resources use private endpoints)
+az role assignment create --role "Contributor" \
+  --assignee "$CLIENT_ID" \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP"
+
 # Storage Blob Data Reader — required for pipeline to download blobs
 az role assignment create --role "Storage Blob Data Reader" \
   --assignee "$CLIENT_ID" \
