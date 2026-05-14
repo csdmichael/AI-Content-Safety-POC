@@ -139,21 +139,33 @@ export AZURE_CLIENT_SECRET="<secret>"
 
 ```bash
 CLIENT_ID="<your-client-or-managed-identity-id>"
+SUBSCRIPTION_ID="86b37969-9445-49cf-b03f-d8866235171c"
+RESOURCE_GROUP="ai-myaacoub"
 
-# Storage Blob Data Contributor
+# Website Contributor — required for CI/CD to deploy to App Service
+az role assignment create --role "Website Contributor" \
+  --assignee "$CLIENT_ID" \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP"
+
+# Storage Blob Data Reader — required for pipeline to download blobs
+az role assignment create --role "Storage Blob Data Reader" \
+  --assignee "$CLIENT_ID" \
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/aistoragemyaacoub"
+
+# Storage Blob Data Contributor — required for uploading files to blob
 az role assignment create --role "Storage Blob Data Contributor" \
   --assignee "$CLIENT_ID" \
-  --scope "/subscriptions/.../Microsoft.Storage/storageAccounts/aistoragemyaacoub"
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.Storage/storageAccounts/aistoragemyaacoub"
 
 # Cognitive Services User
 az role assignment create --role "Cognitive Services User" \
   --assignee "$CLIENT_ID" \
-  --scope "/subscriptions/.../Microsoft.CognitiveServices/accounts/002-ai-poc-private"
+  --scope "/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP/providers/Microsoft.CognitiveServices/accounts/002-ai-poc-private"
 
 # Cosmos DB Built-in Data Contributor
 OBJECT_ID=$(az ad sp show --id "$CLIENT_ID" --query id -o tsv)
 az cosmosdb sql role assignment create \
-  --account-name cosmos-ai-poc --resource-group ai-myaacoub \
+  --account-name cosmos-ai-poc --resource-group "$RESOURCE_GROUP" \
   --role-definition-id 00000000-0000-0000-0000-000000000002 \
   --principal-id "$OBJECT_ID" --scope "/"
 ```
