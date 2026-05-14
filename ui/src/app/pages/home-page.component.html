@@ -1,0 +1,41 @@
+<ion-content>
+  <div class="home-page">
+    <section class="hero">
+      <h1>AI Content Safety Platform</h1>
+      <p>
+        This platform helps teams evaluate text and image content with Azure AI Content Safety, route high-risk items for review,
+        and tune moderation behavior for real-world business policies.
+      </p>
+      <div class="hero-links">
+        <a class="primary-link" href="https://youtu.be/BcAAAleKcdE?si=O8eDzY6oeP2tq9OM" target="_blank" rel="noopener noreferrer">Watch platform walkthrough (primary)</a>
+        <a href="https://learn.microsoft.com/azure/ai-services/content-safety/" target="_blank" rel="noopener noreferrer">Microsoft Learn: Azure AI Content Safety</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Custom Filters and Category Thresholds</h2>
+      <p>
+        You can configure per-category thresholds to decide whether content is safe, should be reviewed, or must be blocked.
+        Each category uses severity levels 0, 2, 4, and 6, and thresholds can be tuned independently.
+      </p>
+      <div class="category-grid">
+        <article>
+          <h3>Violence</h3>
+          <p>Detects threats, graphic harm, weapon usage, or instructions for violent acts. Use stricter thresholds to reduce exposure to violent material.</p>
+        </article>
+        <article>
+          <h3>Self Harm</h3>
+          <p>Flags self-injury, suicide encouragement, and harmful eating-disorder content. Set low thresholds for crisis-sensitive experiences.</p>
+        </article>
+        <article>
+          <h3>Sexual Content</h3>
+          <p>Identifies sexual language and explicit content, including high-risk sexual material. Tune thresholds by audience age and compliance needs.</p>
+        </article>
+        <article>
+          <h3>Hate</h3>
+          <p>Captures hateful or discriminatory expressions targeting protected groups. Lower thresholds help enforce stricter anti-abuse community standards.</p>
+        </article>
+      </div>
+    </section>
+  </div>
+</ion-content>

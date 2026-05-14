@@ -7,7 +7,10 @@
       </ion-title>
     </ion-toolbar>
     <ion-toolbar>
-      <ion-segment value="documents" aria-label="Navigation">
+      <ion-segment [value]="activeSegment()" aria-label="Navigation">
+        <ion-segment-button value="home" [routerLink]="['/home']">
+          <ion-label>Home</ion-label>
+        </ion-segment-button>
         <ion-segment-button value="documents" [routerLink]="['/documents']">
           <ion-label>Documents</ion-label>
         </ion-segment-button>
