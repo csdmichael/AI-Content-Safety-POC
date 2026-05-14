@@ -33,7 +33,69 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Get runner public IP
+        id: runner-ip
+        run: echo "ip=$(curl -s https://checkip.amazonaws.com)" >> "$GITHUB_OUTPUT"
+
+      - name: Parse resource names from config
+        id: res
+        run: |
+          CFG="config/azure-resources.json"
+          echo "rg=$(jq -r .resourceGroupName "$CFG")" >> "$GITHUB_OUTPUT"
+          echo "cosmos=$(jq -r '.cosmosDb.accountResourceId | split("/") | last' "$CFG")" >> "$GITHUB_OUTPUT"
+          echo "storage=$(jq -r '.blobStorage.accountResourceId | split("/") | last' "$CFG")" >> "$GITHUB_OUTPUT"
+          echo "cogservices=$(jq -r '.contentSafety.resourceId | split("/") | last' "$CFG")" >> "$GITHUB_OUTPUT"
+
+      - name: Temporarily allow runner IP through firewalls
+        env:
+          RUNNER_IP: ${{ steps.runner-ip.outputs.ip }}
+          RG: ${{ steps.res.outputs.rg }}
+          COSMOS: ${{ steps.res.outputs.cosmos }}
+          STORAGE: ${{ steps.res.outputs.storage }}
+          COG: ${{ steps.res.outputs.cogservices }}
+        run: |
+          # Cosmos DB — append runner IP to existing IP rules
+          EXISTING=$(az cosmosdb show -g "$RG" -n "$COSMOS" \
+            --query "ipRules[].ipAddressOrRange" -o tsv | paste -sd,)
+          az cosmosdb update -g "$RG" -n "$COSMOS" \
+            --ip-range-filter "${EXISTING:+$EXISTING,}$RUNNER_IP"
+
+          # Storage account
+          az storage account network-rule add -g "$RG" \
+            --account-name "$STORAGE" --ip-address "$RUNNER_IP"
+
+          # Cognitive Services (Content Safety)
+          az cognitiveservices account network-rule add -g "$RG" \
+            -n "$COG" --ip-address "$RUNNER_IP"
+
+          echo "Waiting 60s for firewall propagation..."
+          sleep 60
+
       - name: Run content safety pipeline
         env:
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         run: python pipeline/process_content.py
+
+      - name: Remove runner IP from firewalls
+        if: always()
+        env:
+          RUNNER_IP: ${{ steps.runner-ip.outputs.ip }}
+          RG: ${{ steps.res.outputs.rg }}
+          COSMOS: ${{ steps.res.outputs.cosmos }}
+          STORAGE: ${{ steps.res.outputs.storage }}
+          COG: ${{ steps.res.outputs.cogservices }}
+        run: |
+          # Cosmos DB — restore rules without runner IP
+          REMAINING=$(az cosmosdb show -g "$RG" -n "$COSMOS" \
+            --query "ipRules[?ipAddressOrRange!=\`$RUNNER_IP\`].ipAddressOrRange" \
+            -o tsv | paste -sd,)
+          az cosmosdb update -g "$RG" -n "$COSMOS" \
+            --ip-range-filter "${REMAINING:-}" || true
+
+          # Storage account
+          az storage account network-rule remove -g "$RG" \
+            --account-name "$STORAGE" --ip-address "$RUNNER_IP" || true
+
+          # Cognitive Services
+          az cognitiveservices account network-rule remove -g "$RG" \
+            -n "$COG" --ip-address "$RUNNER_IP" || true
