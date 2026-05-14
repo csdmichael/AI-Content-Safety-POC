@@ -17,6 +17,15 @@ const pipelineConfig = await readJson('config/pipeline-settings.json');
 const manifest = await readJson(pipelineConfig.manifestPath);
 
 const credential = new DefaultAzureCredential();
+const customCategoryMatchers = {
+  Profanity: [/\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b/i],
+  PII: [
+    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i,
+    /\b\d{3}-\d{2}-\d{4}\b/,
+    /\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b/,
+    /\b(?:\d[ -]*?){13,16}\b/
+  ]
+};
 // Bypass TLS validation for Blob Storage private endpoint (for dev/test only)
 const insecureAgent = new https.Agent({ rejectUnauthorized: false });
 const blobServiceClient = new BlobServiceClient(azureConfig.blobStorage.privateEndpointUrl, credential, { keepAliveOptions: { agent: insecureAgent } });
@@ -43,6 +52,12 @@ const runInBatches = async (items, batchSize, worker) => {
   }
 };
 
+const analyzeCustomCategories = (text = '') =>
+  Object.entries(customCategoryMatchers).map(([category, patterns]) => ({
+    category,
+    severity: patterns.some((p) => p.test(text)) ? 6 : 0
+  }));
+
 
 const analyzeText = async (text) => {
   const token = await getContentSafetyToken();
@@ -59,9 +74,13 @@ const analyzeText = async (text) => {
     throw new Error(`Content Safety text request failed (${response.status}): ${await response.text()}`);
   }
   const body = await response.json();
-  const maxSeverity = Math.max(...(body.categoriesAnalysis || []).map((item) => item.severity || 0), 0);
+  const csMaxSeverity = Math.max(...(body.categoriesAnalysis || []).map((item) => item.severity || 0), 0);
+  const customCategoryAnalysis = analyzeCustomCategories(text);
+  const customMaxSeverity = Math.max(...customCategoryAnalysis.map((item) => item.severity || 0), 0);
+  const maxSeverity = Math.max(csMaxSeverity, customMaxSeverity);
   return {
     raw: body,
+    customCategoryAnalysis,
     maxSeverity,
     decision: maxSeverity >= pipelineConfig.contentSafetySeverityThreshold ? 'blocked' : 'safe'
   };
@@ -123,6 +142,7 @@ await runInBatches(manifest.documents, pipelineConfig.maxParallelism, async (doc
     textAnalysisDecision: textAnalysis?.decision,
     textMaxSeverity: textAnalysis?.maxSeverity,
     textAnalysis: textAnalysis?.raw,
+    customCategoryAnalysis: textAnalysis?.customCategoryAnalysis,
     imageAnalysisDecision: imageAnalysis?.decision,
     imageMaxSeverity: imageAnalysis?.maxSeverity,
     imageAnalysis: imageAnalysis?.raw,

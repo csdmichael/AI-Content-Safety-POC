@@ -8,6 +8,7 @@ import base64
 import concurrent.futures
 import json
 import os
+import re
 from datetime import datetime, timezone, timedelta
 from urllib.parse import quote
 
@@ -213,6 +214,31 @@ _pipeline_state: dict = {"status": "idle", "processed": 0, "total": 0, "errors":
 _pipeline_executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
 
 IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "webp"}
+CUSTOM_CATEGORY_SEVERITY = 6
+CUSTOM_CATEGORY_PATTERNS = {
+    "Profanity": [
+        re.compile(r"\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b", re.IGNORECASE),
+    ],
+    "PII": [
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+        re.compile(r"\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b"),
+        re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
+    ],
+}
+
+
+def _analyze_custom_categories(text: str) -> list[dict]:
+    normalized = text or ""
+    return [
+        {
+            "category": category,
+            "severity": CUSTOM_CATEGORY_SEVERITY
+            if any(pattern.search(normalized) for pattern in patterns)
+            else 0,
+        }
+        for category, patterns in CUSTOM_CATEGORY_PATTERNS.items()
+    ]
 
 
 def _get_cs_token() -> str:
@@ -230,8 +256,16 @@ def _analyze_text(text: str) -> dict:
     )
     resp.raise_for_status()
     body = resp.json()
-    max_sev = max((c.get("severity", 0) for c in body.get("categoriesAnalysis", [])), default=0)
-    return {"raw": body, "maxSeverity": max_sev, "decision": "blocked" if max_sev >= SEVERITY_THRESHOLD else "safe"}
+    cs_max_sev = max((c.get("severity", 0) for c in body.get("categoriesAnalysis", [])), default=0)
+    custom_categories = _analyze_custom_categories(text)
+    custom_max_sev = max((c.get("severity", 0) for c in custom_categories), default=0)
+    max_sev = max(cs_max_sev, custom_max_sev)
+    return {
+        "raw": body,
+        "customCategoryAnalysis": custom_categories,
+        "maxSeverity": max_sev,
+        "decision": "blocked" if max_sev >= SEVERITY_THRESHOLD else "safe",
+    }
 
 
 def _analyze_image(image_bytes: bytes) -> dict:
@@ -281,6 +315,7 @@ def _run_pipeline() -> None:
                     "textAnalysisDecision": text_analysis["decision"] if text_analysis else None,
                     "textMaxSeverity": text_analysis["maxSeverity"] if text_analysis else None,
                     "textAnalysis": text_analysis["raw"] if text_analysis else None,
+                    "customCategoryAnalysis": text_analysis["customCategoryAnalysis"] if text_analysis else None,
                     "imageAnalysisDecision": image_analysis["decision"] if image_analysis else None,
                     "imageMaxSeverity": image_analysis["maxSeverity"] if image_analysis else None,
                     "imageAnalysis": image_analysis["raw"] if image_analysis else None,

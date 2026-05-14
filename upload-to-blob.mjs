@@ -17,7 +17,7 @@ const containerClient = blobServiceClient.getContainerClient(containerName);
 
 const manifest = JSON.parse(await fs.readFile(path.join(dataDir, 'manifest.json'), 'utf-8'));
 
-console.log(`Uploading ${manifest.documents.length} files to Azure Blob Storage...`);
+console.log(`Uploading ${manifest.documents.length} files + manifest.json to Azure Blob Storage...`);
 let success = 0, fail = 0;
 
 for (const doc of manifest.documents) {
@@ -33,6 +33,19 @@ for (const doc of manifest.documents) {
     console.error(`✗ Failed ${doc.fileName}: ${err.message}`);
     fail++;
   }
+}
+
+try {
+  const manifestBuffer = await fs.readFile(path.join(dataDir, 'manifest.json'));
+  const manifestBlobClient = containerClient.getBlockBlobClient('manifest.json');
+  await manifestBlobClient.upload(manifestBuffer, manifestBuffer.length, {
+    blobHTTPHeaders: { blobContentType: 'application/json' }
+  });
+  console.log('✓ Uploaded manifest.json');
+  success++;
+} catch (err) {
+  console.error(`✗ Failed manifest.json: ${err.message}`);
+  fail++;
 }
 
 console.log(`\nUpload complete: ${success} successful, ${fail} failed`);

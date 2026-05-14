@@ -9,6 +9,7 @@ Files are assumed to already be uploaded to Blob Storage.
 
 import base64
 import json
+import re
 import sys
 import time
 from datetime import datetime, timezone
@@ -20,6 +21,25 @@ from azure.cosmos import CosmosClient
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "webp"}
+CUSTOM_CATEGORY_PATTERNS = {
+    "Profanity": [
+        re.compile(r"\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b", re.IGNORECASE),
+    ],
+    "PII": [
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+        re.compile(r"\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b"),
+        re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
+    ],
+}
+
+
+def custom_category_analysis(text: str) -> list[dict]:
+    normalized = text or ""
+    return [
+        {"category": category, "severity": 6 if any(p.search(normalized) for p in patterns) else 0}
+        for category, patterns in CUSTOM_CATEGORY_PATTERNS.items()
+    ]
 
 
 def main() -> None:
@@ -68,12 +88,16 @@ def main() -> None:
                 resp = client.post(url, headers=headers, json={"text": doc["seedText"]})
                 resp.raise_for_status()
                 body = resp.json()
-                max_sev = max(
+                cs_max_sev = max(
                     (c.get("severity", 0) for c in body.get("categoriesAnalysis", [])),
                     default=0,
                 )
+                custom_analysis = custom_category_analysis(doc.get("seedText", ""))
+                custom_max = max((c.get("severity", 0) for c in custom_analysis), default=0)
+                max_sev = max(cs_max_sev, custom_max)
                 text_analysis = {
                     "raw": body,
+                    "customCategoryAnalysis": custom_analysis,
                     "maxSeverity": max_sev,
                     "decision": "blocked" if max_sev >= severity_threshold else "safe",
                 }
@@ -115,6 +139,7 @@ def main() -> None:
                 "textAnalysisDecision": text_analysis["decision"] if text_analysis else None,
                 "textMaxSeverity": text_analysis["maxSeverity"] if text_analysis else None,
                 "textAnalysis": text_analysis["raw"] if text_analysis else None,
+                "customCategoryAnalysis": text_analysis["customCategoryAnalysis"] if text_analysis else None,
                 "imageAnalysisDecision": image_analysis["decision"] if image_analysis else None,
                 "imageMaxSeverity": image_analysis["maxSeverity"] if image_analysis else None,
                 "imageAnalysis": image_analysis["raw"] if image_analysis else None,
