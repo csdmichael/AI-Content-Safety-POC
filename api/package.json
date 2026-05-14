@@ -15,6 +15,7 @@
     "@azure/identity": "^4.13.0",
     "@azure/storage-blob": "^12.27.0",
     "cors": "^2.8.5",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "swagger-ui-express": "^5.0.1"
   }
 }

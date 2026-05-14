@@ -1,5 +1,21 @@
 <ion-content>
   <ion-grid fixed class="layout-grid">
+    <!-- Error banner -->
+    @if (errorMessage(); as err) {
+      <div class="error-banner">
+        <ion-text color="danger">{{ err }}</ion-text>
+        <ion-button size="small" fill="clear" color="danger" (click)="errorMessage.set(null)">Dismiss</ion-button>
+      </div>
+    }
+
+    <!-- Processing progress -->
+    @if (processingProgress(); as p) {
+      <div class="progress-bar">
+        <ion-text color="primary">Processing {{ p.current }} / {{ p.total }}</ion-text>
+        <ion-progress-bar [value]="p.current / p.total"></ion-progress-bar>
+      </div>
+    }
+
     <ion-row>
       <ion-col size="12" sizeLg="5" class="list-col">
         <ion-card>
@@ -7,6 +23,10 @@
             <ion-card-title>Documents</ion-card-title>
           </ion-card-header>
           <ion-card-content>
+            @if (loading() && !processingProgress()) {
+              <div class="loading-center"><ion-spinner name="crescent"></ion-spinner></div>
+            }
+
             <ion-list>
               @for (doc of currentPageDocs(); track doc.id) {
                 <ion-item button detail="false" (click)="selectDocument(doc)" [class.selected]="selectedDocument()?.id === doc.id">
@@ -14,7 +34,7 @@
                     <h2>{{ doc.fileName }}</h2>
                     <p>{{ doc.format | uppercase }} · Expected {{ doc.expectedContentSafetyOutcome }}</p>
                   </ion-label>
-                  <ion-badge [color]="doc.processed ? 'success' : 'medium'">{{ doc.processed ? 'Processed' : 'Pending' }}</ion-badge>
+                  <ion-badge [color]="categoryColor(doc)">{{ doc.processed ? (doc.processed.category | titlecase) : 'Pending' }}</ion-badge>
                 </ion-item>
               }
             </ion-list>
@@ -25,8 +45,9 @@
               <ion-button size="small" fill="outline" (click)="nextPage()" [disabled]="currentPage() === pageCount()">Next</ion-button>
             </div>
 
-            <ion-button expand="block" (click)="processSelected()">Process selected document</ion-button>
-            <ion-button expand="block" fill="outline" (click)="processCurrentPage()">Process current page</ion-button>
+            <ion-button expand="block" (click)="processSelected()" [disabled]="loading()">Process selected document</ion-button>
+            <ion-button expand="block" fill="outline" (click)="processCurrentPage()" [disabled]="loading()">Process current page</ion-button>
+            <ion-button expand="block" fill="outline" color="tertiary" (click)="processAll()" [disabled]="loading()">Process all documents</ion-button>
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -34,7 +55,7 @@
       <ion-col size="12" sizeLg="7" class="viewer-col">
         <ion-card>
           <ion-card-header>
-            <ion-card-title>Document Viewer (before processing)</ion-card-title>
+            <ion-card-title>Document Viewer</ion-card-title>
           </ion-card-header>
           <ion-card-content>
             @if (selectedDocument(); as doc) {
@@ -47,6 +68,43 @@
                   <p><strong>{{ doc.fileName }}</strong> is an Office document.</p>
                   <p>Download to view:</p>
                   <a [href]="previewUrl(doc)" target="_blank" rel="noopener noreferrer">Open document</a>
+                </div>
+              }
+
+              <!-- Content Safety Result Panel -->
+              @if (doc.processed; as result) {
+                <div class="result-detail">
+                  <h3>
+                    Content Safety Result
+                    <ion-badge [color]="categoryColor(doc)">{{ result.category | titlecase }}</ion-badge>
+                  </h3>
+                  <p><strong>Confidence:</strong> {{ result.confidence | percent:'1.0-0' }}</p>
+                  <p><strong>Reason:</strong> {{ result.reason }}</p>
+                  <p>
+                    <strong>Expected:</strong> {{ doc.expectedContentSafetyOutcome | titlecase }}
+                    <strong> · Actual:</strong> {{ result.category | titlecase }}
+                    @if ((doc.expectedContentSafetyOutcome === 'fail' && result.category === 'blocked') || (doc.expectedContentSafetyOutcome === 'pass' && result.category === 'safe')) {
+                      <ion-badge color="success" class="match-badge">Match</ion-badge>
+                    } @else {
+                      <ion-badge color="warning" class="match-badge">Mismatch</ion-badge>
+                    }
+                  </p>
+
+                  @if (result.categories && result.categories.length > 0) {
+                    <table class="severity-table">
+                      <thead><tr><th>Category</th><th>Severity</th></tr></thead>
+                      <tbody>
+                        @for (cat of result.categories; track cat.category) {
+                          <tr [class.flagged]="cat.severity > 0">
+                            <td>{{ cat.category }}</td>
+                            <td>
+                              <ion-badge [color]="cat.severity === 0 ? 'success' : cat.severity <= 2 ? 'warning' : 'danger'">{{ cat.severity }}</ion-badge>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  }
                 </div>
               }
             } @else {

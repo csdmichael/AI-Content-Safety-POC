@@ -16,4 +16,8 @@ export class DocumentStoreService {
   setResult(id: string, result: SafetyCategoryResult): void {
     this.docs.update((documents) => documents.map((doc) => (doc.id === id ? { ...doc, processed: result } : doc)));
   }
+
+  setBlobPreviewUrl(id: string, url: string): void {
+    this.docs.update((documents) => documents.map((doc) => (doc.id === id ? { ...doc, blobPreviewUrl: url } : doc)));
+  }
 }

@@ -50,10 +50,16 @@ export class ContentSafetyService {
       ? flagged.map((c) => `${c.category}=${c.severity}`).join(', ')
       : 'No category exceeded severity threshold.';
 
+    const allCategories = [
+      ...(record.textAnalysis?.categoriesAnalysis ?? []),
+      ...(record.imageAnalysis?.categoriesAnalysis ?? [])
+    ];
+
     return {
       category,
       confidence,
-      reason: `Max severity ${maxSeverity}. ${detail}`
+      reason: `Max severity ${maxSeverity}. ${detail}`,
+      categories: allCategories.map((c) => ({ category: c.category, severity: c.severity ?? 0 }))
     };
   }
 }

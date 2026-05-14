@@ -1,0 +1,105 @@
+# AI Content Safety POC – Prompts & Requirements
+
+## Project Goal
+Build an end-to-end Azure AI Content Safety pipeline with a modern Angular/Ionic UI that:
+1. Generates mixed test content (images, PDFs, Word docs, PowerPoint decks)
+2. Uploads files to Azure Blob Storage (private endpoint)
+3. Analyzes content via Azure AI Content Safety API (private endpoint)
+4. Stores results in Azure Cosmos DB (private endpoint)
+5. Exposes results via a REST API (Express.js on App Service)
+6. Displays results in a modern web dashboard
+
+---
+
+## Azure Resources
+- **Resource Group:** ai-myaacoub (West US 2)
+- **Blob Storage:** aistoragemyaacoub (private endpoint, managed identity auth)
+- **Content Safety:** 002-ai-poc-private (private endpoint)
+- **Cosmos DB:** cosmos-ai-poc (database: contentSafetyDb, container: contentSafetyResults)
+- **VNet:** vnet-salespoc-westus2 (subnet: default)
+- **App Service (API):** ai-content-safety-api
+- **App Service (UI):** ai-content-safety-ui
+
+---
+
+## Data Generation Requirements
+- 100 test documents: 20 PNG, 20 JPG, 20 PDF, 20 DOCX, 20 PPT
+- 50 safe content (business reports, product docs, training materials)
+- 50 risky content (security alerts, fraud references, controversial topics)
+- PNG/JPG: actual images with animals, cartoon characters, nature scenes
+- PDF: multi-page documents with realistic text content
+- DOCX: Word documents with headings, paragraphs, multiple sections
+- PPT: presentations with multiple slides and formatted content
+
+---
+
+## Pipeline Requirements
+- Upload each file to Blob Storage
+- For text-based files (PDF, DOCX, PPT): extract text and call Content Safety text analysis
+- For image files (PNG, JPG): call Content Safety image analysis
+- Store full result (severity scores per category: Hate, SelfHarm, Sexual, Violence) in Cosmos DB
+- Apply severity threshold (configurable, default 4) to decide safe/blocked
+- Process in batches (configurable parallelism, default 4)
+- Use managed identity (DefaultAzureCredential) for all Azure services
+
+---
+
+## API Requirements (Express.js)
+- `GET /api/health` – Health check with status, endpoints, timestamp
+- `GET /api/documents` – List all processed documents (id, fileName, format, outcome, timestamp)
+- `GET /api/documents/:fileName/download-url` – Generate time-limited SAS URL for blob download
+- `GET /api/results` – List all content safety results, optional `?decision=safe|blocked` filter
+- `GET /api/results/summary` – Aggregated KPI summary (total, safe, blocked, review, byFormat)
+- `GET /api/results/:id` – Single result detail with full category analysis
+- `GET /api/swagger` – Swagger UI for interactive API documentation
+- `GET /api/swagger.json` – OpenAPI 3.0 spec in JSON format
+- CORS enabled for UI origin
+- Managed identity auth to Cosmos DB and Blob Storage
+
+---
+
+## UI Requirements (Angular 20 + Ionic 8)
+
+### General
+- Two-page layout with tab/segment navigation: "Documents" and "Results & KPI"
+- Microsoft branding header with logo
+- Footer with author name and social links
+- Responsive design (desktop + mobile)
+- Load configuration from /assets/config/app-config.json
+
+### Documents Page
+- List all 100 documents from manifest with pagination (10 per page)
+- Show file name, format badge, expected outcome
+- Show processed/pending status badge
+- Click to select a document
+- Document viewer panel:
+  - Images (PNG/JPG): inline image preview using blob SAS URL from API
+  - PDFs: embedded iframe viewer using blob SAS URL
+  - Office docs (DOCX/PPT): download link with blob SAS URL
+- "Process selected document" button – fetches result from API for that document
+- "Process current page" button – fetches results for all documents on current page
+- "Process all documents" button – fetches results for all 100 documents
+- After processing, show content safety result alongside document:
+  - Category badge (Safe/Review/Blocked with color)
+  - Confidence score
+  - Reason text with severity details
+  - Per-category breakdown (Hate, SelfHarm, Sexual, Violence)
+
+### Results & KPI Page
+- KPI cards at top: Total Processed, Safe count, Review count, Blocked count
+- Pie or bar chart visualization of safe/review/blocked distribution
+- Grouped results list by category (safe, review, blocked)
+- Each item shows file name, reason, severity badge
+- Click to select → side-by-side view:
+  - Left: document preview (image/pdf/office placeholder)
+  - Right: full content safety result details
+    - Decision, confidence, reason
+    - Per-category severity breakdown table
+    - Expected vs actual outcome comparison
+- Summary statistics: accuracy rate, format breakdown
+
+### Integration
+- UI calls API (apiBaseUrl from config) for all data
+- Document previews use blob SAS URLs from API download-url endpoint
+- No direct Azure SDK calls from browser – all through API
+- Handle loading states and errors gracefully

@@ -75,6 +75,67 @@ ng serve
 - **Monitor drift.** Periodically sample blocked/allowed items and re-evaluate thresholds, blocklists, and custom categories.
 - **Comply with data residency.** Pick a region that matches your compliance requirements; Content Safety does not store request payloads by default, but verify per your governance policy.
 
+## REST API
+
+The Express.js API is deployed to Azure App Service and serves content safety results from Cosmos DB and document download URLs from Blob Storage.
+
+- **Base URL**: https://ai-content-safety-api.azurewebsites.net
+- **Swagger UI**: https://ai-content-safety-api.azurewebsites.net/api/swagger
+- **OpenAPI Spec**: https://ai-content-safety-api.azurewebsites.net/api/swagger.json
+- **Authentication**: Managed Identity (DefaultAzureCredential) — no API keys
+- **CORS**: Allows requests from the UI App Service and localhost:4200
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/health` | Health check — returns status, Cosmos/Storage endpoints, timestamp |
+| GET | `/api/documents` | List all processed documents (id, fileName, format, expected outcome) |
+| GET | `/api/documents/{fileName}/download-url` | Get a time-limited SAS download URL for a blob (valid 15 min) |
+| GET | `/api/results` | List all content-safety results. Optional query: `?decision=safe\|blocked` |
+| GET | `/api/results/summary` | Aggregated KPI summary: total, safe, blocked, review counts + format breakdown |
+| GET | `/api/results/{id}` | Get a single result by document ID (e.g. `doc-001`) |
+| GET | `/api/swagger` | Interactive Swagger UI |
+| GET | `/api/swagger.json` | Raw OpenAPI 3.0.3 specification |
+
+### Example Responses
+
+**GET /api/health**
+```json
+{
+  "status": "ok",
+  "cosmosEndpoint": "https://cosmos-ai-poc.documents.azure.com:443/",
+  "storageEndpoint": "https://aistoragemyaacoub.blob.core.windows.net/",
+  "timestamp": "2026-05-14T00:15:00.000Z"
+}
+```
+
+**GET /api/results/summary**
+```json
+{
+  "total": 100,
+  "safe": 50,
+  "blocked": 50,
+  "review": 0,
+  "byFormat": { "png": 20, "jpg": 20, "pdf": 20, "docx": 20, "ppt": 20 }
+}
+```
+
+### API App Service
+
+| Setting | Value |
+|---------|-------|
+| **App Service** | ai-content-safety-api |
+| **Runtime** | Node.js 20 |
+| **Region** | West US 2 |
+| **App Service Plan** | ASP-aimyaacoub-87dc (B1 Basic) |
+
+## Deployed Web UI
+
+The Angular UI is deployed and accessible at:
+
+**https://ai-content-safety-ui.azurewebsites.net**
+
 ## References
 - [Azure AI Content Safety](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/)
 - [Content Safety – Harm categories](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/harm-categories)
@@ -157,8 +218,9 @@ All resources are deployed in resource group **ai-myaacoub**:
 | **Blob Storage** | aistoragemyaacoub | Storage Account | Container: content-safety-documents |
 | **Cosmos DB** | cosmos-ai-poc | NoSQL Database | Database: contentSafetyDb, Container: contentSafetyResults |
 | **Content Safety** | 002-ai-poc-private | Cognitive Service | Private Endpoint: https://002-ai-poc-private.cognitiveservices.azure.com |
-| **Web App** | ai-content-safety-ui | App Service | B1 Basic tier, West US 2 |
-| **App Service Plan** | ASP-aimyaacoub-87dc | App Service Plan | Basic tier, West US 2 |
+| **API** | ai-content-safety-api | App Service | Node.js 20, Swagger at /api/swagger |
+| **Web App** | ai-content-safety-ui | App Service | Angular 20, Ionic 8 |
+| **App Service Plan** | ASP-aimyaacoub-87dc | App Service Plan | B1 Basic tier, West US 2 |
 
 All services are configured for private endpoint access.
 

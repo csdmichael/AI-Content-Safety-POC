@@ -4,6 +4,7 @@ export interface SafetyCategoryResult {
   category: 'safe' | 'review' | 'blocked';
   confidence: number;
   reason: string;
+  categories?: { category: string; severity: number }[];
 }
 
 export interface ContentDocument {
@@ -14,6 +15,7 @@ export interface ContentDocument {
   expectedContentSafetyOutcome: 'pass' | 'fail';
   seedText: string;
   processed?: SafetyCategoryResult;
+  blobPreviewUrl?: string;
 }
 
 export interface DocumentManifest {

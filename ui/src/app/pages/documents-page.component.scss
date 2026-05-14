@@ -16,7 +16,7 @@
 .doc-image,
 .doc-frame {
   width: 100%;
-  height: min(62vh, 560px);
+  height: min(50vh, 460px);
   border: 1px solid #dde3ee;
   border-radius: 0.5rem;
 }
@@ -25,6 +25,68 @@
   border: 1px dashed #c2cad9;
   border-radius: 0.5rem;
   padding: 1rem;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff0f0;
+  border: 1px solid #fcc;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  margin-bottom: 1rem;
+}
+
+.loading-center {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.result-detail {
+  margin-top: 1rem;
+  border: 1px solid #dde3ee;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  background: #fafbfc;
+}
+
+.result-detail h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0;
+}
+
+.match-badge {
+  margin-left: 0.5rem;
+}
+
+.severity-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+
+  th, td {
+    padding: 0.4rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+
+  th {
+    background: #f0f3f8;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .flagged {
+    background: #fff8f0;
+  }
 }
 
 @media (max-width: 1024px) and (min-width: 768px) {

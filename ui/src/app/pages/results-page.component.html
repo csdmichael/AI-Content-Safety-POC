@@ -2,30 +2,58 @@
   <ion-grid fixed class="layout-grid">
     <ion-row>
       <ion-col size="12" sizeXl="4">
+        <!-- KPIs -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>KPIs</ion-card-title>
           </ion-card-header>
           <ion-card-content class="kpi-grid">
-            <div>
+            <div class="kpi-cell">
               <h3>{{ kpis().total }}</h3>
               <p>Total Processed</p>
             </div>
-            <div>
+            <div class="kpi-cell kpi-safe">
               <h3>{{ kpis().safe }}</h3>
               <p>Safe</p>
             </div>
-            <div>
+            <div class="kpi-cell kpi-review">
               <h3>{{ kpis().review }}</h3>
               <p>Review</p>
             </div>
-            <div>
+            <div class="kpi-cell kpi-blocked">
               <h3>{{ kpis().blocked }}</h3>
               <p>Blocked</p>
             </div>
           </ion-card-content>
         </ion-card>
 
+        <!-- Chart -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Distribution</ion-card-title>
+          </ion-card-header>
+          <ion-card-content class="chart-container">
+            <canvas #chartCanvas width="280" height="280"></canvas>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Statistics -->
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Statistics</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <p><strong>Accuracy:</strong> {{ accuracy() | percent:'1.0-0' }}</p>
+            <p><strong>Format Breakdown:</strong></p>
+            <ul class="format-list">
+              @for (item of formatBreakdown(); track item.format) {
+                <li>{{ item.format | uppercase }}: {{ item.count }}</li>
+              }
+            </ul>
+          </ion-card-content>
+        </ion-card>
+
+        <!-- Grouped Results -->
         <ion-card>
           <ion-card-header>
             <ion-card-title>Grouped Results</ion-card-title>
@@ -40,7 +68,7 @@
                       <h2>{{ doc.fileName }}</h2>
                       <p>{{ doc.processed?.reason }}</p>
                     </ion-label>
-                    <ion-badge [color]="entry.key === 'safe' ? 'success' : entry.key === 'review' ? 'warning' : 'danger'">
+                    <ion-badge [color]="categoryColor(entry.key)">
                       {{ entry.key | titlecase }}
                     </ion-badge>
                   </ion-item>
@@ -73,9 +101,36 @@
                 </div>
                 <div class="result-panel">
                   <h3>{{ doc.fileName }}</h3>
-                  <p><strong>Category:</strong> {{ doc.processed?.category | titlecase }}</p>
+                  <p><strong>Decision:</strong> <ion-badge [color]="categoryColor(doc.processed?.category || '')">{{ doc.processed?.category | titlecase }}</ion-badge></p>
                   <p><strong>Confidence:</strong> {{ doc.processed?.confidence | percent:'1.0-0' }}</p>
                   <p><strong>Reason:</strong> {{ doc.processed?.reason }}</p>
+
+                  <p class="expected-actual">
+                    <strong>Expected:</strong> {{ doc.expectedContentSafetyOutcome | titlecase }}
+                    · <strong>Actual:</strong> {{ doc.processed?.category | titlecase }}
+                    @if ((doc.expectedContentSafetyOutcome === 'fail' && doc.processed?.category !== 'safe') || (doc.expectedContentSafetyOutcome === 'pass' && doc.processed?.category === 'safe')) {
+                      <ion-badge color="success">Match</ion-badge>
+                    } @else {
+                      <ion-badge color="warning">Mismatch</ion-badge>
+                    }
+                  </p>
+
+                  @if (doc.processed?.categories?.length) {
+                    <h4>Per-Category Severity</h4>
+                    <table class="severity-table">
+                      <thead><tr><th>Category</th><th>Severity</th></tr></thead>
+                      <tbody>
+                        @for (cat of doc.processed!.categories!; track cat.category) {
+                          <tr [class.flagged]="cat.severity > 0">
+                            <td>{{ cat.category }}</td>
+                            <td>
+                              <ion-badge [color]="cat.severity === 0 ? 'success' : cat.severity <= 2 ? 'warning' : 'danger'">{{ cat.severity }}</ion-badge>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  }
                 </div>
               </div>
             } @else {
