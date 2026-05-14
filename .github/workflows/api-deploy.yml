@@ -18,22 +18,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies (cross-platform for App Service Bullseye)
+      - name: Install dependencies (Bullseye-compatible for App Service)
         working-directory: api
         run: |
-          pip install \
-            --platform manylinux_2_28_x86_64 \
-            --platform linux_x86_64 \
-            --platform any \
-            --implementation cp \
-            --python-version 3.12 \
-            --only-binary :all: \
-            -r requirements.txt \
-            -t .python_packages/lib/site-packages
+          docker run --rm -v "$PWD:/app" -w /app python:3.12-slim-bullseye \
+            pip install --no-cache-dir -r requirements.txt -t .python_packages/lib/site-packages
 
       - name: Package
         working-directory: api
