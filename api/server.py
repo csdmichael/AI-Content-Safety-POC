@@ -23,6 +23,7 @@ from azure.storage.blob import (
 )
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from safety_routes import safety_router
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -119,6 +120,8 @@ app.add_middleware(
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
+
+app.include_router(safety_router)
 
 
 # ---------------------------------------------------------------------------
