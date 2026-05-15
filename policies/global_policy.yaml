@@ -1,0 +1,29 @@
+# ---------------------------------------------------------------------------
+# NEW FILE — policies/global_policy.yaml
+# Global policy definition for the Agent Safety module.
+# ---------------------------------------------------------------------------
+
+# Keywords that should never appear in agent inputs or outputs.
+# The policy engine will flag any occurrence.
+blocked_keywords:
+  - "drop table"
+  - "rm -rf"
+  - "exec("
+  - "eval("
+  - "__import__"
+  - "os.system"
+  - "subprocess.call"
+  - "delete database"
+
+# Tools that are completely disallowed regardless of parameters.
+restricted_tools:
+  - "shell_exec"
+  - "raw_sql"
+  - "file_delete"
+
+# Maximum allowed severity for content safety scores (0-10).
+max_severity: 6
+
+# Whether to block or warn when a policy violation is detected.
+# Options: "block" | "warn"
+enforcement_mode: "warn"

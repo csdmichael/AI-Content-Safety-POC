@@ -1,0 +1,11 @@
+{
+  "_comment": "NEW FILE — policies/tool_registry.json. JSON-based tool allow-list for the Agent Safety module.",
+  "allowed_tools": {
+    "search_documents": ["query", "max_results"],
+    "summarize_text": ["text", "max_length"],
+    "translate_text": ["text", "source_lang", "target_lang"],
+    "get_content_safety_result": ["document_id"],
+    "analyze_image": ["image_url", "categories"],
+    "example_tool": ["param1", "param2"]
+  }
+}
