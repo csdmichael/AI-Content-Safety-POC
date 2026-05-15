@@ -22,7 +22,7 @@ import {
 export class SafetyApiClientService {
   private readonly http = inject(HttpClient);
   private readonly config = inject(ConfigService);
-  private readonly TIMEOUT_MS = 30_000;
+  private readonly REQUEST_TIMEOUT_MS = 30_000;
 
   private get base(): string {
     const url = this.config.settings.apiBaseUrl;
@@ -35,21 +35,21 @@ export class SafetyApiClientService {
   async getStatus(): Promise<SafetyStatusResponse> {
     return firstValueFrom(
       this.http.get<SafetyStatusResponse>(`${this.base}/api/safety/status`)
-        .pipe(timeout(this.TIMEOUT_MS))
+        .pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 
   async checkPromptInjection(text: string): Promise<PromptInjectionResult> {
     return firstValueFrom(
       this.http.post<PromptInjectionResult>(`${this.base}/api/safety/prompt-injection`, { text })
-        .pipe(timeout(this.TIMEOUT_MS))
+        .pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 
   async checkPolicy(text: string): Promise<PolicyCheckResult> {
     return firstValueFrom(
       this.http.post<PolicyCheckResult>(`${this.base}/api/safety/policy-check`, { text })
-        .pipe(timeout(this.TIMEOUT_MS))
+        .pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 
@@ -58,7 +58,7 @@ export class SafetyApiClientService {
       this.http.post<ToolValidationResult>(`${this.base}/api/safety/tool-validate`, {
         tool_name: toolName,
         params,
-      }).pipe(timeout(this.TIMEOUT_MS))
+      }).pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 
@@ -67,7 +67,7 @@ export class SafetyApiClientService {
       this.http.post<TaskAdherenceResult>(`${this.base}/api/safety/task-adherence`, {
         user_input: userInput,
         agent_response: agentResponse,
-      }).pipe(timeout(this.TIMEOUT_MS))
+      }).pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 
@@ -81,7 +81,7 @@ export class SafetyApiClientService {
         original_task: originalTask,
         current_text: currentText,
         conversation_history: conversationHistory,
-      }).pipe(timeout(this.TIMEOUT_MS))
+      }).pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 
@@ -95,7 +95,7 @@ export class SafetyApiClientService {
         user_input: userInput,
         tool_calls: toolCalls,
         original_task: originalTask,
-      }).pipe(timeout(this.TIMEOUT_MS))
+      }).pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 }
