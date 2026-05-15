@@ -9,8 +9,18 @@ import concurrent.futures
 import json
 import os
 import re
+import sys
 from datetime import datetime, timezone, timedelta
+from pathlib import Path
 from urllib.parse import quote
+
+# ---------------------------------------------------------------------------
+# Ensure the repo root is on sys.path so the 'safety' package can be found.
+# server.py lives in api/, and safety/ lives one level up at the repo root.
+# ---------------------------------------------------------------------------
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 
 import httpx
 from azure.cosmos import CosmosClient
@@ -23,6 +33,7 @@ from azure.storage.blob import (
 )
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from safety_routes import safety_router
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -120,14 +131,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------------------------
-# OPTIONAL INTEGRATION POINT — Agent Safety router
-# ---------------------------------------------------------------------------
-try:
-    from safety_routes import safety_router
-    app.include_router(safety_router)
-except Exception:
-    pass  # Safety module not available — skip silently
+app.include_router(safety_router)
 
 
 # ---------------------------------------------------------------------------
