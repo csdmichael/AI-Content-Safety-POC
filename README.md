@@ -17,6 +17,7 @@ Azure AI Content Safety proof-of-concept with generated test documents, private-
 - [Generated Data](#generated-data)
 - [Best Practices](#best-practices)
 - [Use Cases](#use-cases)
+  - [AI Agent Safety](#ai-agent-safety)
 - [References](#references)
 - [License](#license)
 
@@ -360,6 +361,42 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 - **Education & Kids Platforms** — stricter severity thresholds for age-appropriate experiences
 - **Document & Knowledge Ingestion** — scan files before indexing for search or RAG
 - **Brand & Compliance Protection** — detect harmful content in marketing assets
+- **AI Agent Task Adherence** — verify that multi-step agents behave in alignment with user intent across tool calls
+- **Prompt Injection & Tool Abuse Detection** — identify malicious inputs attempting to hijack agent behaviour or trigger unauthorized tool execution
+
+### AI Agent Safety
+
+As AI agents become central to enterprise workflows, Azure AI Content Safety provides critical guardrails that go beyond simple text moderation.
+
+#### A. Task Adherence and Agent Reliability
+
+A critical differentiator is the **Task Adherence** capability, which helps ensure AI agents consistently behave in alignment with user intent and system objectives.
+
+It detects:
+
+- **Misaligned tool invocations** — the agent calling the wrong tool or endpoint relative to the user's request
+- **Incorrect tool inputs** — tool arguments that deviate from user intent or violate expected constraints
+- **Output inconsistencies** — final responses that contradict or are unrelated to the original request
+- **Context drift** — divergence between conversational context accumulated across turns and the agent's final response
+
+This is especially important for **multi-step agents** where errors compound across tool calls. A single misaligned invocation early in a pipeline can cascade into incorrect downstream actions, incorrect data writes, or policy violations that are hard to trace after the fact.
+
+#### B. Prompt Injection and Tool Abuse Detection
+
+Enterprise workflows increasingly require protection against adversarial inputs designed to subvert agent behaviour:
+
+- **Prompt injection** — malicious instructions embedded in user inputs, uploaded documents, or retrieved content that attempt to override system-level instructions
+- **Unauthorized tool execution** — inputs that trick an agent into calling privileged tools or APIs outside its intended scope
+- **Indirect prompt injection** — cross-context manipulation where harmful instructions arrive through retrieved content (e.g., a RAG chunk or an email attachment) rather than direct user input
+
+Azure AI Content Safety's [Prompt Shields](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/jailbreak-detection) API detects both direct and indirect injection attempts before they reach the agent's reasoning loop.
+
+#### Governance and Consistent Enforcement
+
+Organisations deploying multiple AI applications benefit from centralised content safety controls:
+
+- **Governance across teams and deployments** — define organisation-wide content policies in one place and apply them uniformly, simplifying audit trails and compliance reporting
+- **Consistent enforcement** — the same thresholds, categories, and block/review rules apply across every AI application in the portfolio, eliminating per-team policy drift and reducing blind spots
 
 ## References
 
@@ -368,8 +405,11 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 - [Content Safety Studio](https://ai.azure.com/explore/contentsafety?tid=b158173c-91f6-4f99-b5e9-aa9bcb463863) — interactive playground for the instance used in this project
 - [Pricing](https://azure.microsoft.com/en-us/pricing/details/content-safety/)
 - [Harm Categories](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/harm-categories)
-- [Prompt Shields](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/jailbreak-detection)
+- [Prompt Shields](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/jailbreak-detection) — direct and indirect prompt injection detection
 - [Groundedness Detection](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/groundedness)
+- [Protected Material Detection](https://learn.microsoft.com/azure/ai-services/content-safety/concepts/protected-material)
+- [Azure AI Foundry: Evaluating Agent Quality & Safety](https://learn.microsoft.com/azure/ai-studio/concepts/evaluation-approach-gen-ai)
+- [Task Adherence Evaluation (Azure AI Foundry)](https://learn.microsoft.com/azure/ai-studio/how-to/evaluate-sdk-concepts#agentic-workflow-evaluation)
 - [FastAPI](https://fastapi.tiangolo.com/)
 - [Angular CLI](https://angular.dev/tools/cli)
 
