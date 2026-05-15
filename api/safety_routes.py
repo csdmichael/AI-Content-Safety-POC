@@ -54,8 +54,8 @@ safety_router = APIRouter(prefix="/api/safety", tags=["Agent Safety"])
 @safety_router.get("/status", summary="Agent safety module status")
 def safety_status():
     """Return whether the agent safety module is enabled and its config."""
+    import os
     from safety.config import (
-        ENABLE_AGENT_SAFETY,
         TASK_ADHERENCE_THRESHOLD,
         CONTEXT_DRIFT_THRESHOLD,
     )
@@ -66,7 +66,7 @@ def safety_status():
     tools = ToolValidator()
 
     return {
-        "enabled": ENABLE_AGENT_SAFETY,
+        "enabled": os.environ.get("ENABLE_AGENT_SAFETY", "false").lower() == "true",
         "task_adherence_threshold": TASK_ADHERENCE_THRESHOLD,
         "context_drift_threshold": CONTEXT_DRIFT_THRESHOLD,
         "policy": policy.policy_summary,
