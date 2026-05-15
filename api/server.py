@@ -120,6 +120,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ---------------------------------------------------------------------------
+# OPTIONAL INTEGRATION POINT — Agent Safety router
+# ---------------------------------------------------------------------------
+try:
+    from safety_routes import safety_router
+    app.include_router(safety_router)
+except Exception:
+    pass  # Safety module not available — skip silently
+
 
 # ---------------------------------------------------------------------------
 # Routes
