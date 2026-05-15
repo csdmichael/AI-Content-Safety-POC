@@ -122,6 +122,19 @@
   }
 }
 
+.sample-prompts {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.sample-prompts-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+}
+
 /* ---- input groups ---- */
 .input-group {
   display: flex;
