@@ -34,6 +34,7 @@ from azure.storage.blob import (
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from safety_routes import safety_router
+from large_context_routes import large_context_router
 
 # ---------------------------------------------------------------------------
 # Configuration
@@ -132,6 +133,7 @@ app.add_middleware(
 )
 
 app.include_router(safety_router)
+app.include_router(large_context_router)
 
 
 # ---------------------------------------------------------------------------
