@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IonBadge, IonContent } from '@ionic/angular/standalone';
+import { IonContent } from '@ionic/angular/standalone';
 
 import {
   LargeContextApiService,
@@ -15,7 +15,7 @@ type ActiveTab = 'image' | 'text' | 'apim';
 @Component({
   selector: 'app-large-content-page',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonBadge, IonContent],
+  imports: [CommonModule, FormsModule, IonContent],
   templateUrl: './large-content-page.component.html',
   styleUrl: './large-content-page.component.scss',
 })
