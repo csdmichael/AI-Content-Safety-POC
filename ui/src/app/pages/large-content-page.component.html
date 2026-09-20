@@ -1,0 +1,354 @@
+<ion-content>
+  <div class="large-context-page">
+
+    <!-- Header -->
+    <section class="hero">
+      <h1>Large Content Safety & Optimization</h1>
+      <p>
+        Demonstration for handling customer concerns regarding large payloads in Azure AI Content Safety.
+        Compress large images (> 4MB) automatically, split large text using overlapping chunking,
+        and manage gateway-level guardrails with Azure API Management (APIM).
+      </p>
+    </section>
+
+    <!-- Tab Bar -->
+    <nav class="tab-bar">
+      <button [class.active]="activeTab() === 'image'" (click)="setTab('image')">🖼️ Image Compressor (> 4MB)</button>
+      <button [class.active]="activeTab() === 'text'" (click)="setTab('text')">📝 Overlapping Text Chunking</button>
+      <button [class.active]="activeTab() === 'apim'" (click)="setTab('apim')">🛡️ APIM Enterprise Guardrails</button>
+    </nav>
+
+    <!-- Error Banner -->
+    @if (error(); as err) {
+      <div class="error-banner">{{ err }}</div>
+    }
+
+    <!-- ==================== IMAGE COMPRESSOR TAB ==================== -->
+    @if (activeTab() === 'image') {
+      <section class="tab-panel">
+        <h2>Smart Image Compression & Safety Scan</h2>
+        <p class="description">
+          The Azure AI Content Safety Image API has a strict <strong>4 MB payload limit</strong>.
+          This module demonstrates how to downscale dimensions and dynamically compress a large image 
+          so it can be safely and cost-effectively analyzed.
+        </p>
+
+        <div class="split-layout">
+          <!-- Control Panel -->
+          <div class="panel-card control-panel">
+            <h3>1. Select or Generate an Image</h3>
+            
+            <div class="button-row">
+              <button class="primary-btn" (click)="generateTestImage()">⚡ Generate High-Res 4.5MB Image</button>
+              <label class="secondary-btn cursor-pointer">
+                📁 Upload Local File
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden-input" />
+              </label>
+            </div>
+
+            @if (selectedFile) {
+              <div class="file-details">
+                <h4>Original File Specs</h4>
+                <ul>
+                  <li><strong>File Name:</strong> {{ origName }}</li>
+                  <li><strong>File Size:</strong> <span class="badge danger">{{ origSize }}</span></li>
+                  <li><strong>Dimensions:</strong> {{ origDimensions || 'Calculating...' }}</li>
+                  <li><strong>Format:</strong> {{ origFormat }}</li>
+                </ul>
+                <div class="warning-alert">
+                  ⚠️ This file will be processed through Pillow to reduce dimensions (max {{ maxDimension }}px) 
+                  and compress (JPEG, {{ compressionQuality }}% quality) prior to Content Safety submission.
+                </div>
+              </div>
+            }
+
+            <div class="settings-group">
+              <h3>Compression Parameters</h3>
+              <div class="setting-item">
+                <label for="maxDimension">Max Dimension (px):</label>
+                <select id="maxDimension" [(ngModel)]="maxDimension">
+                  <option [ngValue]="1024">1024 px</option>
+                  <option [ngValue]="2048">2048 px (Azure Optimal)</option>
+                  <option [ngValue]="3072">3072 px</option>
+                  <option [ngValue]="4096">4096 px (Oversized)</option>
+                </select>
+              </div>
+
+              <div class="setting-item">
+                <label for="compressionQuality">Target Quality (JPEG %):</label>
+                <input id="compressionQuality" type="range" min="30" max="95" step="5" [(ngModel)]="compressionQuality" />
+                <span class="range-val">{{ compressionQuality }}%</span>
+              </div>
+            </div>
+
+            <button class="action-btn" [disabled]="loading() || !selectedFile" (click)="runImageAnalysis()">
+              {{ loading() ? 'Processing...' : '⚡ Optimize & Run Content Safety' }}
+            </button>
+          </div>
+
+          <!-- Preview & Results Panel -->
+          <div class="panel-card preview-panel">
+            <h3>2. Dynamic Processing Pipeline</h3>
+
+            @if (!selectedFile) {
+              <div class="empty-state">
+                <p>Generate the high-resolution test image or upload a local image file to view the compression pipeline.</p>
+              </div>
+            } @else {
+              <div class="pipeline-flow">
+                <!-- Original Image Column -->
+                <div class="flow-step">
+                  <div class="step-header">Original Upload</div>
+                  <div class="step-content">
+                    @if (imagePreviewUrl) {
+                      <div class="img-preview-container">
+                        <img [src]="imagePreviewUrl" alt="Original Upload" />
+                      </div>
+                    }
+                    <div class="metrics-block">
+                      <span class="label">Size:</span> <strong>{{ origSize }}</strong>
+                      <span class="label">Res:</span> <strong>{{ origDimensions }}</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Arrow Connector -->
+                <div class="flow-arrow">
+                  <span class="arrow">➡️</span>
+                  <span class="sub">Pillow Resizer</span>
+                </div>
+
+                <!-- Processed Image Column -->
+                <div class="flow-step highlight">
+                  <div class="step-header">Compressed Payload (JPEG)</div>
+                  <div class="step-content">
+                    @if (imageResult(); as res) {
+                      <div class="img-preview-container grayscale-preview">
+                        <!-- Compressed thumbnail (same preview, but styled to represent output) -->
+                        <img [src]="imagePreviewUrl" alt="Compressed Upload" />
+                      </div>
+                      <div class="metrics-block">
+                        <span class="label">New Size:</span> <strong class="text-success">{{ formatBytes(res.metrics.compressed_size_bytes) }}</strong>
+                        <span class="label">New Res:</span> <strong>{{ res.metrics.compressed_dimensions }}</strong>
+                        <span class="label">Savings:</span> <strong class="badge success">-{{ res.metrics.reduction_percentage }}%</strong>
+                      </div>
+                    } @else if (loading()) {
+                      <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <p class="small text-muted">Rescaling and compressing image...</p>
+                      </div>
+                    } @else {
+                      <div class="placeholder-box">
+                        <p class="small">Pending pipeline execution</p>
+                      </div>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <!-- Content Safety Outcome Section -->
+              @if (imageResult(); as res) {
+                <div class="safety-outcome mt-16">
+                  <div class="outcome-header" [class.blocked]="res.decision === 'blocked'" [class.safe]="res.decision === 'safe'">
+                    <span class="title">Content Safety Decision: {{ res.decision | uppercase }}</span>
+                    <span class="badge" [class.badge-danger]="res.decision === 'blocked'" [class.badge-success]="res.decision === 'safe'">
+                      Max Severity: {{ res.max_severity }}
+                    </span>
+                  </div>
+                  <div class="outcome-body">
+                    <p>The compressed image was submitted to Azure AI Content Safety. Below are the execution metrics:</p>
+                    <table class="metrics-table">
+                      <tr>
+                        <td><strong>Compression Algorithm:</strong></td>
+                        <td>Pillow Resampling.LANCZOS + Quality Reduction</td>
+                        <td><strong>Final Image Quality:</strong></td>
+                        <td>{{ res.metrics.final_quality }}%</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Original Size:</strong></td>
+                        <td>{{ formatBytes(res.metrics.original_size_bytes) }}</td>
+                        <td><strong>Compressed Size:</strong></td>
+                        <td>{{ formatBytes(res.metrics.compressed_size_bytes) }}</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Resized:</strong></td>
+                        <td>{{ res.metrics.resized ? 'Yes (Dimensions Downscaled)' : 'No (Kept Dimensions)' }}</td>
+                        <td><strong>Processing Time:</strong></td>
+                        <td>Instant / Serverless Edge</td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ==================== TEXT CHUNKING TAB ==================== -->
+    @if (activeTab() === 'text') {
+      <section class="tab-panel">
+        <h2>Overlapping Text Chunking & Aggregation</h2>
+        <p class="description">
+          The Azure AI Content Safety Text API limits inputs to <strong>10,000 characters</strong>.
+          To analyze huge corporate documents or contracts without losing context at split boundaries, 
+          we chunk the text using a <strong>sliding window with a user-defined overlap</strong>.
+        </p>
+
+        <div class="split-layout">
+          <!-- Text Control Panel -->
+          <div class="panel-card control-panel">
+            <h3>1. Input Text & Presets</h3>
+            
+            <div class="presets-row">
+              @for (preset of textPresets; track preset.label) {
+                <button class="preset-btn" (click)="applyTextPreset(preset)">{{ preset.label }}</button>
+              }
+            </div>
+
+            <div class="textarea-container">
+              <label for="textInput">Submit Large Text Block:</label>
+              <textarea id="textInput" placeholder="Paste a large corporate policy or upload text..." [(ngModel)]="textInput"></textarea>
+              <div class="char-counter">Total Characters: <strong>{{ textInput.length | number }}</strong></div>
+            </div>
+
+            <div class="settings-grid">
+              <div class="setting-item">
+                <label for="chunkSize">Chunk Size (chars):</label>
+                <input id="chunkSize" type="number" [(ngModel)]="chunkSize" />
+                <span class="hint">Max limit of API is 10,000</span>
+              </div>
+              <div class="setting-item">
+                <label for="overlap">Overlap Size (chars):</label>
+                <input id="overlap" type="number" [(ngModel)]="overlap" />
+                <span class="hint">Protects split-word context</span>
+              </div>
+            </div>
+
+            <button class="action-btn mt-16" [disabled]="loading() || !textInput" (click)="runTextAnalysis()">
+              {{ loading() ? 'Chunking & Analyzing...' : '⚡ Scan Large Document' }}
+            </button>
+          </div>
+
+          <!-- Text Processing Details & Visualization -->
+          <div class="panel-card preview-panel">
+            <h3>2. Text Chunking Execution Timeline</h3>
+
+            @if (!textResult()) {
+              @if (loading()) {
+                <div class="empty-state">
+                  <div class="spinner"></div>
+                  <p class="mt-16">Executing sliding-window chunking. Evaluating each segment with Content Safety APIs...</p>
+                </div>
+              } @else {
+                <div class="empty-state">
+                  <p>Input or select a text preset and run the analysis to view how chunks are aggregated.</p>
+                </div>
+              }
+            } @else {
+              @if (textResult(); as res) {
+                <div class="global-aggregated-outcome" [class.blocked]="res.aggregated_decision === 'blocked'" [class.safe]="res.aggregated_decision === 'safe'">
+                  <div class="outcome-icon">
+                    {{ res.aggregated_decision === 'blocked' ? '❌' : '✅' }}
+                  </div>
+                  <div class="outcome-text">
+                    <h4>Aggregated Verdict: {{ res.aggregated_decision | uppercase }}</h4>
+                    <p>
+                      Document split into <strong>{{ res.num_chunks }} chunks</strong> (size {{ res.chunk_size }} with {{ res.overlap }} overlap). 
+                      Max Severity across all chunks is <strong>{{ res.max_severity }}</strong>.
+                    </p>
+                  </div>
+                </div>
+
+                <h4 class="mt-16">Chunk Segmentation Timeline:</h4>
+                <div class="chunks-timeline">
+                  @for (chunk of res.chunks; track chunk.index) {
+                    <div class="chunk-timeline-item" [class.chunk-blocked]="chunk.decision === 'blocked'">
+                      <div class="timeline-badge" [class.bg-danger]="chunk.decision === 'blocked'" [class.bg-success]="chunk.decision === 'safe'">
+                        {{ chunk.index + 1 }}
+                      </div>
+                      <div class="timeline-card">
+                        <div class="timeline-card-header">
+                          <span class="chunk-title">Chunk {{ chunk.index + 1 }} (Chars {{ chunk.start_char }} - {{ chunk.end_char }})</span>
+                          <span class="chunk-badge" [class.badge-danger]="chunk.decision === 'blocked'" [class.badge-success]="chunk.decision === 'safe'">
+                            {{ chunk.decision | uppercase }} (Severity: {{ chunk.severity }})
+                          </span>
+                        </div>
+                        <div class="timeline-card-body">
+                          <p class="chunk-preview-text">" {{ chunk.text_preview }} "</p>
+                          @if (chunk.flagged_categories.length > 0) {
+                            <div class="violations-found">
+                              <strong>Flags Triggered:</strong>
+                              @for (cat of chunk.flagged_categories; track cat) {
+                                <span class="violation-tag">{{ cat }}</span>
+                              }
+                            </div>
+                          }
+                        </div>
+                        <!-- Visual representation of the sliding-window overlap -->
+                        @if (chunk.index < res.chunks.length - 1) {
+                          <div class="overlap-visual-bar">
+                            🔗 Overlap with Chunk {{ chunk.index + 2 }}: {{ getOverlapTextRange(chunk, res.chunks[chunk.index + 1]) }}
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ==================== APIM GATEKEEPER TAB ==================== -->
+    @if (activeTab() === 'apim') {
+      <section class="tab-panel">
+        <h2>Azure API Management (APIM) Enterprise Integration</h2>
+        <p class="description">
+          Placing APIM in front of Azure AI Content Safety endpoints is recommended to protect corporate backends,
+          mitigate rate limitations, save costs via query caching, and handle automated multi-region failovers.
+        </p>
+
+        <div class="apim-container">
+          <!-- Left list of APIM features -->
+          <div class="apim-nav">
+            @if (apimConfig(); as config) {
+              @for (rec of config.recommendations; track rec.policy_name; let idx = $index) {
+                <div class="apim-nav-item" 
+                     [class.active]="activePolicyKey() === (idx === 0 ? 'size_limit' : idx === 1 ? 'rate_limiting' : idx === 2 ? 'caching' : 'load_balancing')"
+                     (click)="setActivePolicy(idx === 0 ? 'size_limit' : idx === 1 ? 'rate_limiting' : idx === 2 ? 'caching' : 'load_balancing')">
+                  <h4>{{ rec.policy_name }}</h4>
+                  <p class="small text-muted">{{ rec.concern }}</p>
+                </div>
+              }
+            } @else {
+              <div class="spinner"></div>
+            }
+          </div>
+
+          <!-- Right code / description block -->
+          <div class="apim-content-card">
+            @if (apimConfig(); as config) {
+              @for (rec of config.recommendations; track rec.policy_name; let idx = $index) {
+                @if (activePolicyKey() === (idx === 0 ? 'size_limit' : idx === 1 ? 'rate_limiting' : idx === 2 ? 'caching' : 'load_balancing')) {
+                  <div class="policy-details">
+                    <h3>APIM Strategy: {{ rec.policy_name }}</h3>
+                    <p class="policy-concern"><strong>Problem Statement:</strong> {{ rec.concern }}</p>
+                    <p class="policy-mitigation"><strong>Mitigation:</strong> {{ rec.mitigation }}</p>
+                    
+                    <h4 class="mt-16">Recommended XML Policy Snippet:</h4>
+                    <pre class="xml-code-block"><code>{{ getActivePolicyXml() }}</code></pre>
+                  </div>
+                }
+              }
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+  </div>
+</ion-content>
