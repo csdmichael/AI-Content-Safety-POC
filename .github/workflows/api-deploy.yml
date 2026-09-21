@@ -49,7 +49,7 @@ jobs:
             docker rm -f "$container_name" >/dev/null 2>&1 || true
           }
           trap cleanup EXIT
-          docker run --rm -d --name "$container_name" -p 18000:8000 \
+          docker run -d --name "$container_name" -p 18000:8000 \
             -v "$PWD/api-package:/app" -w /app \
             -e PYTHONPATH=/app/.python_packages/lib/site-packages:/app \
             -e COSMOS_ENDPOINT=https://smoke.documents.azure.com:443/ \
@@ -58,7 +58,7 @@ jobs:
             -e CONTENT_SAFETY_ENDPOINT=https://smoke.cognitiveservices.azure.com \
             python:3.12-slim-bullseye \
             python -m uvicorn server:app --host 0.0.0.0 --port 8000
-          curl --fail --silent --show-error --retry 30 --retry-delay 1 --retry-connrefused \
+          curl --fail --silent --show-error --retry 30 --retry-delay 1 --retry-all-errors \
             http://127.0.0.1:18000/api/health -o /tmp/api-health.json
           python -c "import json; assert json.load(open('/tmp/api-health.json'))['status'] == 'ok'"
 
