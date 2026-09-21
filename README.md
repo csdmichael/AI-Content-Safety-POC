@@ -246,6 +246,7 @@ The API is deployed to Azure App Service at:
 | GET | `/api/swagger.json` | OpenAPI 3.0 specification |
 | POST | `/api/large-context/analyze-text` | Semantic windowing, parallel moderation, Prompt Shields, and aggregate enforcement |
 | POST | `/api/large-context/compress-image` | Image normalization plus OCR-aware multimodal moderation |
+| POST | `/api/large-context/compress-image/download` | Download the normalized image as a JPEG attachment |
 | GET | `/api/large-context/apim-config` | Current APIM AI gateway policy examples |
 
 ### Run locally

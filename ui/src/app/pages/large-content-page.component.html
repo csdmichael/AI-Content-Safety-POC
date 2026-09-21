@@ -135,6 +135,15 @@
                           {{ formatSizeChange(res.metrics.reduction_percentage) }}
                         </strong>
                       </div>
+                      <button
+                        type="button"
+                        class="download-btn"
+                        [disabled]="downloadingImage()"
+                        (click)="downloadCompressedImage()"
+                      >
+                        <span aria-hidden="true">↓</span>
+                        {{ downloadingImage() ? 'Preparing JPEG...' : 'Download compressed JPEG' }}
+                      </button>
                     } @else if (loading()) {
                       <div class="spinner-container">
                         <div class="spinner"></div>
@@ -272,6 +281,36 @@
           <!-- Text Processing Details & Visualization -->
           <div class="panel-card preview-panel">
             <h3>2. Text Chunking Execution Timeline</h3>
+
+            @if (textTrace().length > 0) {
+              <details class="trace-control">
+                <summary>
+                  <span class="trace-title">Execution trace</span>
+                  @if (lastTextTraceStep(); as lastStep) {
+                    <span class="trace-last-step">
+                      <time [attr.datetime]="lastStep.timestamp_utc">
+                        {{ lastStep.timestamp_utc | date:'HH:mm:ss.SSS' }}
+                      </time>
+                      <span>{{ lastStep.message }}</span>
+                    </span>
+                  }
+                </summary>
+                <ol class="trace-list">
+                  @for (step of textTrace(); track $index) {
+                    <li class="trace-step" [class.trace-safe]="step.outcome === 'safe'" [class.trace-blocked]="step.outcome === 'blocked'">
+                      <time [attr.datetime]="step.timestamp_utc">
+                        {{ step.timestamp_utc | date:'HH:mm:ss.SSS' }}
+                      </time>
+                      <div>
+                        <strong>{{ formatTraceStage(step.stage) }}</strong>
+                        <span>{{ step.message }}</span>
+                      </div>
+                      <span class="trace-elapsed">+{{ step.elapsed_ms | number:'1.0-2' }} ms</span>
+                    </li>
+                  }
+                </ol>
+              </details>
+            }
 
             @if (!textResult()) {
               @if (loading()) {

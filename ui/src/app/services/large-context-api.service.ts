@@ -22,6 +22,14 @@ export interface ChunkResult {
   scan_duration_ms: number;
 }
 
+export interface ExecutionTraceStep {
+  timestamp_utc: string;
+  elapsed_ms: number;
+  stage: string;
+  message: string;
+  outcome: 'info' | 'safe' | 'blocked';
+}
+
 export interface TextLargeContextResponse {
   original_length: number;
   chunk_size: number;
@@ -37,6 +45,7 @@ export interface TextLargeContextResponse {
   parallelism: number;
   moderation_duration_ms: number;
   processed_at_utc: string;
+  trace: ExecutionTraceStep[];
 }
 
 export interface ImageCompressionMetrics {
@@ -119,6 +128,19 @@ export class LargeContextApiService {
     return firstValueFrom(
       this.http.post<ImageLargeContextResponse>(`${this.base}/api/large-context/compress-image`, formData)
         .pipe(timeout(this.REQUEST_TIMEOUT_MS))
+    );
+  }
+
+  async downloadCompressedImage(file: File, maxDimension: number, compressionQuality: number): Promise<Blob> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('max_dimension', maxDimension.toString());
+    formData.append('compression_quality', compressionQuality.toString());
+
+    return firstValueFrom(
+      this.http.post(`${this.base}/api/large-context/compress-image/download`, formData, {
+        responseType: 'blob',
+      }).pipe(timeout(this.REQUEST_TIMEOUT_MS))
     );
   }
 

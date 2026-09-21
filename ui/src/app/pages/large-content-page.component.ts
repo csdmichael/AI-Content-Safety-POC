@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, inject, signal, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonContent } from '@ionic/angular/standalone';
 
@@ -7,7 +7,8 @@ import {
   LargeContextApiService,
   TextLargeContextResponse,
   ImageLargeContextResponse,
-  APIMConfigResponse
+  APIMConfigResponse,
+  ExecutionTraceStep,
 } from '../services/large-context-api.service';
 
 type ActiveTab = 'image' | 'text' | 'apim';
@@ -40,6 +41,7 @@ export class LargeContentPageComponent implements OnInit {
   origFormat = '';
   
   readonly imageResult = signal<ImageLargeContextResponse | null>(null);
+  readonly downloadingImage = signal(false);
 
   // --- Text Chunking ---
   textInput = '';
@@ -49,6 +51,11 @@ export class LargeContentPageComponent implements OnInit {
   promptShield = true;
   retrievalUserPrompt = '';
   readonly textResult = signal<TextLargeContextResponse | null>(null);
+  readonly textTrace = signal<ExecutionTraceStep[]>([]);
+  readonly lastTextTraceStep = computed(() => {
+    const trace = this.textTrace();
+    return trace.length > 0 ? trace[trace.length - 1] : null;
+  });
 
   // --- APIM Policies ---
   readonly apimConfig = signal<APIMConfigResponse | null>(null);
@@ -65,7 +72,7 @@ export class LargeContentPageComponent implements OnInit {
     },
     {
       label: 'Large Document with Mixed Violations',
-      desc: '15,000+ characters of text containing a violent term in Chunk 2 and PII in Chunk 3.',
+      desc: '15,000+ characters with safety-category and custom PII signals in separate chunks.',
       chunkSize: 4000,
       overlap: 800,
       text: this.generateCorporateText(true)
@@ -222,12 +229,39 @@ export class LargeContentPageComponent implements OnInit {
     }
   }
 
+  async downloadCompressedImage(): Promise<void> {
+    if (!this.selectedFile || !this.imageResult()) return;
+
+    this.downloadingImage.set(true);
+    this.error.set(null);
+    try {
+      const image = await this.largeContextApi.downloadCompressedImage(
+        this.selectedFile,
+        this.maxDimension,
+        this.compressionQuality,
+      );
+      const objectUrl = URL.createObjectURL(image);
+      const anchor = document.createElement('a');
+      anchor.href = objectUrl;
+      anchor.download = `${this.origName.replace(/\.[^.]+$/, '') || 'image'}-compressed.jpg`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(objectUrl);
+    } catch (e: any) {
+      this.error.set(e?.message || 'Compressed image download failed.');
+    } finally {
+      this.downloadingImage.set(false);
+    }
+  }
+
   // --- Text Handling ---
   applyTextPreset(preset: any): void {
     this.textInput = preset.text;
     this.chunkSize = preset.chunkSize;
     this.overlap = preset.overlap;
     this.textResult.set(null);
+    this.textTrace.set([]);
     this.error.set(null);
   }
 
@@ -260,6 +294,16 @@ export class LargeContentPageComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
     this.textResult.set(null);
+    const requestStartedAt = Date.now();
+    this.textTrace.set([
+      {
+        timestamp_utc: new Date(requestStartedAt).toISOString(),
+        elapsed_ms: 0,
+        stage: 'request_sent',
+        message: 'Submitting the large document to the safety pipeline.',
+        outcome: 'info',
+      },
+    ]);
 
     try {
       const res = await this.largeContextApi.analyzeText(
@@ -271,8 +315,20 @@ export class LargeContentPageComponent implements OnInit {
         this.contentSource === 'retrieved_document' ? this.retrievalUserPrompt : undefined,
       );
       this.textResult.set(res);
+      this.textTrace.set(res.trace);
     } catch (e: any) {
-      this.error.set(e?.message || 'Text chunking or safety evaluation failed.');
+      const message = e?.message || 'Text chunking or safety evaluation failed.';
+      this.error.set(message);
+      this.textTrace.update((steps) => [
+        ...steps,
+        {
+          timestamp_utc: new Date().toISOString(),
+          elapsed_ms: Date.now() - requestStartedAt,
+          stage: 'request_failed',
+          message,
+          outcome: 'blocked',
+        },
+      ]);
     } finally {
       this.loading.set(false);
     }
@@ -319,6 +375,10 @@ export class LargeContentPageComponent implements OnInit {
     if (!chunk || !nextChunk) return '';
     // Show overlapping bounds
     return `Characters [${nextChunk.start_char} to ${chunk.end_char}]`;
+  }
+
+  formatTraceStage(stage: string): string {
+    return stage.split('_').join(' ');
   }
 
   // Generate safe/violating long text for demonstration
@@ -371,6 +431,8 @@ an attacker or rogue sysadmin would execute a violent payload to murder all proc
 kill -9 the system daemon, and set up a bomb script that wipes the main database partition 
 using os.system('rm -rf /') to ensure total destruction." 
 These violent commands and threats represent an active policy violation and must be flagged.
+The captured abusive message also called the incident responder a "moron" and is retained only
+to validate the custom profanity detector.
 
 `;
     } else {
@@ -386,6 +448,16 @@ Backup replication must be verified with quarterly failover drills.
 
 `;
     }
+
+  const auditEvidence = `
+AUDIT EVIDENCE RECORD
+Each control owner must attach review evidence, record the approving role, document remediation
+dates, and verify that automated checks completed successfully. Evidence records are immutable,
+retained according to policy, and reviewed independently during each quarterly assurance cycle.
+`;
+  while (text.length < 7_200) {
+    text += auditEvidence;
+  }
 
     text += `
 5. EMPLOYEE AND USER DATA CONFIDENTIALITY RULES (PII AND COMPLIANCE)
@@ -424,6 +496,11 @@ disciplinary action, up to and including termination of engagement.
 
 This document is reviewed and updated annually by the Enterprise Security Council.
 `;
+
+    const targetLength = withViolations ? 15_500 : 12_500;
+    while (text.length < targetLength) {
+      text += auditEvidence;
+    }
 
     return text.trim();
   }

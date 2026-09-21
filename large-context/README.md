@@ -212,6 +212,7 @@ In this POC, we built a dedicated **"Large Content"** page in the UI that dynami
    - **Stage 1 (Raw Metadata):** Displays original dimensions (e.g. `4032x3024`), format (e.g. `PNG`), and file size (e.g. `6.2 MB`). Marked with a ⚠️ **"Oversized for Direct CS API"** warning.
    - **Stage 2 (Processing):** Shows Pillow executing Lanczos resizing and adaptive compression.
    - **Stage 3 (Optimized Payload):** Displays output dimensions (e.g. `2048x1536`), format (`JPEG`), compressed size (e.g. `840 KB`), and the **Reduction Percentage** (e.g. `86.4% savings`). Marked with a ✅ **"Safe for Content Safety Submission"** status.
+    - The optimized JPEG can be downloaded directly from the result panel.
 3. **Outcome Panel:** Submits the compressed payload and renders the real-time safety categorization.
 
 ### Step 2: Overlapping Text Chunking Demo
@@ -220,6 +221,7 @@ In this POC, we built a dedicated **"Large Content"** page in the UI that dynami
    - Highlights overlapping characters in a distinct color (e.g., orange) so the customer can visually inspect how context is preserved across splits.
    - Shows the total character count and calculated number of chunks.
 3. **Execution Timeline:**
+    - Includes a timestamped execution trace. Its collapsed state shows the latest step, while expanding it reveals validation, chunking, parallel scan completion, and aggregation events.
    - A step-by-step progress timeline of the chunk scans.
    - Renders individual cards showing the exact segment text processed, the severity found within that chunk, and whether that specific chunk passed or failed.
    - Renders the global aggregated final verdict.

@@ -21,6 +21,7 @@ from datetime import datetime, timezone
 from typing import Literal
 
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
+from fastapi.responses import Response
 from pydantic import BaseModel
 import httpx
 from azure.identity import DefaultAzureCredential
@@ -77,6 +78,18 @@ CATEGORY_THRESHOLDS = {
     "SelfHarm": int(os.environ.get("SELF_HARM_SEVERITY_THRESHOLD", str(SEVERITY_THRESHOLD))),
     "Sexual": int(os.environ.get("SEXUAL_SEVERITY_THRESHOLD", str(SEVERITY_THRESHOLD))),
     "Violence": int(os.environ.get("VIOLENCE_SEVERITY_THRESHOLD", str(SEVERITY_THRESHOLD))),
+}
+CUSTOM_CATEGORY_SEVERITY = 6
+CUSTOM_CATEGORY_PATTERNS = {
+    "Profanity": [
+        re.compile(r"\b(?:damn|hell(?:scape)?|shit|f\*+k|fuck|bastard|idiots?|moron)\b", re.IGNORECASE),
+    ],
+    "PII": [
+        re.compile(r"\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b", re.IGNORECASE),
+        re.compile(r"\b\d{3}-\d{2}-\d{4}\b"),
+        re.compile(r"\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]\d{3}[-.\s]\d{4}\b"),
+        re.compile(r"\b(?:\d[ -]*?){13,16}\b"),
+    ],
 }
 
 credential = DefaultAzureCredential()
@@ -297,6 +310,21 @@ def _get_mock_text_analysis(text: str) -> dict:
     }
 
 
+def _custom_analysis_decision(text: str) -> tuple[int, list[str], bool]:
+    matches = [
+        category
+        for category, patterns in CUSTOM_CATEGORY_PATTERNS.items()
+        if any(pattern.search(text) for pattern in patterns)
+    ]
+    max_severity = CUSTOM_CATEGORY_SEVERITY if matches else 0
+    flagged_categories = [f"{category} ({CUSTOM_CATEGORY_SEVERITY})" for category in matches]
+    blocked = any(
+        CUSTOM_CATEGORY_SEVERITY >= CATEGORY_THRESHOLDS.get(category, SEVERITY_THRESHOLD)
+        for category in matches
+    )
+    return max_severity, flagged_categories, blocked
+
+
 def _call_prompt_shield(
     text: str,
     content_source: str,
@@ -476,6 +504,13 @@ class ChunkResult(BaseModel):
     prompt_attack_detected: bool
     scan_duration_ms: float
 
+class ExecutionTraceStep(BaseModel):
+    timestamp_utc: str
+    elapsed_ms: float
+    stage: str
+    message: str
+    outcome: Literal["info", "safe", "blocked"]
+
 class TextLargeContextResponse(BaseModel):
     original_length: int
     chunk_size: int
@@ -491,6 +526,7 @@ class TextLargeContextResponse(BaseModel):
     parallelism: int
     moderation_duration_ms: float
     processed_at_utc: str
+    trace: list[ExecutionTraceStep]
 
 class ImageCompressionMetrics(BaseModel):
     original_size_bytes: int
@@ -531,6 +567,24 @@ def analyze_large_text(
 ):
     started_at = perf_counter()
     deadline = started_at + MAX_MODERATION_DURATION_SECONDS
+    trace: list[ExecutionTraceStep] = []
+
+    def record_trace(
+        stage: str,
+        message: str,
+        outcome: Literal["info", "safe", "blocked"] = "info",
+    ) -> None:
+        trace.append(
+            ExecutionTraceStep(
+                timestamp_utc=datetime.now(timezone.utc).isoformat(),
+                elapsed_ms=round((perf_counter() - started_at) * 1_000, 2),
+                stage=stage,
+                message=message,
+                outcome=outcome,
+            )
+        )
+
+    record_trace("request_received", "Large-document safety scan received.")
     if not text:
         raise HTTPException(status_code=400, detail="Text cannot be empty.")
     if len(text) > MAX_LARGE_TEXT_CHARS:
@@ -557,9 +611,17 @@ def analyze_large_text(
             status_code=400,
             detail=f"Prompt Shields user prompt cannot exceed {TEXT_WINDOW_MAX_CHARS:,} characters.",
         )
+    record_trace(
+        "input_validated",
+        f"Validated {len(text):,} characters from {content_source.replace('_', ' ')}.",
+    )
 
     text_len = len(text)
     chunks = _chunk_text_semantically(text, chunk_size, overlap)
+    record_trace(
+        "text_chunked",
+        f"Created {len(chunks)} overlapping moderation chunks.",
+    )
     calls_per_window = 2 if prompt_shield and content_source != "model_completion" else 1
     required_calls = len(chunks) * calls_per_window
     if required_calls > MAX_CONTENT_SAFETY_CALLS:
@@ -571,6 +633,10 @@ def analyze_large_text(
             ),
         )
     worker_count = min(MAX_PARALLEL_SCANS, len(chunks))
+    record_trace(
+        "moderation_started",
+        f"Started {required_calls} safety checks across {worker_count} workers.",
+    )
 
     def analyze_chunk(chunk: dict) -> ChunkResult:
         chunk_started_at = perf_counter()
@@ -578,12 +644,17 @@ def analyze_large_text(
         chunk_max_severity, flagged_categories, blocklist_matches, content_blocked = (
             _analysis_decision(cs_res)
         )
+        custom_max_severity, custom_flagged_categories, custom_blocked = (
+            _custom_analysis_decision(chunk["text"])
+        )
+        chunk_max_severity = max(chunk_max_severity, custom_max_severity)
+        flagged_categories = sorted(set(flagged_categories + custom_flagged_categories))
         shield_result = (
             _call_prompt_shield(chunk["text"], content_source, user_prompt, deadline)
             if prompt_shield
             else {"applied": False, "attack_detected": False}
         )
-        blocked = content_blocked or shield_result["attack_detected"]
+        blocked = content_blocked or custom_blocked or shield_result["attack_detected"]
 
         preview = chunk["text"]
         if len(preview) > 150:
@@ -609,7 +680,16 @@ def analyze_large_text(
     try:
         futures = {executor.submit(analyze_chunk, chunk): chunk["index"] for chunk in chunks}
         for future in concurrent.futures.as_completed(futures):
-            chunk_results[futures[future]] = future.result()
+            result = future.result()
+            chunk_results[futures[future]] = result
+            record_trace(
+                "chunk_completed",
+                (
+                    f"Chunk {result.index + 1} completed: {result.decision.upper()} "
+                    f"at severity {result.severity} in {result.scan_duration_ms:.2f} ms."
+                ),
+                "blocked" if result.decision == "blocked" else "safe",
+            )
     except Exception:
         for future in futures:
             future.cancel()
@@ -628,6 +708,14 @@ def analyze_large_text(
         {category for result in completed_results for category in result.flagged_categories}
     )
     moderation_duration_ms = round((perf_counter() - started_at) * 1_000, 2)
+    record_trace(
+        "aggregation_completed",
+        (
+            f"Aggregated {len(completed_results)} chunks: {global_decision.upper()} "
+            f"with maximum severity {global_max_severity}."
+        ),
+        "blocked" if global_decision == "blocked" else "safe",
+    )
 
     logger.info(
         json.dumps(
@@ -659,7 +747,8 @@ def analyze_large_text(
         prompt_attack_detected=prompt_attack_detected,
         parallelism=worker_count,
         moderation_duration_ms=moderation_duration_ms,
-        processed_at_utc=datetime.now(timezone.utc).isoformat()
+        processed_at_utc=datetime.now(timezone.utc).isoformat(),
+        trace=trace,
     )
 
 
@@ -731,14 +820,85 @@ async def compress_image(
         _image_job_limiter.release()
 
 
-def _normalize_and_analyze_image(
+@large_context_router.post(
+    "/compress-image/download",
+    response_class=Response,
+    summary="Compress and resize an image, then return the JPEG derivative",
+)
+async def download_compressed_image(
+    file: UploadFile = File(...),
+    max_dimension: int = Form(2048),
+    compression_quality: int = Form(80),
+):
+    if max_dimension < IMAGE_ANALYSIS_MIN_DIMENSION or max_dimension > IMAGE_MAX_DIMENSION:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Max dimension must be between {IMAGE_ANALYSIS_MIN_DIMENSION} "
+                f"and {IMAGE_MAX_DIMENSION} pixels."
+            ),
+        )
+    if compression_quality < IMAGE_MIN_QUALITY or compression_quality > 95:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Compression quality must be between {IMAGE_MIN_QUALITY} and 95.",
+        )
+    if file.size is not None and file.size > MAX_IMAGE_UPLOAD_BYTES:
+        await file.close()
+        raise HTTPException(
+            status_code=413,
+            detail=f"Uploaded image exceeds the {MAX_IMAGE_UPLOAD_BYTES // (1024 * 1024)} MB source limit.",
+        )
+
+    source_name = (file.filename or "image").replace("\\", "/").rsplit("/", 1)[-1]
+    source_stem = source_name.rsplit(".", 1)[0]
+    safe_stem = re.sub(r"[^A-Za-z0-9._-]+", "-", source_stem).strip("._-") or "image"
+
+    try:
+        await asyncio.wait_for(_image_job_limiter.acquire(), timeout=IMAGE_QUEUE_TIMEOUT_SECONDS)
+    except TimeoutError as exc:
+        await file.close()
+        raise HTTPException(status_code=503, detail="Image compression capacity is busy. Retry shortly.") from exc
+
+    try:
+        try:
+            contents = await file.read(MAX_IMAGE_UPLOAD_BYTES + 1)
+        except Exception as exc:
+            raise HTTPException(status_code=400, detail="Could not read uploaded file.") from exc
+        finally:
+            await file.close()
+
+        if not contents:
+            raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+        if len(contents) > MAX_IMAGE_UPLOAD_BYTES:
+            raise HTTPException(
+                status_code=413,
+                detail=f"Uploaded image exceeds the {MAX_IMAGE_UPLOAD_BYTES // (1024 * 1024)} MB source limit.",
+            )
+
+        compressed_bytes, _metrics = await asyncio.to_thread(
+            _normalize_image,
+            contents,
+            max_dimension,
+            compression_quality,
+        )
+        return Response(
+            content=compressed_bytes,
+            media_type="image/jpeg",
+            headers={
+                "Content-Disposition": f'attachment; filename="{safe_stem}-compressed.jpg"',
+            },
+        )
+    finally:
+        _image_job_limiter.release()
+
+
+def _normalize_image(
     contents: bytes,
     max_dimension: int,
     compression_quality: int,
-    started_at: float,
-    deadline: float | None = None,
-) -> ImageLargeContextResponse:
-    """Normalize and moderate an image on a worker thread."""
+) -> tuple[bytes, ImageCompressionMetrics]:
+    """Normalize an image and return its JPEG bytes and compression metrics."""
     try:
         with Image.open(io.BytesIO(contents)) as source_image:
             source_w, source_h = source_image.size
@@ -808,13 +968,6 @@ def _normalize_and_analyze_image(
     orig_size_bytes = len(contents)
     reduction = round((1 - (comp_size_bytes / orig_size_bytes)) * 100, 2)
 
-    if deadline is not None and perf_counter() >= deadline:
-        raise HTTPException(status_code=504, detail="Content Safety moderation deadline exceeded.")
-    cs_res = _call_content_safety_image(compressed_bytes, deadline)
-    max_severity, flagged_categories, _blocklist_matches, blocked = _analysis_decision(cs_res)
-    decision = "blocked" if blocked else "safe"
-    moderation_duration_ms = round((perf_counter() - started_at) * 1_000, 2)
-
     metrics = ImageCompressionMetrics(
         original_size_bytes=orig_size_bytes,
         original_dimensions=f"{orig_w}x{orig_h}",
@@ -826,6 +979,25 @@ def _normalize_and_analyze_image(
         final_quality=quality,
         reduction_percentage=reduction
     )
+    return compressed_bytes, metrics
+
+
+def _normalize_and_analyze_image(
+    contents: bytes,
+    max_dimension: int,
+    compression_quality: int,
+    started_at: float,
+    deadline: float | None = None,
+) -> ImageLargeContextResponse:
+    """Normalize and moderate an image on a worker thread."""
+    compressed_bytes, metrics = _normalize_image(contents, max_dimension, compression_quality)
+
+    if deadline is not None and perf_counter() >= deadline:
+        raise HTTPException(status_code=504, detail="Content Safety moderation deadline exceeded.")
+    cs_res = _call_content_safety_image(compressed_bytes, deadline)
+    max_severity, flagged_categories, _blocklist_matches, blocked = _analysis_decision(cs_res)
+    decision = "blocked" if blocked else "safe"
+    moderation_duration_ms = round((perf_counter() - started_at) * 1_000, 2)
 
     result = ImageLargeContextResponse(
         metrics=metrics,
@@ -842,10 +1014,10 @@ def _normalize_and_analyze_image(
         json.dumps(
             {
                 "event": "large_context_image_moderation",
-                "original_size_bytes": orig_size_bytes,
-                "compressed_size_bytes": comp_size_bytes,
-                "original_dimensions": f"{orig_w}x{orig_h}",
-                "compressed_dimensions": f"{new_w}x{new_h}",
+                "original_size_bytes": metrics.original_size_bytes,
+                "compressed_size_bytes": metrics.compressed_size_bytes,
+                "original_dimensions": metrics.original_dimensions,
+                "compressed_dimensions": metrics.compressed_dimensions,
                 "max_severity": max_severity,
                 "decision": decision,
                 "moderation_duration_ms": moderation_duration_ms,

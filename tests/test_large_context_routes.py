@@ -205,6 +205,46 @@ class TextWindowingTests(unittest.TestCase):
 
         self.assertEqual(413, raised.exception.status_code)
 
+    def test_custom_pii_blocks_a_chunk_when_content_safety_categories_are_safe(self) -> None:
+        text = ("Routine policy content. " * 12) + "Contact exposed.person@example.com immediately."
+
+        with patch.object(large_context_routes, "_call_content_safety_text", return_value=SAFE_ANALYSIS):
+            result = large_context_routes.analyze_large_text(
+                text=text,
+                chunk_size=200,
+                overlap=40,
+                content_source="model_completion",
+                prompt_shield=False,
+                user_prompt=None,
+            )
+
+        self.assertEqual("blocked", result.aggregated_decision)
+        self.assertTrue(
+            any("PII" in category for chunk in result.chunks for category in chunk.flagged_categories)
+        )
+
+    @patch.object(large_context_routes, "_call_content_safety_text", return_value=SAFE_ANALYSIS)
+    def test_text_response_includes_ordered_execution_trace(self, _analyze: MagicMock) -> None:
+        result = large_context_routes.analyze_large_text(
+            text="Safe policy sentence. " * 20,
+            chunk_size=160,
+            overlap=20,
+            content_source="model_completion",
+            prompt_shield=False,
+            user_prompt=None,
+        )
+
+        self.assertEqual("request_received", result.trace[0].stage)
+        self.assertEqual("aggregation_completed", result.trace[-1].stage)
+        self.assertEqual(
+            result.num_chunks,
+            sum(step.stage == "chunk_completed" for step in result.trace),
+        )
+        self.assertEqual(
+            sorted(step.elapsed_ms for step in result.trace),
+            [step.elapsed_ms for step in result.trace],
+        )
+
 
 class EndpointContractTests(unittest.TestCase):
     @patch.object(large_context_routes, "CONTENT_SAFETY_MOCK_MODE", True)
@@ -323,6 +363,28 @@ class ImageNormalizationTests(unittest.TestCase):
 
         self.assertEqual("100x20", result.metrics.original_dimensions)
         self.assertEqual("100x50", result.metrics.compressed_dimensions)
+
+    def test_compressed_image_download_returns_a_jpeg_attachment(self) -> None:
+        source = io.BytesIO()
+        Image.new("RGB", (120, 80), "white").save(source, format="PNG")
+        app = FastAPI()
+        app.include_router(large_context_routes.large_context_router)
+
+        with TestClient(app) as client:
+            response = client.post(
+                "/api/large-context/compress-image/download",
+                files={"file": ("sample.png", source.getvalue(), "image/png")},
+                data={"max_dimension": "2048", "compression_quality": "80"},
+            )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("image/jpeg", response.headers["content-type"])
+        self.assertIn(
+            'attachment; filename="sample-compressed.jpg"',
+            response.headers["content-disposition"],
+        )
+        with Image.open(io.BytesIO(response.content)) as downloaded:
+            self.assertEqual("JPEG", downloaded.format)
 
 
 class ApimConfigurationTests(unittest.TestCase):
