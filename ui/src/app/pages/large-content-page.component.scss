@@ -98,6 +98,230 @@
     }
   }
 
+  .catalog-heading {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+
+    h3 {
+      margin: 3px 0 0;
+      color: #0f172a;
+      font-size: 1.18rem;
+    }
+  }
+
+  .section-kicker,
+  .catalog-count {
+    color: #64748b;
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .catalog-count {
+    flex: none;
+    padding-bottom: 2px;
+  }
+
+  .image-catalog {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .catalog-card {
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #ffffff;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+
+    &:hover {
+      border-color: #64748b;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+    }
+
+    &.selected {
+      border-color: #0f766e;
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.18);
+    }
+  }
+
+  .catalog-select {
+    position: relative;
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 0;
+    border-bottom: 1px solid #e2e8f0;
+    border-radius: 0;
+    padding: 0;
+    background: #e2e8f0;
+    cursor: pointer;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.25s ease;
+    }
+
+    &:hover:not(:disabled) img {
+      transform: scale(1.025);
+    }
+
+    &:focus-visible {
+      outline: 3px solid #0f766e;
+      outline-offset: -3px;
+    }
+
+    &:disabled {
+      cursor: wait;
+    }
+  }
+
+  .catalog-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(15, 23, 42, 0.78);
+    color: #ffffff;
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+
+  .selected-mark {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    background: #0f766e;
+    color: #ffffff;
+    font-weight: 900;
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.3);
+  }
+
+  .catalog-details {
+    padding: 13px;
+
+    h4 {
+      min-height: 2.5em;
+      margin: 4px 0 10px;
+      color: #0f172a;
+      font-size: 0.95rem;
+      line-height: 1.25;
+    }
+
+    dl {
+      display: grid;
+      gap: 5px;
+      margin: 0;
+      font-size: 0.78rem;
+    }
+
+    dl div {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    dt {
+      color: #64748b;
+    }
+
+    dd {
+      margin: 0;
+      color: #1e293b;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      text-align: right;
+    }
+  }
+
+  .catalog-category {
+    color: #0f766e;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .negative-test-label {
+    margin: -3px 0 9px;
+    border-left: 3px solid #dc2626;
+    padding: 4px 7px;
+    background: #fef2f2;
+    color: #991b1b;
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .catalog-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 13px;
+  }
+
+  .select-image-btn,
+  .original-download {
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    padding: 7px 9px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .select-image-btn {
+    border: 1px solid #0f766e;
+    background: #0f766e;
+    color: #ffffff;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: #115e59;
+    }
+
+    &:disabled {
+      cursor: wait;
+      opacity: 0.68;
+    }
+  }
+
+  .original-download {
+    gap: 5px;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+
+    &:hover {
+      border-color: #64748b;
+      background: #f8fafc;
+    }
+  }
+
+  .attribution-link {
+    display: inline-block;
+    margin-top: 9px;
+    color: #64748b;
+    font-size: 0.7rem;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
   .panel-card {
     background-color: #ffffff;
     border: 1px solid #e2e8f0;

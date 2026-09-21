@@ -29,21 +29,92 @@
         <h2>Smart Image Compression & Safety Scan</h2>
         <p class="description">
           The Azure AI Content Safety Image API has a strict <strong>4 MB payload limit</strong>.
-          This module demonstrates how to downscale dimensions and dynamically compress a large image 
-          so it can be safely and cost-effectively analyzed.
+          Choose a high-resolution original, download it for inspection, or send it through dimension
+          reduction and adaptive compression before safety analysis.
         </p>
+
+        <div class="catalog-heading">
+          <div>
+            <span class="section-kicker">Curated originals</span>
+            <h3>Choose a 5-20 MB image</h3>
+          </div>
+          <span class="catalog-count">{{ imageCatalog.length }} photos</span>
+        </div>
+
+        <div class="image-catalog" aria-label="Large image catalog">
+          @for (image of imageCatalog; track image.id) {
+            <article
+              class="catalog-card"
+              [class.selected]="selectedCatalogImageId() === image.id"
+            >
+              <button
+                type="button"
+                class="catalog-select"
+                [attr.aria-label]="'Select ' + image.title + ' for image reduction and safety analysis'"
+                [attr.aria-pressed]="selectedCatalogImageId() === image.id"
+                [disabled]="loadingCatalogImageId() !== null"
+                (click)="selectCatalogImage(image)"
+              >
+                <img [src]="image.thumbnailPath" [alt]="image.title" loading="lazy" />
+                @if (loadingCatalogImageId() === image.id) {
+                  <span class="catalog-loading">Loading original...</span>
+                }
+                @if (selectedCatalogImageId() === image.id) {
+                  <span class="selected-mark" aria-hidden="true">✓</span>
+                }
+              </button>
+              <div class="catalog-details">
+                <span class="catalog-category">{{ image.category }}</span>
+                <h4>{{ image.title }}</h4>
+                @if (image.expectedSafetySignal) {
+                  <div class="negative-test-label">
+                    Likely safety signal: {{ image.expectedSafetySignal }}
+                  </div>
+                }
+                <dl>
+                  <div>
+                    <dt>Dimensions</dt>
+                    <dd>{{ image.width | number }} × {{ image.height | number }} px</dd>
+                  </div>
+                  <div>
+                    <dt>File size</dt>
+                    <dd>{{ formatBytes(image.sizeBytes) }}</dd>
+                  </div>
+                </dl>
+                <div class="catalog-actions">
+                  <button
+                    type="button"
+                    class="select-image-btn"
+                    [disabled]="loadingCatalogImageId() !== null"
+                    (click)="selectCatalogImage(image)"
+                  >
+                    {{ selectedCatalogImageId() === image.id ? 'Selected' : 'Use image' }}
+                  </button>
+                  <a class="original-download" [href]="image.path" [download]="image.fileName">
+                    <span aria-hidden="true">↓</span> Original
+                  </a>
+                </div>
+                @if (image.sourceUrl) {
+                  <a class="attribution-link" [href]="image.sourceUrl" target="_blank" rel="noopener noreferrer">
+                    {{ image.license }} source
+                  </a>
+                }
+              </div>
+            </article>
+          }
+        </div>
 
         <div class="split-layout">
           <!-- Control Panel -->
           <div class="panel-card control-panel">
-            <h3>1. Select or Generate an Image</h3>
+            <h3>1. Selected Image & Reduction Settings</h3>
             
             <div class="button-row">
-              <button class="primary-btn" (click)="generateTestImage()">⚡ Generate High-Res Image (> 4 MB)</button>
               <label class="secondary-btn cursor-pointer">
                 📁 Upload Local File
                 <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden-input" />
               </label>
+              <button class="secondary-btn" (click)="generateTestImage()">Generate synthetic test image</button>
             </div>
 
             @if (selectedFile) {
@@ -82,7 +153,7 @@
             </div>
 
             <button class="action-btn" [disabled]="loading() || !selectedFile" (click)="runImageAnalysis()">
-              {{ loading() ? 'Processing...' : '⚡ Optimize & Run Content Safety' }}
+              {{ loading() ? 'Reducing & analyzing...' : 'Reduce image & run content safety' }}
             </button>
           </div>
 
@@ -92,7 +163,7 @@
 
             @if (!selectedFile) {
               <div class="empty-state">
-                <p>Generate the high-resolution test image or upload a local image file to view the compression pipeline.</p>
+                <p>Choose a catalog photo or upload a local image to view the reduction pipeline.</p>
               </div>
             } @else {
               <div class="pipeline-flow">
