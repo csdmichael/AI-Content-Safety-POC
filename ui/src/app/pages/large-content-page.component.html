@@ -41,66 +41,93 @@
           <span class="catalog-count">{{ imageCatalog.length }} photos</span>
         </div>
 
-        <div class="image-catalog" aria-label="Large image catalog">
-          @for (image of imageCatalog; track image.id) {
-            <article
-              class="catalog-card"
-              [class.selected]="selectedCatalogImageId() === image.id"
+        <div class="image-catalog-groups">
+          @for (group of imageCatalogGroups; track group.safety) {
+            <section
+              class="catalog-group"
+              [attr.data-safety-group]="group.safety"
+              [attr.aria-labelledby]="group.safety + '-catalog-heading'"
             >
-              <button
-                type="button"
-                class="catalog-select"
-                [attr.aria-label]="'Select ' + image.title + ' for image reduction and safety analysis'"
-                [attr.aria-pressed]="selectedCatalogImageId() === image.id"
-                [disabled]="loadingCatalogImageId() !== null"
-                (click)="selectCatalogImage(image)"
-              >
-                <img [src]="image.thumbnailPath" [alt]="image.title" loading="lazy" />
-                @if (loadingCatalogImageId() === image.id) {
-                  <span class="catalog-loading">Loading original...</span>
-                }
-                @if (selectedCatalogImageId() === image.id) {
-                  <span class="selected-mark" aria-hidden="true">✓</span>
-                }
-              </button>
-              <div class="catalog-details">
-                <span class="catalog-category">{{ image.category }}</span>
-                <h4>{{ image.title }}</h4>
-                @if (image.expectedSafetySignal) {
-                  <div class="negative-test-label">
-                    Likely safety signal: {{ image.expectedSafetySignal }}
-                  </div>
-                }
-                <dl>
-                  <div>
-                    <dt>Dimensions</dt>
-                    <dd>{{ image.width | number }} × {{ image.height | number }} px</dd>
-                  </div>
-                  <div>
-                    <dt>File size</dt>
-                    <dd>{{ formatBytes(image.sizeBytes) }}</dd>
-                  </div>
-                </dl>
-                <div class="catalog-actions">
+              <div class="catalog-group-heading">
+                <div>
+                  <h4 [id]="group.safety + '-catalog-heading'">{{ group.title }}</h4>
+                  <p>{{ group.description }}</p>
+                </div>
+                <span class="catalog-group-count">{{ group.images.length }} images</span>
+              </div>
+
+              <div class="image-catalog">
+                @for (image of group.images; track image.id) {
+                  <article
+                    class="catalog-card"
+                    [class.expected-unsafe]="image.expectedSafetyOutcome === 'unsafe'"
+                    [class.selected]="selectedCatalogImageId() === image.id"
+                  >
                   <button
                     type="button"
-                    class="select-image-btn"
+                    class="catalog-select"
+                    [attr.aria-label]="'Select ' + image.title + ' for image reduction and safety analysis'"
+                    [attr.aria-pressed]="selectedCatalogImageId() === image.id"
                     [disabled]="loadingCatalogImageId() !== null"
                     (click)="selectCatalogImage(image)"
                   >
-                    {{ selectedCatalogImageId() === image.id ? 'Selected' : 'Use image' }}
+                    <img [src]="image.thumbnailPath" [alt]="image.title" />
+                    @if (loadingCatalogImageId() === image.id) {
+                      <span class="catalog-loading">Loading original...</span>
+                    }
+                    @if (selectedCatalogImageId() === image.id) {
+                      <span class="selected-mark" aria-hidden="true">✓</span>
+                    }
                   </button>
-                  <a class="original-download" [href]="image.path" [download]="image.fileName">
-                    <span aria-hidden="true">↓</span> Original
-                  </a>
-                </div>
-                @if (image.sourceUrl) {
-                  <a class="attribution-link" [href]="image.sourceUrl" target="_blank" rel="noopener noreferrer">
-                    {{ image.license }} source
-                  </a>
+                  <div class="catalog-details">
+                    <div class="catalog-card-meta">
+                      <span class="catalog-category">{{ image.category }}</span>
+                      <span
+                        class="expected-safety"
+                        [class.unsafe]="image.expectedSafetyOutcome === 'unsafe'"
+                      >
+                        {{ image.expectedSafetyOutcome }}
+                      </span>
+                    </div>
+                    <h4>{{ image.title }}</h4>
+                    @if (image.expectedSafetySignal) {
+                      <div class="negative-test-label">
+                        Expected safety signal: {{ image.expectedSafetySignal }}
+                      </div>
+                    }
+                    <dl>
+                      <div>
+                        <dt>Dimensions</dt>
+                        <dd>{{ image.width | number }} × {{ image.height | number }} px</dd>
+                      </div>
+                      <div>
+                        <dt>File size</dt>
+                        <dd>{{ formatBytes(image.sizeBytes) }}</dd>
+                      </div>
+                    </dl>
+                    <div class="catalog-actions">
+                      <button
+                        type="button"
+                        class="select-image-btn"
+                        [disabled]="loadingCatalogImageId() !== null"
+                        (click)="selectCatalogImage(image)"
+                      >
+                        {{ selectedCatalogImageId() === image.id ? 'Selected' : 'Use image' }}
+                      </button>
+                      <a class="original-download" [href]="image.path" [download]="image.fileName">
+                        <span aria-hidden="true">↓</span> Original
+                      </a>
+                    </div>
+                    @if (image.sourceUrl) {
+                      <a class="attribution-link" [href]="image.sourceUrl" target="_blank" rel="noopener noreferrer">
+                        {{ image.license }} source
+                      </a>
+                    }
+                  </div>
+                </article>
                 }
               </div>
-            </article>
+            </section>
           }
         </div>
 

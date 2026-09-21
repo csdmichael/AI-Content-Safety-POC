@@ -13,6 +13,7 @@ import {
 
 type ActiveTab = 'image' | 'text' | 'apim';
 type ContentSource = 'user_prompt' | 'retrieved_document' | 'model_completion';
+type ImageSafetyOutcome = 'safe' | 'unsafe';
 
 export interface LargeImageCatalogItem {
   id: string;
@@ -26,7 +27,15 @@ export interface LargeImageCatalogItem {
   sizeBytes: number;
   sourceUrl: string;
   license: string;
+  expectedSafetyOutcome: ImageSafetyOutcome;
   expectedSafetySignal?: string;
+}
+
+interface LargeImageCatalogGroup {
+  safety: ImageSafetyOutcome;
+  title: string;
+  description: string;
+  images: LargeImageCatalogItem[];
 }
 
 @Component({
@@ -45,19 +54,37 @@ export class LargeContentPageComponent implements OnInit {
 
   // --- Image Compressor ---
   readonly imageCatalog: LargeImageCatalogItem[] = [
-    { id: 'storybook-castle', title: 'Storybook Castle', category: 'Character & fantasy', fileName: 'storybook-castle.jpg', path: '/large-images/originals/storybook-castle.jpg', thumbnailPath: '/large-images/thumbnails/storybook-castle.webp', width: 4272, height: 2848, sizeBytes: 5_255_335, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Sleeping_Beauty_Castle_DLR.jpg', license: 'CC BY-SA 3.0' },
-    { id: 'character-parade', title: 'Character Parade', category: 'Character & fantasy', fileName: 'character-parade.jpg', path: '/large-images/originals/character-parade.jpg', thumbnailPath: '/large-images/thumbnails/character-parade.webp', width: 5184, height: 3456, sizeBytes: 6_114_432, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Main_Street_Electrical_Parade_(14261249602).jpg', license: 'CC BY 2.0' },
-    { id: 'silicon-wafer', title: 'Silicon Wafer', category: 'Semiconductor', fileName: 'silicon-wafer.jpg', path: '/large-images/originals/silicon-wafer.jpg', thumbnailPath: '/large-images/thumbnails/silicon-wafer.webp', width: 7118, height: 5122, sizeBytes: 9_290_508, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Exposed_150mm_6%22_wafer_with_hundreds_of_chips.jpg', license: 'CC BY-SA 4.0' },
-    { id: 'integrated-circuit', title: 'Integrated Circuit Die', category: 'Semiconductor', fileName: 'integrated-circuit.jpg', path: '/large-images/originals/integrated-circuit.jpg', thumbnailPath: '/large-images/thumbnails/integrated-circuit.webp', width: 4636, height: 3076, sizeBytes: 5_314_854, sourceUrl: 'https://commons.wikimedia.org/wiki/File:M27c322-100f1_macro.jpg', license: 'CC BY-SA 4.0' },
-    { id: 'silicon-researcher', title: 'Cleanroom Wafer Inspection', category: 'Semiconductor', fileName: 'silicon-researcher.jpg', path: '/large-images/originals/silicon-researcher.jpg', thumbnailPath: '/large-images/thumbnails/silicon-researcher.webp', width: 5760, height: 3840, sizeBytes: 6_835_509, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Silicon_wafer_researcher.jpg', license: 'Public domain' },
-    { id: 'mountain-lake', title: 'Mountain Lake Vista', category: 'Nature', fileName: 'mountain-lake.jpg', path: '/large-images/originals/mountain-lake.jpg', thumbnailPath: '/large-images/thumbnails/mountain-lake.webp', width: 4880, height: 2745, sizeBytes: 5_727_189, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg', license: 'CC BY-SA 3.0' },
-    { id: 'forest-waterfall', title: 'Forest Waterfall', category: 'Nature', fileName: 'forest-waterfall.jpg', path: '/large-images/originals/forest-waterfall.jpg', thumbnailPath: '/large-images/thumbnails/forest-waterfall.webp', width: 5616, height: 3744, sizeBytes: 5_750_361, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Forest-waterfall-icy-ravine1_-_Virginia_-_ForestWander.jpg', license: 'CC BY-SA 3.0' },
-    { id: 'desert-dunes', title: 'Sahara Desert Dunes', category: 'Nature', fileName: 'desert-dunes.jpg', path: '/large-images/originals/desert-dunes.jpg', thumbnailPath: '/large-images/thumbnails/desert-dunes.webp', width: 3072, height: 2048, sizeBytes: 6_309_897, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Sand_dunes_in_the_desert%2C_Sahara_Desert%2C_Dakhla_Oasis%2C_Egypt.jpg', license: 'CC BY 2.0' },
-    { id: 'ocean-reef', title: 'Coral Reef Biosphere', category: 'Nature', fileName: 'ocean-reef.jpg', path: '/large-images/originals/ocean-reef.jpg', thumbnailPath: '/large-images/thumbnails/ocean-reef.webp', width: 5312, height: 2988, sizeBytes: 6_390_907, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Corals_in_Eilat_coral_reef_nature_reserve_2.jpg', license: 'CC BY-SA 4.0' },
-    { id: 'elephant-herd', title: 'African Bush Elephant', category: 'Wildlife', fileName: 'elephant-herd.jpg', path: '/large-images/originals/elephant-herd.jpg', thumbnailPath: '/large-images/thumbnails/elephant-herd.webp', width: 4704, height: 1619, sizeBytes: 5_967_557, sourceUrl: 'https://commons.wikimedia.org/wiki/File:African_bush_elephant,_South_Luangwa_National_Park_(51866154526)_(cropped).jpg', license: 'CC BY 2.0' },
-    { id: 'city-skyline', title: 'City Night Skyline', category: 'Architecture', fileName: 'city-skyline.jpg', path: '/large-images/originals/city-skyline.jpg', thumbnailPath: '/large-images/thumbnails/city-skyline.webp', width: 6754, height: 2000, sizeBytes: 5_347_231, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Jacksonville_Skyline_Night_Panorama_Digon3.jpg', license: 'CC BY-SA 3.0' },
-    { id: 'historic-cathedral', title: 'Historic Cathedral Choir', category: 'Architecture', fileName: 'historic-cathedral.jpg', path: '/large-images/originals/historic-cathedral.jpg', thumbnailPath: '/large-images/thumbnails/historic-cathedral.webp', width: 6000, height: 4729, sizeBytes: 13_228_685, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Worcester_Cathedral_choir,_Worcestershire,_UK_-_Diliff.jpg', license: 'CC BY-SA 3.0' },
-    { id: 'space-nebula', title: 'Tarantula Nebula Deep Space', category: 'Space', fileName: 'space-nebula.jpg', path: '/large-images/originals/space-nebula.jpg', thumbnailPath: '/large-images/thumbnails/space-nebula.webp', width: 3600, height: 2880, sizeBytes: 9_279_797, sourceUrl: 'https://commons.wikimedia.org/wiki/File:A_New_View_of_the_Tarantula_Nebula.jpg', license: 'CC BY 4.0' },
+    { id: 'storybook-castle', title: 'Storybook Castle', category: 'Character & fantasy', fileName: 'storybook-castle.jpg', path: '/large-images/originals/storybook-castle.jpg', thumbnailPath: '/large-images/thumbnails/storybook-castle.webp', width: 4272, height: 2848, sizeBytes: 5_255_335, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Sleeping_Beauty_Castle_DLR.jpg', license: 'CC BY-SA 3.0', expectedSafetyOutcome: 'safe' },
+    { id: 'character-parade', title: 'Character Parade', category: 'Character & fantasy', fileName: 'character-parade.jpg', path: '/large-images/originals/character-parade.jpg', thumbnailPath: '/large-images/thumbnails/character-parade.webp', width: 5184, height: 3456, sizeBytes: 6_114_432, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Main_Street_Electrical_Parade_(14261249602).jpg', license: 'CC BY 2.0', expectedSafetyOutcome: 'safe' },
+    { id: 'silicon-wafer', title: 'Silicon Wafer', category: 'Semiconductor', fileName: 'silicon-wafer.jpg', path: '/large-images/originals/silicon-wafer.jpg', thumbnailPath: '/large-images/thumbnails/silicon-wafer.webp', width: 7118, height: 5122, sizeBytes: 9_290_508, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Exposed_150mm_6%22_wafer_with_hundreds_of_chips.jpg', license: 'CC BY-SA 4.0', expectedSafetyOutcome: 'safe' },
+    { id: 'integrated-circuit', title: 'Integrated Circuit Die', category: 'Semiconductor', fileName: 'integrated-circuit.jpg', path: '/large-images/originals/integrated-circuit.jpg', thumbnailPath: '/large-images/thumbnails/integrated-circuit.webp', width: 4636, height: 3076, sizeBytes: 5_314_854, sourceUrl: 'https://commons.wikimedia.org/wiki/File:M27c322-100f1_macro.jpg', license: 'CC BY-SA 4.0', expectedSafetyOutcome: 'safe' },
+    { id: 'silicon-researcher', title: 'Cleanroom Wafer Inspection', category: 'Semiconductor', fileName: 'silicon-researcher.jpg', path: '/large-images/originals/silicon-researcher.jpg', thumbnailPath: '/large-images/thumbnails/silicon-researcher.webp', width: 5760, height: 3840, sizeBytes: 6_835_509, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Silicon_wafer_researcher.jpg', license: 'Public domain', expectedSafetyOutcome: 'safe' },
+    { id: 'mountain-lake', title: 'Mountain Lake Vista', category: 'Nature', fileName: 'mountain-lake.jpg', path: '/large-images/originals/mountain-lake.jpg', thumbnailPath: '/large-images/thumbnails/mountain-lake.webp', width: 4880, height: 2745, sizeBytes: 5_727_189, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Moraine_Lake_17092005.jpg', license: 'CC BY-SA 3.0', expectedSafetyOutcome: 'safe' },
+    { id: 'forest-waterfall', title: 'Forest Waterfall', category: 'Nature', fileName: 'forest-waterfall.jpg', path: '/large-images/originals/forest-waterfall.jpg', thumbnailPath: '/large-images/thumbnails/forest-waterfall.webp', width: 5616, height: 3744, sizeBytes: 5_750_361, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Forest-waterfall-icy-ravine1_-_Virginia_-_ForestWander.jpg', license: 'CC BY-SA 3.0', expectedSafetyOutcome: 'safe' },
+    { id: 'desert-dunes', title: 'Sahara Desert Dunes', category: 'Nature', fileName: 'desert-dunes.jpg', path: '/large-images/originals/desert-dunes.jpg', thumbnailPath: '/large-images/thumbnails/desert-dunes.webp', width: 3072, height: 2048, sizeBytes: 6_309_897, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Sand_dunes_in_the_desert%2C_Sahara_Desert%2C_Dakhla_Oasis%2C_Egypt.jpg', license: 'CC BY 2.0', expectedSafetyOutcome: 'safe' },
+    { id: 'ocean-reef', title: 'Coral Reef Biosphere', category: 'Nature', fileName: 'ocean-reef.jpg', path: '/large-images/originals/ocean-reef.jpg', thumbnailPath: '/large-images/thumbnails/ocean-reef.webp', width: 5312, height: 2988, sizeBytes: 6_390_907, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Corals_in_Eilat_coral_reef_nature_reserve_2.jpg', license: 'CC BY-SA 4.0', expectedSafetyOutcome: 'safe' },
+    { id: 'elephant-herd', title: 'African Bush Elephant', category: 'Wildlife', fileName: 'elephant-herd.jpg', path: '/large-images/originals/elephant-herd.jpg', thumbnailPath: '/large-images/thumbnails/elephant-herd.webp', width: 4704, height: 1619, sizeBytes: 5_967_557, sourceUrl: 'https://commons.wikimedia.org/wiki/File:African_bush_elephant,_South_Luangwa_National_Park_(51866154526)_(cropped).jpg', license: 'CC BY 2.0', expectedSafetyOutcome: 'safe' },
+    { id: 'city-skyline', title: 'City Night Skyline', category: 'Architecture', fileName: 'city-skyline.jpg', path: '/large-images/originals/city-skyline.jpg', thumbnailPath: '/large-images/thumbnails/city-skyline.webp', width: 6754, height: 2000, sizeBytes: 5_347_231, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Jacksonville_Skyline_Night_Panorama_Digon3.jpg', license: 'CC BY-SA 3.0', expectedSafetyOutcome: 'safe' },
+    { id: 'historic-cathedral', title: 'Historic Cathedral Choir', category: 'Architecture', fileName: 'historic-cathedral.jpg', path: '/large-images/originals/historic-cathedral.jpg', thumbnailPath: '/large-images/thumbnails/historic-cathedral.webp', width: 6000, height: 4729, sizeBytes: 13_228_685, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Worcester_Cathedral_choir,_Worcestershire,_UK_-_Diliff.jpg', license: 'CC BY-SA 3.0', expectedSafetyOutcome: 'safe' },
+    { id: 'space-nebula', title: 'Tarantula Nebula Deep Space', category: 'Space', fileName: 'space-nebula.jpg', path: '/large-images/originals/space-nebula.jpg', thumbnailPath: '/large-images/thumbnails/space-nebula.webp', width: 3600, height: 2880, sizeBytes: 9_279_797, sourceUrl: 'https://commons.wikimedia.org/wiki/File:A_New_View_of_the_Tarantula_Nebula.jpg', license: 'CC BY 4.0', expectedSafetyOutcome: 'safe' },
+    { id: 'unsafe-violence', title: 'Violence Category Test Card', category: 'Controlled safety test', fileName: 'unsafe-violence.jpg', path: '/large-images/originals/unsafe-violence.jpg', thumbnailPath: '/large-images/thumbnails/unsafe-violence.webp', width: 5616, height: 3744, sizeBytes: 9_583_520, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Forest-waterfall-icy-ravine1_-_Virginia_-_ForestWander.jpg', license: 'CC BY-SA 3.0 background', expectedSafetyOutcome: 'unsafe', expectedSafetySignal: 'Violence' },
+    { id: 'unsafe-hate', title: 'Hate Category Test Card', category: 'Controlled safety test', fileName: 'unsafe-hate.jpg', path: '/large-images/originals/unsafe-hate.jpg', thumbnailPath: '/large-images/thumbnails/unsafe-hate.webp', width: 7118, height: 5122, sizeBytes: 12_354_546, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Exposed_150mm_6%22_wafer_with_hundreds_of_chips.jpg', license: 'CC BY-SA 4.0 background', expectedSafetyOutcome: 'unsafe', expectedSafetySignal: 'Hate' },
+    { id: 'unsafe-sexual', title: 'Sexual Category Test Card', category: 'Controlled safety test', fileName: 'unsafe-sexual.jpg', path: '/large-images/originals/unsafe-sexual.jpg', thumbnailPath: '/large-images/thumbnails/unsafe-sexual.webp', width: 5184, height: 3456, sizeBytes: 7_089_947, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Main_Street_Electrical_Parade_(14261249602).jpg', license: 'CC BY 2.0 background', expectedSafetyOutcome: 'unsafe', expectedSafetySignal: 'Sexual' },
+    { id: 'unsafe-self-harm', title: 'Self-Harm Category Test Card', category: 'Controlled safety test', fileName: 'unsafe-self-harm.jpg', path: '/large-images/originals/unsafe-self-harm.jpg', thumbnailPath: '/large-images/thumbnails/unsafe-self-harm.webp', width: 6000, height: 4729, sizeBytes: 12_491_042, sourceUrl: 'https://commons.wikimedia.org/wiki/File:Worcester_Cathedral_choir,_Worcestershire,_UK_-_Diliff.jpg', license: 'CC BY-SA 3.0 background', expectedSafetyOutcome: 'unsafe', expectedSafetySignal: 'SelfHarm' },
+  ];
+  readonly imageCatalogGroups: LargeImageCatalogGroup[] = [
+    {
+      safety: 'safe',
+      title: 'Expected safe',
+      description: 'Benign photos for validating the allowed path.',
+      images: this.imageCatalog.filter((image) => image.expectedSafetyOutcome === 'safe'),
+    },
+    {
+      safety: 'unsafe',
+      title: 'Expected unsafe',
+      description: 'Controlled OCR test cards expected to trigger a safety category.',
+      images: this.imageCatalog.filter((image) => image.expectedSafetyOutcome === 'unsafe'),
+    },
   ];
   maxDimension = 2048;
   compressionQuality = 80;

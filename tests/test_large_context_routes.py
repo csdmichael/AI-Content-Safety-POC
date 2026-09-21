@@ -1,5 +1,6 @@
 import asyncio
 import io
+from pathlib import Path
 import threading
 import time
 import unittest
@@ -273,6 +274,33 @@ class EndpointContractTests(unittest.TestCase):
 
 
 class ImageNormalizationTests(unittest.TestCase):
+    def test_unsafe_catalog_fixtures_exercise_large_image_normalization(self) -> None:
+        originals_dir = (
+            Path(__file__).resolve().parent.parent / "ui" / "public" / "large-images" / "originals"
+        )
+        fixture_names = (
+            "unsafe-hate.jpg",
+            "unsafe-self-harm.jpg",
+            "unsafe-sexual.jpg",
+            "unsafe-violence.jpg",
+        )
+
+        for fixture_name in fixture_names:
+            with self.subTest(fixture=fixture_name):
+                contents = (originals_dir / fixture_name).read_bytes()
+                self.assertGreaterEqual(len(contents), 5 * 1024 * 1024)
+                self.assertLessEqual(len(contents), 20 * 1024 * 1024)
+
+                normalized, metrics = large_context_routes._normalize_image(
+                    contents,
+                    max_dimension=2_048,
+                    compression_quality=80,
+                )
+
+                self.assertLessEqual(len(normalized), large_context_routes.IMAGE_MAX_BYTES)
+                self.assertTrue(metrics.resized)
+                self.assertEqual("JPEG", metrics.compressed_format)
+
     def test_small_image_is_padded_to_content_safety_minimum(self) -> None:
         source = io.BytesIO()
         Image.new("RGB", (20, 40), "white").save(source, format="PNG")

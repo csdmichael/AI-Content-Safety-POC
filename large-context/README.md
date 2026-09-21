@@ -207,13 +207,19 @@ Create a resilient endpoint that distributes traffic between three regional inst
 In this POC, we built a dedicated **"Large Content"** page in the UI that dynamically displays each part of the pipeline to demystify these steps for customers.
 
 ### Step 1: Image Compression Live Demo
-1. **User Uploads Large Image:** Drag and drop an image of any size (e.g. 5MB, 8MB).
+1. **User Selects a Large Image:** Pick from separate **Expected safe** and **Expected unsafe** catalogs, or upload a local image. The controlled unsafe catalog covers Hate, SelfHarm, Sexual, and Violence OCR signals with 5–20 MB originals.
 2. **Visual Compression Pipeline Dashboard:**
    - **Stage 1 (Raw Metadata):** Displays original dimensions (e.g. `4032x3024`), format (e.g. `PNG`), and file size (e.g. `6.2 MB`). Marked with a ⚠️ **"Oversized for Direct CS API"** warning.
    - **Stage 2 (Processing):** Shows Pillow executing Lanczos resizing and adaptive compression.
    - **Stage 3 (Optimized Payload):** Displays output dimensions (e.g. `2048x1536`), format (`JPEG`), compressed size (e.g. `840 KB`), and the **Reduction Percentage** (e.g. `86.4% savings`). Marked with a ✅ **"Safe for Content Safety Submission"** status.
     - The optimized JPEG can be downloaded directly from the result panel.
 3. **Outcome Panel:** Submits the compressed payload and renders the real-time safety categorization.
+
+Regenerate the controlled large-image fixtures and thumbnails with:
+
+```bash
+npm run samples:large-images
+```
 
 ### Step 2: Overlapping Text Chunking Demo
 1. **User Inputs Large Text:** Paste a long block of text (e.g. 25,000 characters).
