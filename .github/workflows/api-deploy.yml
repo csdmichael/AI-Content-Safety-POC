@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - 'api/**'
+      - 'safety/**'
+      - 'policies/**'
+      - 'tests/**'
       - '.github/workflows/api-deploy.yml'
   workflow_dispatch:
 
@@ -24,9 +27,40 @@ jobs:
           docker run --rm -v "$PWD:/app" -w /app python:3.12-slim-bullseye \
             pip install --no-cache-dir -r requirements.txt -t .python_packages/lib/site-packages
 
+      - name: Run API tests
+        run: |
+          docker run --rm -v "$PWD:/repo" -w /repo python:3.12-slim-bullseye \
+            sh -c "PYTHONPATH=/repo/api/.python_packages/lib/site-packages python -m unittest discover -s tests -v"
+
       - name: Package
-        working-directory: api
-        run: zip -r ../api.zip server.py requirements.txt startup.sh .python_packages
+        run: |
+          mkdir api-package
+          cp api/*.py api/requirements.txt api/startup.sh api-package/
+          cp -r api/.python_packages safety policies api-package/
+          cd api-package
+          zip -r ../api.zip . -x '*/__pycache__/*' '*.pyc'
+
+      - name: Smoke-test packaged API
+        run: |
+          unzip -l api.zip | grep -E 'large_context_routes.py|safety/agent_safety_wrapper.py|policies/global_policy.yaml'
+          container_name=api-package-smoke
+          cleanup() {
+            docker logs "$container_name" || true
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+          }
+          trap cleanup EXIT
+          docker run --rm -d --name "$container_name" -p 18000:8000 \
+            -v "$PWD/api-package:/app" -w /app \
+            -e PYTHONPATH=/app/.python_packages/lib/site-packages:/app \
+            -e COSMOS_ENDPOINT=https://smoke.documents.azure.com:443/ \
+            -e STORAGE_ENDPOINT=https://smoke.blob.core.windows.net \
+            -e STORAGE_ACCOUNT_NAME=smoke \
+            -e CONTENT_SAFETY_ENDPOINT=https://smoke.cognitiveservices.azure.com \
+            python:3.12-slim-bullseye \
+            python -m uvicorn server:app --host 0.0.0.0 --port 8000
+          curl --fail --silent --show-error --retry 30 --retry-delay 1 --retry-connrefused \
+            http://127.0.0.1:18000/api/health -o /tmp/api-health.json
+          python -c "import json; assert json.load(open('/tmp/api-health.json'))['status'] == 'ok'"
 
       - name: Azure login (OIDC)
         uses: azure/login@v2
@@ -43,3 +77,16 @@ jobs:
             --src-path api.zip \
             --type zip \
             --clean true
+
+      - name: Verify deployed API
+        run: |
+          az webapp restart \
+            --resource-group "${{ secrets.AZURE_WEBAPP_RESOURCE_GROUP }}" \
+            --name ai-content-safety-api
+          api_host=$(az webapp show \
+            --resource-group "${{ secrets.AZURE_WEBAPP_RESOURCE_GROUP }}" \
+            --name ai-content-safety-api \
+            --query defaultHostName -o tsv)
+          curl --fail --silent --show-error --retry 30 --retry-delay 10 --retry-all-errors \
+            "https://${api_host}/api/health" -o /tmp/deployed-api-health.json
+          python -c "import json; assert json.load(open('/tmp/deployed-api-health.json'))['status'] == 'ok'"

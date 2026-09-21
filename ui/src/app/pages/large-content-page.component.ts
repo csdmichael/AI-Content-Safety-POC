@@ -11,6 +11,7 @@ import {
 } from '../services/large-context-api.service';
 
 type ActiveTab = 'image' | 'text' | 'apim';
+type ContentSource = 'user_prompt' | 'retrieved_document' | 'model_completion';
 
 @Component({
   selector: 'app-large-content-page',
@@ -44,11 +45,14 @@ export class LargeContentPageComponent implements OnInit {
   textInput = '';
   chunkSize = 4000; // Smaller default chunk size makes the overlap and chunks easier to see in the UI
   overlap = 800;
+  contentSource: ContentSource = 'user_prompt';
+  promptShield = true;
+  retrievalUserPrompt = '';
   readonly textResult = signal<TextLargeContextResponse | null>(null);
 
   // --- APIM Policies ---
   readonly apimConfig = signal<APIMConfigResponse | null>(null);
-  activePolicyKey = signal<string>('size_limit');
+  activePolicyKey = signal<string>('llm_content_safety');
 
   // --- Text Presets ---
   readonly textPresets = [
@@ -110,18 +114,27 @@ export class LargeContentPageComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
     try {
-      // Create a high-res canvas (e.g. 4000x3000 pixels) to easily exceed 4MB
-      const width = 3600;
-      const height = 2800;
+      // High-entropy pixels prevent PNG compression from shrinking the fixture below 4 MB.
+      const width = 2400;
+      const height = 1800;
       const canvas = document.createElement('canvas');
       canvas.width = width;
       canvas.height = height;
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Could not get canvas 2D context');
 
-      // Draw complex high-frequency visual noise to ensure JPEG/PNG size remains large
-      ctx.fillStyle = '#0f172a';
-      ctx.fillRect(0, 0, width, height);
+      const pixels = ctx.createImageData(width, height);
+      let randomState = 0x5f3759df;
+      for (let index = 0; index < pixels.data.length; index += 4) {
+        randomState ^= randomState << 13;
+        randomState ^= randomState >>> 17;
+        randomState ^= randomState << 5;
+        pixels.data[index] = randomState & 0xff;
+        pixels.data[index + 1] = (randomState >>> 8) & 0xff;
+        pixels.data[index + 2] = (randomState >>> 16) & 0xff;
+        pixels.data[index + 3] = 255;
+      }
+      ctx.putImageData(pixels, 0, 0);
 
       // Draw a colorful gradient grid
       const cols = 24;
@@ -148,7 +161,7 @@ export class LargeContentPageComponent implements OnInit {
       ctx.strokeStyle = '#f43f5e';
       ctx.lineWidth = 15;
       ctx.beginPath();
-      ctx.arc(width / 2, height / 2, 800, 0, Math.PI * 2);
+      ctx.arc(width / 2, height / 2, 500, 0, Math.PI * 2);
       ctx.stroke();
 
       ctx.strokeStyle = '#10b981';
@@ -223,12 +236,24 @@ export class LargeContentPageComponent implements OnInit {
       this.error.set('Please enter text or select a preset.');
       return;
     }
-    if (this.chunkSize <= 0) {
-      this.error.set('Chunk size must be greater than 0.');
+    if (this.chunkSize < 100) {
+      this.error.set('Chunk size must be at least 100 characters.');
+      return;
+    }
+    if (this.chunkSize > 10_000) {
+      this.error.set('Chunk size cannot exceed the 10,000-character Content Safety limit.');
+      return;
+    }
+    if (this.overlap < 0) {
+      this.error.set('Overlap cannot be negative.');
       return;
     }
     if (this.overlap >= this.chunkSize) {
       this.error.set('Overlap must be strictly less than the chunk size.');
+      return;
+    }
+    if (this.overlap > Math.floor(this.chunkSize / 2)) {
+      this.error.set('Overlap cannot exceed half of the chunk size.');
       return;
     }
 
@@ -240,7 +265,10 @@ export class LargeContentPageComponent implements OnInit {
       const res = await this.largeContextApi.analyzeText(
         this.textInput,
         this.chunkSize,
-        this.overlap
+        this.overlap,
+        this.contentSource,
+        this.promptShield,
+        this.contentSource === 'retrieved_document' ? this.retrievalUserPrompt : undefined,
       );
       this.textResult.set(res);
     } catch (e: any) {
@@ -280,6 +308,11 @@ export class LargeContentPageComponent implements OnInit {
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
+  formatSizeChange(reductionPercentage: number): string {
+    const direction = reductionPercentage >= 0 ? 'smaller' : 'larger';
+    return `${Math.abs(reductionPercentage)}% ${direction}`;
   }
 
   getOverlapTextRange(chunk: any, nextChunk: any): string {

@@ -16,6 +16,10 @@ export interface ChunkResult {
   severity: number;
   decision: 'safe' | 'blocked';
   flagged_categories: string[];
+  blocklist_matches: string[];
+  prompt_shield_applied: boolean;
+  prompt_attack_detected: boolean;
+  scan_duration_ms: number;
 }
 
 export interface TextLargeContextResponse {
@@ -26,6 +30,12 @@ export interface TextLargeContextResponse {
   chunks: ChunkResult[];
   aggregated_decision: 'safe' | 'blocked';
   max_severity: number;
+  flagged_categories: string[];
+  content_source: 'user_prompt' | 'retrieved_document' | 'model_completion';
+  prompt_shield_enabled: boolean;
+  prompt_attack_detected: boolean;
+  parallelism: number;
+  moderation_duration_ms: number;
   processed_at_utc: string;
 }
 
@@ -45,6 +55,10 @@ export interface ImageLargeContextResponse {
   metrics: ImageCompressionMetrics;
   max_severity: number;
   decision: 'safe' | 'blocked';
+  flagged_categories: string[];
+  ocr_enabled: boolean;
+  ocr_character_limit: number;
+  moderation_duration_ms: number;
   processed_at_utc: string;
 }
 
@@ -52,16 +66,12 @@ export interface APIMRecommendation {
   concern: string;
   mitigation: string;
   policy_name: string;
+  policy_key: string;
 }
 
 export interface APIMConfigResponse {
   recommendations: APIMRecommendation[];
-  xml_policies: {
-    size_limit: string;
-    rate_limiting: string;
-    caching: string;
-    load_balancing: string;
-  };
+  xml_policies: Record<string, string>;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -78,11 +88,21 @@ export class LargeContextApiService {
     return url.replace(/\/$/, '');
   }
 
-  async analyzeText(text: string, chunkSize: number, overlap: number): Promise<TextLargeContextResponse> {
+  async analyzeText(
+    text: string,
+    chunkSize: number,
+    overlap: number,
+    contentSource: 'user_prompt' | 'retrieved_document' | 'model_completion',
+    promptShield: boolean,
+    userPrompt?: string,
+  ): Promise<TextLargeContextResponse> {
     const formData = new FormData();
     formData.append('text', text);
     formData.append('chunk_size', chunkSize.toString());
     formData.append('overlap', overlap.toString());
+    formData.append('content_source', contentSource);
+    formData.append('prompt_shield', promptShield.toString());
+    if (userPrompt) formData.append('user_prompt', userPrompt);
 
     return firstValueFrom(
       this.http.post<TextLargeContextResponse>(`${this.base}/api/large-context/analyze-text`, formData)

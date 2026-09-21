@@ -11,6 +11,7 @@ import os
 import re
 import sys
 from datetime import datetime, timezone, timedelta
+from functools import lru_cache
 from pathlib import Path
 from urllib.parse import quote
 
@@ -61,13 +62,25 @@ ALLOWED_ORIGINS = [
 # ---------------------------------------------------------------------------
 credential = DefaultAzureCredential()
 
-cosmos = CosmosClient(url=COSMOS_ENDPOINT, credential=credential)
-cosmos_container = (
-    cosmos.get_database_client(COSMOS_DATABASE).get_container_client(COSMOS_CONTAINER)
-)
 
-blob_service = BlobServiceClient(account_url=STORAGE_ENDPOINT, credential=credential)
-blob_container = blob_service.get_container_client(STORAGE_CONTAINER)
+@lru_cache(maxsize=1)
+def _get_cosmos_container():
+    if not COSMOS_ENDPOINT:
+        raise RuntimeError("COSMOS_ENDPOINT is not configured.")
+    cosmos = CosmosClient(url=COSMOS_ENDPOINT, credential=credential)
+    return cosmos.get_database_client(COSMOS_DATABASE).get_container_client(COSMOS_CONTAINER)
+
+
+@lru_cache(maxsize=1)
+def _get_blob_service() -> BlobServiceClient:
+    if not STORAGE_ENDPOINT:
+        raise RuntimeError("STORAGE_ENDPOINT is not configured.")
+    return BlobServiceClient(account_url=STORAGE_ENDPOINT, credential=credential)
+
+
+@lru_cache(maxsize=1)
+def _get_blob_container():
+    return _get_blob_service().get_container_client(STORAGE_CONTAINER)
 
 # Cache user delegation key (rotated hourly)
 _cached_key: dict = {"key": None, "expires_on": 0}
@@ -82,7 +95,7 @@ def _get_delegation_key() -> UserDelegationKey:
         return _cached_key["key"]
     starts_on = now - timedelta(minutes=5)
     expires_on = now + timedelta(hours=1)
-    key = blob_service.get_user_delegation_key(starts_on, expires_on)
+    key = _get_blob_service().get_user_delegation_key(starts_on, expires_on)
     _cached_key["key"] = key
     _cached_key["expires_on"] = expires_on
     return key
@@ -152,7 +165,7 @@ def health():
 @app.get("/api/documents", tags=["Documents"], summary="List all processed documents")
 def list_documents():
     query = "SELECT c.id, c.fileName, c.format, c.expectedContentSafetyOutcome, c.processedAtUtc FROM c"
-    items = list(cosmos_container.query_items(query=query, enable_cross_partition_query=True))
+    items = list(_get_cosmos_container().query_items(query=query, enable_cross_partition_query=True))
     return {"count": len(items), "documents": items}
 
 
@@ -179,7 +192,7 @@ def list_results(decision: str | None = Query(default=None)):
         }
     else:
         query = "SELECT * FROM c"
-    items = list(cosmos_container.query_items(query=query, enable_cross_partition_query=True))
+    items = list(_get_cosmos_container().query_items(query=query, enable_cross_partition_query=True))
     return {"count": len(items), "results": items}
 
 
@@ -190,7 +203,7 @@ def list_results(decision: str | None = Query(default=None)):
 )
 def results_summary():
     items = list(
-        cosmos_container.query_items(query="SELECT * FROM c", enable_cross_partition_query=True)
+        _get_cosmos_container().query_items(query="SELECT * FROM c", enable_cross_partition_query=True)
     )
     summary: dict = {"total": len(items), "safe": 0, "blocked": 0, "review": 0, "byFormat": {}}
     for r in items:
@@ -216,7 +229,7 @@ def get_result(doc_id: str):
         "query": "SELECT * FROM c WHERE c.id = @id",
         "parameters": [{"name": "@id", "value": doc_id}],
     }
-    items = list(cosmos_container.query_items(query=query, enable_cross_partition_query=True))
+    items = list(_get_cosmos_container().query_items(query=query, enable_cross_partition_query=True))
     if not items:
         raise HTTPException(status_code=404, detail="not_found")
     return items[0]
@@ -303,6 +316,8 @@ def _run_pipeline() -> None:
     global _pipeline_state
     _pipeline_state = {"status": "running", "processed": 0, "total": 0, "errors": []}
     try:
+        blob_container = _get_blob_container()
+        cosmos_container = _get_cosmos_container()
         manifest_blob = blob_container.get_blob_client("manifest.json")
         manifest = json.loads(manifest_blob.download_blob().readall().decode())
         docs = manifest["documents"]

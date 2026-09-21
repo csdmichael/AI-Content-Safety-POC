@@ -42,10 +42,10 @@ To bypass the 4MB limit while preserving image quality for threat detection, we 
 1. **Size Detection:** The API inspects the uploaded file size.
 2. **Dimension Downscaling:** If the image width or height exceeds **2048px** (the maximum optimal processing resolution for Azure AI Content Safety), the system downscales the image using Pillow's high-quality `LANCZOS` filter.
 3. **Format & Alpha Channel Normalization:** It converts the image to `RGB` mode (stripping alpha channels, which are unnecessary for content safety and inflate PNG sizes).
-4. **Adaptive Quality Compression:** It saves the image as a `JPEG` with an initial quality of 80. If the file size is still > 4MB, it iteratively decreases the quality in steps of 10 (down to a minimum of 30) until the payload size drops well below the limit.
+4. **Adaptive Quality Compression:** It saves the image as a `JPEG` with an initial quality of 80. If the file is still above 4 MB, quality is reduced no lower than 60, then dimensions are reduced until the derivative complies. This preserves OCR evidence better than aggressive quality reduction.
 5. **Azure AI Submission:** The processed, highly compressed image is converted to Base64 and sent to the `image:analyze` API.
 
-This workflow guarantees **100% submission success rate** for any uploaded image, regardless of starting size (even > 10MB or 20MB files!).
+This workflow either produces a derivative within the Content Safety byte and dimension limits or rejects the upload with a clear `413` response. The original image remains unchanged for downstream model use after moderation passes.
 
 ### Image Code Snippet & Implementation
 The core image processing is implemented in the Python API file [api/large_context_routes.py](../api/large_context_routes.py).
@@ -77,9 +77,9 @@ def compress_and_resize_image(contents: bytes, max_dimension=2048, quality=80):
     img.save(out_io, format="JPEG", quality=quality)
     compressed_bytes = out_io.getvalue()
     
-    # Secondary compression squeeze loop if still > 4MB
-    while len(compressed_bytes) > 4 * 1024 * 1024 and quality > 30:
-        quality -= 10
+    # Keep analysis quality at 60 or above, then reduce dimensions if needed.
+    while len(compressed_bytes) > 4 * 1024 * 1024 and quality > 60:
+        quality = max(60, quality - 10)
         out_io = io.BytesIO()
         img.save(out_io, format="JPEG", quality=quality)
         compressed_bytes = out_io.getvalue()
@@ -96,8 +96,9 @@ To process extremely large documents (e.g. 50,000+ characters), we implement an 
 
 1. **Sliding Window Chunking:** The text is divided into manageable blocks of size `N` (default: 8,000 characters).
 2. **Context Preservation (Overlap):** To prevent losing critical safety contexts at the boundary of a cut (e.g., a forbidden phrase split in half), we define an overlap size `M` (default: 1,000 characters). This ensures that boundary phrases are fully scanned in at least one chunk.
-3. **Parallel Scanning:** Each chunk is transmitted to the Azure AI Content Safety `text:analyze` endpoint.
-4. **Aggregated Decision Logic:**
+3. **Parallel Scanning:** A bounded worker pool transmits chunks to the Azure AI Content Safety `text:analyze` endpoint concurrently.
+4. **Prompt Shields:** User-prompt and retrieved-document windows are checked with `text:shieldPrompt`; model completions skip Prompt Shields and still receive harm-category moderation.
+5. **Aggregated Decision Logic:**
    - **Verdict:** If **any** chunk is flagged as `blocked`, the overall payload is marked as `blocked`.
    - **Severity:** The global severity score is the **maximum** severity returned across all evaluated chunks.
    - **Category Mapping:** The API combines and returns distinct violations detected across all chunks for complete visibility.
@@ -137,8 +138,10 @@ def chunk_text_with_overlap(text: str, chunk_size=8000, overlap=1000):
 
 Azure API Management (APIM) plays a critical role in standardizing security, compliance, caching, and failover across multiple applications utilizing Azure AI Content Safety.
 
+The primary model guardrail is APIM's `llm-content-safety` policy. Configure `shield-prompt="true"`, `enforce-on-completions="true"`, category thresholds, and overlapping response windows. Requests above 10,000 characters must still be windowed by the application before they reach the policy.
+
 ### APIM XML Policy: Request Size Limit
-Prevent bloated requests from saturating Content Safety compute or triggering unhandled API errors. Placing this at the APIM gateway rejects requests instantly at the edge.
+Prevent bloated requests from saturating a direct Content Safety route or triggering unhandled API errors. Do not apply this 4 MB limit ahead of the POC's `/compress-image` normalization endpoint, because that endpoint intentionally accepts oversized source images.
 
 ```xml
 <policies>

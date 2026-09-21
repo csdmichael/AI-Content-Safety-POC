@@ -244,6 +244,9 @@ The API is deployed to Azure App Service at:
 | GET | `/api/results/{id}` | Single result by document ID |
 | GET | `/api/swagger` | Interactive Swagger UI |
 | GET | `/api/swagger.json` | OpenAPI 3.0 specification |
+| POST | `/api/large-context/analyze-text` | Semantic windowing, parallel moderation, Prompt Shields, and aggregate enforcement |
+| POST | `/api/large-context/compress-image` | Image normalization plus OCR-aware multimodal moderation |
+| GET | `/api/large-context/apim-config` | Current APIM AI gateway policy examples |
 
 ### Run locally
 
@@ -348,7 +351,8 @@ All deploy workflows use **OIDC** authentication via `azure/login@v2`.
 - **Audit trail** — full `categoriesAnalysis` payload stored in Cosmos DB
 - **Fail safe** — on API error, default to blocked / human review
 - **Human-in-the-loop** — borderline severities (2–4) routed to review, not auto-decided
-- **Respect input limits** — chunk text (max 10K chars), resize images (max 4 MB / 2048×2048)
+- **Respect input limits** — semantic text windows (max 10K chars), overlapping parallel scans, and image derivatives within 4 MB and 50x50 to 7200x7200 pixels
+- **Scan rendered text** — use OCR-aware multimodal moderation for images, with Azure Vision OCR for text beyond the multimodal 1,000-character limit
 - **Handle throttling** — exponential backoff on HTTP 429
 - **Monitor drift** — periodically sample blocked/allowed items and re-evaluate thresholds
 

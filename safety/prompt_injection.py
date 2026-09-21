@@ -47,6 +47,13 @@ _INJECTION_PATTERNS: list[tuple[str, re.Pattern[str]]] = [
     )),
 ]
 
+_CRITICAL_PATTERN_NAMES = {
+    "ignore_instructions",
+    "override_system",
+    "system_prompt_leak",
+    "jailbreak_attempt",
+}
+
 
 def detect_prompt_injection(text: str) -> dict:
     """Detect potential prompt injection attempts in input text.
@@ -90,6 +97,10 @@ def detect_prompt_injection(text: str) -> dict:
         confidence = 0.0
         risk_level = "none"
         recommendation = "No injection patterns detected."
+    elif match_count == 1 and matches[0]["pattern_name"] in _CRITICAL_PATTERN_NAMES:
+        confidence = 0.7
+        risk_level = "medium"
+        recommendation = "Canonical prompt override pattern detected — block before execution."
     elif match_count == 1:
         confidence = 0.4
         risk_level = "low"

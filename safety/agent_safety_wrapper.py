@@ -22,6 +22,7 @@ from safety.context_drift import detect_context_drift
 
 
 _REPO_ROOT = Path(__file__).resolve().parent.parent
+_BLOCKING_INJECTION_RISK_LEVELS = {"medium", "high"}
 
 # ---------------------------------------------------------------------------
 # Structured logger — writes JSON lines to logs/agent_safety.log
@@ -116,8 +117,24 @@ class AgentSafetyWrapper:
         policy_result = self.policy_engine.evaluate_text(user_input)
         safety_metadata["policy_check"] = policy_result
 
-        # ----- Step 2: Call original agent (BLACK BOX — do not modify) -----
-        agent_response = agent_callable(user_input)
+        # ----- Step 2: Fail closed before calling the agent -----
+        block_reasons: list[str] = []
+        if injection_result["risk_level"] in _BLOCKING_INJECTION_RISK_LEVELS:
+            block_reasons.append("prompt_injection")
+        if not policy_result["passed"] and policy_result["enforcement"] == "block":
+            block_reasons.append("policy_violation")
+
+        execution_blocked = len(block_reasons) > 0
+        safety_metadata["execution"] = {
+            "blocked": execution_blocked,
+            "reasons": block_reasons,
+        }
+
+        if execution_blocked:
+            agent_response = "Request blocked by safety policy."
+        else:
+            # The callable remains a black box, but is reached only after prechecks pass.
+            agent_response = agent_callable(user_input)
 
         # Normalize response to string for downstream checks
         response_text = str(agent_response) if agent_response is not None else ""
@@ -170,7 +187,7 @@ class AgentSafetyWrapper:
 
         # ----- Step 5: Overall safety determination -----
         overall_safe = (
-            not injection_result["injection_detected"]
+            not execution_blocked
             and policy_result["passed"]
             and len(tool_issues) == 0
             and adherence["score"] >= 0.3
@@ -186,6 +203,8 @@ class AgentSafetyWrapper:
                 "injection_detected": injection_result["injection_detected"],
                 "injection_risk_level": injection_result["risk_level"],
                 "policy_passed": policy_result["passed"],
+                "execution_blocked": execution_blocked,
+                "block_reasons": block_reasons,
                 "task_score": adherence["score"],
                 "tool_issues": tool_issues,
                 "context_drifted": drift_result.get("drifted", False),

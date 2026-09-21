@@ -6,8 +6,8 @@
       <h1>Large Content Safety & Optimization</h1>
       <p>
         Demonstration for handling customer concerns regarding large payloads in Azure AI Content Safety.
-        Compress large images (> 4MB) automatically, split large text using overlapping chunking,
-        and manage gateway-level guardrails with Azure API Management (APIM).
+        Normalize large images with OCR, scan large text in parallel semantic windows,
+        and enforce model-neutral guardrails with Azure API Management (APIM).
       </p>
     </section>
 
@@ -39,7 +39,7 @@
             <h3>1. Select or Generate an Image</h3>
             
             <div class="button-row">
-              <button class="primary-btn" (click)="generateTestImage()">⚡ Generate High-Res 4.5MB Image</button>
+              <button class="primary-btn" (click)="generateTestImage()">⚡ Generate High-Res Image (> 4 MB)</button>
               <label class="secondary-btn cursor-pointer">
                 📁 Upload Local File
                 <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden-input" />
@@ -76,7 +76,7 @@
 
               <div class="setting-item">
                 <label for="compressionQuality">Target Quality (JPEG %):</label>
-                <input id="compressionQuality" type="range" min="30" max="95" step="5" [(ngModel)]="compressionQuality" />
+                <input id="compressionQuality" type="range" min="60" max="95" step="5" [(ngModel)]="compressionQuality" />
                 <span class="range-val">{{ compressionQuality }}%</span>
               </div>
             </div>
@@ -130,7 +130,10 @@
                       <div class="metrics-block">
                         <span class="label">New Size:</span> <strong class="text-success">{{ formatBytes(res.metrics.compressed_size_bytes) }}</strong>
                         <span class="label">New Res:</span> <strong>{{ res.metrics.compressed_dimensions }}</strong>
-                        <span class="label">Savings:</span> <strong class="badge success">-{{ res.metrics.reduction_percentage }}%</strong>
+                        <span class="label">Size Change:</span>
+                        <strong class="badge" [class.success]="res.metrics.reduction_percentage >= 0" [class.danger]="res.metrics.reduction_percentage < 0">
+                          {{ formatSizeChange(res.metrics.reduction_percentage) }}
+                        </strong>
                       </div>
                     } @else if (loading()) {
                       <div class="spinner-container">
@@ -157,6 +160,14 @@
                   </div>
                   <div class="outcome-body">
                     <p>The compressed image was submitted to Azure AI Content Safety. Below are the execution metrics:</p>
+                    @if (res.flagged_categories.length > 0) {
+                      <div class="violations-found">
+                        <strong>Flags Triggered:</strong>
+                        @for (category of res.flagged_categories; track category) {
+                          <span class="violation-tag">{{ category }}</span>
+                        }
+                      </div>
+                    }
                     <table class="metrics-table">
                       <tr>
                         <td><strong>Compression Algorithm:</strong></td>
@@ -173,8 +184,14 @@
                       <tr>
                         <td><strong>Resized:</strong></td>
                         <td>{{ res.metrics.resized ? 'Yes (Dimensions Downscaled)' : 'No (Kept Dimensions)' }}</td>
-                        <td><strong>Processing Time:</strong></td>
-                        <td>Instant / Serverless Edge</td>
+                        <td><strong>Moderation Time:</strong></td>
+                        <td>{{ res.moderation_duration_ms | number:'1.0-2' }} ms</td>
+                      </tr>
+                      <tr>
+                        <td><strong>OCR:</strong></td>
+                        <td>{{ res.ocr_enabled ? 'Enabled' : 'Disabled' }}</td>
+                        <td><strong>OCR Text Limit:</strong></td>
+                        <td>{{ res.ocr_character_limit | number }} characters</td>
                       </tr>
                     </table>
                   </div>
@@ -215,16 +232,37 @@
 
             <div class="settings-grid">
               <div class="setting-item">
+                <label for="contentSource">Content Source:</label>
+                <select id="contentSource" [(ngModel)]="contentSource">
+                  <option value="user_prompt">User prompt</option>
+                  <option value="retrieved_document">Retrieved document</option>
+                  <option value="model_completion">Model completion</option>
+                </select>
+                <span class="hint">Controls Prompt Shields semantics</span>
+              </div>
+              <div class="setting-item">
                 <label for="chunkSize">Chunk Size (chars):</label>
                 <input id="chunkSize" type="number" [(ngModel)]="chunkSize" />
-                <span class="hint">Max limit of API is 10,000</span>
+                <span class="hint">Allowed range is 100 to 10,000</span>
               </div>
               <div class="setting-item">
                 <label for="overlap">Overlap Size (chars):</label>
                 <input id="overlap" type="number" [(ngModel)]="overlap" />
                 <span class="hint">Protects split-word context</span>
               </div>
+              <div class="setting-item">
+                <label for="promptShield">Prompt Shields:</label>
+                <input id="promptShield" type="checkbox" [(ngModel)]="promptShield" [disabled]="contentSource === 'model_completion'" />
+                <span class="hint">User and document attack detection</span>
+              </div>
             </div>
+
+            @if (contentSource === 'retrieved_document') {
+              <div class="textarea-container mt-16">
+                <label for="retrievalUserPrompt">Associated User Prompt:</label>
+                <textarea id="retrievalUserPrompt" placeholder="What did the user ask before this document was retrieved?" [(ngModel)]="retrievalUserPrompt"></textarea>
+              </div>
+            }
 
             <button class="action-btn mt-16" [disabled]="loading() || !textInput" (click)="runTextAnalysis()">
               {{ loading() ? 'Chunking & Analyzing...' : '⚡ Scan Large Document' }}
@@ -256,7 +294,13 @@
                     <h4>Aggregated Verdict: {{ res.aggregated_decision | uppercase }}</h4>
                     <p>
                       Document split into <strong>{{ res.num_chunks }} chunks</strong> (size {{ res.chunk_size }} with {{ res.overlap }} overlap). 
-                      Max Severity across all chunks is <strong>{{ res.max_severity }}</strong>.
+                      Max Severity is <strong>{{ res.max_severity }}</strong>. Scanned with
+                      <strong>{{ res.parallelism }} workers</strong> in
+                      <strong>{{ res.moderation_duration_ms | number:'1.0-2' }} ms</strong>.
+                    </p>
+                    <p>
+                      Source: <strong>{{ res.content_source }}</strong> · Prompt Shields:
+                      <strong>{{ res.prompt_shield_enabled ? (res.prompt_attack_detected ? 'Attack detected' : 'No attack detected') : 'Not applied' }}</strong>
                     </p>
                   </div>
                 </div>
@@ -272,7 +316,7 @@
                         <div class="timeline-card-header">
                           <span class="chunk-title">Chunk {{ chunk.index + 1 }} (Chars {{ chunk.start_char }} - {{ chunk.end_char }})</span>
                           <span class="chunk-badge" [class.badge-danger]="chunk.decision === 'blocked'" [class.badge-success]="chunk.decision === 'safe'">
-                            {{ chunk.decision | uppercase }} (Severity: {{ chunk.severity }})
+                            {{ chunk.decision | uppercase }} (Severity: {{ chunk.severity }}, {{ chunk.scan_duration_ms | number:'1.0-2' }} ms)
                           </span>
                         </div>
                         <div class="timeline-card-body">
@@ -282,6 +326,20 @@
                               <strong>Flags Triggered:</strong>
                               @for (cat of chunk.flagged_categories; track cat) {
                                 <span class="violation-tag">{{ cat }}</span>
+                              }
+                            </div>
+                          }
+                          @if (chunk.prompt_attack_detected) {
+                            <div class="violations-found">
+                              <strong>Prompt Shields:</strong>
+                              <span class="violation-tag">Attack detected</span>
+                            </div>
+                          }
+                          @if (chunk.blocklist_matches.length > 0) {
+                            <div class="violations-found">
+                              <strong>Blocklists:</strong>
+                              @for (blocklist of chunk.blocklist_matches; track blocklist) {
+                                <span class="violation-tag">{{ blocklist }}</span>
                               }
                             </div>
                           }
@@ -318,8 +376,8 @@
             @if (apimConfig(); as config) {
               @for (rec of config.recommendations; track rec.policy_name; let idx = $index) {
                 <div class="apim-nav-item" 
-                     [class.active]="activePolicyKey() === (idx === 0 ? 'size_limit' : idx === 1 ? 'rate_limiting' : idx === 2 ? 'caching' : 'load_balancing')"
-                     (click)="setActivePolicy(idx === 0 ? 'size_limit' : idx === 1 ? 'rate_limiting' : idx === 2 ? 'caching' : 'load_balancing')">
+                     [class.active]="activePolicyKey() === rec.policy_key"
+                     (click)="setActivePolicy(rec.policy_key)">
                   <h4>{{ rec.policy_name }}</h4>
                   <p class="small text-muted">{{ rec.concern }}</p>
                 </div>
@@ -332,8 +390,8 @@
           <!-- Right code / description block -->
           <div class="apim-content-card">
             @if (apimConfig(); as config) {
-              @for (rec of config.recommendations; track rec.policy_name; let idx = $index) {
-                @if (activePolicyKey() === (idx === 0 ? 'size_limit' : idx === 1 ? 'rate_limiting' : idx === 2 ? 'caching' : 'load_balancing')) {
+              @for (rec of config.recommendations; track rec.policy_name) {
+                @if (activePolicyKey() === rec.policy_key) {
                   <div class="policy-details">
                     <h3>APIM Strategy: {{ rec.policy_name }}</h3>
                     <p class="policy-concern"><strong>Problem Statement:</strong> {{ rec.concern }}</p>
