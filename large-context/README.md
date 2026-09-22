@@ -17,8 +17,9 @@ This folder contains architectural patterns, code modules, and user interface de
    - [APIM XML Policy: Rate Limiting & Quotas](#apim-xml-policy-rate-limiting--quotas)
    - [APIM XML Policy: Response Caching](#apim-xml-policy-response-caching)
    - [APIM XML Policy: Load-Balancing & Failover](#apim-xml-policy-load-balancing--failover)
-5. [Visual UI Demonstration Walkthrough](#-visual-ui-demonstration-walkthrough)
-6. [References & Further Reading](#-references--further-reading)
+5. [Core Best Practices for Large Context Safety](#-core-best-practices-for-large-context-safety)
+6. [Visual UI Demonstration Walkthrough](#-visual-ui-demonstration-walkthrough)
+7. [References & Further Reading](#-references--further-reading)
 
 ---
 
