@@ -203,6 +203,18 @@ Create a resilient endpoint that distributes traffic between three regional inst
 
 ---
 
+## 🛡️ Core Best Practices for Large Context Safety
+
+To ensure robust protection and high performance when working with large context windows, implement the following safety and optimization strategies:
+
+- **Use Prompt Shields:** Defend against indirect prompt injections—where third-party files, logs, or emails contain hidden instructions designed to hijack the model—by implementing tools like Azure AI Content Safety Prompt Shields before parsing raw content. Learn more about jailbreak and indirect attack prevention in the [Azure AI Content Safety Prompt Shields Guide](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection).
+- **Reduce Data at the Source:** Filter logs, API responses, and documents using strict time bounds, severity levels, or pattern matches so only high-signal data reaches the context window.
+- **Offload Massive Payloads:** Write large tool outputs or file contents into a sandbox or local filesystem, passing the model a reference file path and a short preview instead of the full raw payload.
+- **Optimize Information Placement:** Place crucial instructions, safety guardrails, and final answers at the absolute beginning or end of the prompt, as model attention drops significantly in the middle of long contexts. This phenomenon is extensively analyzed in the research paper [Lost in the Middle: How Language Models Use Long Contexts](https://arxiv.org/abs/2307.03172). For practical application, consult the [Microsoft Learn Prompt Engineering Best Practices](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/prompt-engineering).
+- **Active Context Pruning:** Manage multi-turn conversations and growing contexts by using sliding windows, rolling summarization, or topic-based pruning to remove outdated or redundant tokens. Users on Reddit generally agree that context distillation and summarization effectively mitigate token bloating and accuracy drops. For automated token reduction, refer to research on [LLMLingua: Compressing Prompts for Accelerated Inference](https://arxiv.org/abs/2310.06147).
+
+---
+
 ## 🎨 Visual UI Demonstration Walkthrough
 
 In this POC, we built a dedicated **"Large Content"** page in the UI that dynamically displays each part of the pipeline to demystify these steps for customers.
@@ -249,3 +261,9 @@ npm run samples:large-images
 - [Azure AI Content Safety SDK - Python](https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/contentsafety/azure-ai-contentsafety)
 - [Azure AI Content Safety SDK - JavaScript/TypeScript](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/contentsafety/ai-content-safety-rest)
 - [Azure API Management Policy Snippets Portal](https://github.com/Azure/api-management-policy-snippets)
+
+### Large Context Safety References & Research
+- [Azure AI Content Safety - Prompt Shields Guide](https://learn.microsoft.com/en-us/azure/ai-services/content-safety/concepts/jailbreak-detection)
+- [Lost in the Middle: How Language Models Use Long Contexts (arXiv:2307.03172)](https://arxiv.org/abs/2307.03172)
+- [Microsoft Learn Prompt Engineering Best Practices](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/prompt-engineering)
+- [LLMLingua: Compressing Prompts for Accelerated Inference (arXiv:2310.06147)](https://arxiv.org/abs/2310.06147)
